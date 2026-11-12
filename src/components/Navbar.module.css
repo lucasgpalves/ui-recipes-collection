@@ -1,0 +1,152 @@
+.header {
+  padding: 1.35rem 1.75rem 1rem;
+  background: var(--surface);
+}
+
+.headerLanding {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  padding: 1.25rem clamp(1.25rem, 4vw, 3.5rem);
+  background: transparent;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+}
+
+.topLanding {
+  margin-bottom: 0;
+}
+
+.brand {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.5rem;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.7rem, 3vw, 2.15rem);
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.headerLanding .brand {
+  color: #fff;
+  font-size: clamp(1.35rem, 2.5vw, 1.7rem);
+}
+
+.brandTag {
+  color: var(--brand);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.session {
+  color: var(--ink-muted);
+  font-size: 0.88rem;
+}
+
+.headerLanding .session {
+  color: rgba(244, 250, 246, 0.8);
+}
+
+.login,
+.logout {
+  border: 0;
+  border-radius: 10px;
+  padding: 0.55rem 1.25rem;
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.login {
+  display: inline-flex;
+  background: var(--brand);
+  color: #0a120e;
+}
+
+.headerLanding .login {
+  background: transparent;
+  color: #f4faf6;
+  border: 1.5px solid rgba(244, 250, 246, 0.55);
+}
+
+.login:hover,
+.logout:hover {
+  transform: translateY(-1px);
+  background: var(--brand-strong);
+  color: #fff;
+}
+
+.headerLanding .login:hover {
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.logout {
+  background: var(--brand);
+  color: #0a120e;
+}
+
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.35rem 0;
+  row-gap: 0.45rem;
+}
+
+.category {
+  color: var(--brand-strong);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.55rem;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.category:hover,
+.categoryActive {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.divider {
+  width: 1px;
+  height: 0.85rem;
+  background: color-mix(in srgb, var(--brand) 55%, transparent);
+  flex: 0 0 auto;
+}
+
+@media (max-width: 640px) {
+  .header {
+    padding-inline: 1rem;
+  }
+
+  .headerLanding {
+    padding-inline: 1.25rem;
+  }
+
+  .categories {
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: thin;
+  }
+}

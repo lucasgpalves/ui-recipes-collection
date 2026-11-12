@@ -1,0 +1,49 @@
+.page {
+  padding: 1.25rem 1.75rem 3.5rem;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.eyebrow {
+  color: var(--brand);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.header h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 600;
+  margin-bottom: 1.15rem;
+}
+
+.searchBlock {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.75rem;
+}
+
+.rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(168px, 1fr);
+  gap: 0.9rem;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding-inline: 1rem;
+  }
+
+  .rail {
+    grid-auto-columns: minmax(150px, 70%);
+  }
+}

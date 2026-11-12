@@ -1,0 +1,14 @@
+node_modules
+dist
+.git
+.cursor
+*.md
+.env
+.env.*
+!.env.example
+*.local
+acervo-de-receitas.zip
+.vscode
+.idea
+coverage
+npm-debug.log*

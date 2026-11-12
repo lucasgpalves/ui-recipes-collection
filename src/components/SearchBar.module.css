@@ -1,0 +1,42 @@
+.form {
+  display: flex;
+  width: min(100%, 520px);
+  margin-inline: auto;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #dcdcdc;
+  box-shadow: var(--shadow-soft);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.form:focus-within {
+  box-shadow: 0 0 0 3px var(--brand-soft), var(--shadow-soft);
+}
+
+.input {
+  flex: 1;
+  border: 0;
+  outline: none;
+  background: transparent;
+  padding: 0.95rem 1.15rem;
+  color: var(--ink);
+  font-size: 1rem;
+}
+
+.input::placeholder {
+  color: #7a7a7a;
+}
+
+.button {
+  border: 0;
+  background: var(--brand);
+  color: #fff;
+  font-weight: 700;
+  padding: 0 1.4rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.button:hover {
+  background: var(--brand-strong);
+}
