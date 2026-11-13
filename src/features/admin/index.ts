@@ -17,6 +17,7 @@ export {
 } from './roles'
 export {
   AdminUserCreatePage,
+  AdminUserCredentialsPage,
   AdminUserEditPage,
   AdminUserProfilePage,
   AdminUsersListPage,

@@ -51,7 +51,7 @@ Itens existentes ou planejados na API, **sem tela** neste frontend:
 
 - Painel **EDITOR** (livros, aprovação/merge de ingredientes)
 - Painel **TASTER** (criação de reviews)
-- Credenciais via `POST /auth/register` no perfil do usuário
+- Fetch de credenciais (`POST /auth/register`) — tela já desenhada no perfil
 - Restaurantes e referências de emprego
 - Progresso de metas (`GET /goals/{id}/progress`)
 - Publicação de receita / toggle `isPublished` pela UI

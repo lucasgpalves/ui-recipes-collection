@@ -14,6 +14,7 @@
 | `/admin/usuarios/novo` | Admin | Cadastro de usuário |
 | `/admin/usuarios/:id` | Admin | Perfil |
 | `/admin/usuarios/:id/editar` | Admin | Edição |
+| `/admin/usuarios/:id/credenciais` | Admin | Criar acesso (username/senha) |
 | `/admin/categorias` | Admin | Listagem |
 | `/admin/categorias/nova` | Admin | Cadastro |
 | `/admin/categorias/:id/editar` | Admin | Edição |

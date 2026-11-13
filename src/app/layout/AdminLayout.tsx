@@ -10,7 +10,8 @@ export function AdminLayout() {
 
   const isUsersSection = pathname.startsWith('/admin/usuarios')
   const isUsersListOrProfile =
-    pathname === '/admin/usuarios' || /^\/admin\/usuarios\/\d+(\/editar)?$/.test(pathname)
+    pathname === '/admin/usuarios' ||
+    /^\/admin\/usuarios\/\d+(\/(editar|credenciais))?$/.test(pathname)
   const isUsersCreate = pathname === '/admin/usuarios/novo'
 
   const isCategoriesSection = pathname.startsWith('/admin/categorias')

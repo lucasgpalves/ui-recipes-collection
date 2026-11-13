@@ -10,7 +10,7 @@ Estado da UI em relação aos requisitos de tela. Capacidade da API corresponden
 |-----------|--------|------------|
 | Área pública (home, busca, categorias, detalhe) | Feito | Reviews só como média; PDF fora do demo |
 | Login / sessão / guards ADMIN e COOK | Feito | Parser de role alinhado ao token demo; JWT real exige leitura de claims |
-| Admin — usuários | Feito (parcial) | Falta UI de `auth/register` no perfil; ver pendências |
+| Admin — usuários | Feito (parcial) | Tela de credenciais desenhada; falta ligar `POST /auth/register` |
 | Admin — categorias | Feito | CRUD |
 | Admin — papéis | Feito | CRUD; depende de `id` na resposta para editar/excluir |
 | Admin — metas | Feito (parcial) | CRUD; sem tela de progresso |
@@ -27,7 +27,7 @@ Estado da UI em relação aos requisitos de tela. Capacidade da API corresponden
 
 ### P1 — Fechar admin de usuários
 
-1. **Credenciais de acesso** — tela/ação no perfil para `POST /auth/register` (`username`, `password`, `userId`) após o cadastro do perfil.
+1. **Credenciais de acesso** — tela `/admin/usuarios/:id/credenciais` desenhada; **próximo passo: fetch** `POST /auth/register` (+ demoApi).
 2. **`id` estável na API** — sem `id` em listagem/detalhe, edição e exclusão quebram fora do demo (ajuste na API; UI já consome quando presente).
 3. Polimentos opcionais:
    - CPF imutável na edição

@@ -89,7 +89,12 @@ export function AdminUserProfilePage() {
             Listagem
           </Link>
           {user?.id != null && !terminated ? (
-            <Link to={`/admin/usuarios/${user.id}/editar`} className={styles.primaryButton}>
+            <Link to={`/admin/usuarios/${user.id}/credenciais`} className={styles.primaryButton}>
+              Criar acesso
+            </Link>
+          ) : null}
+          {user?.id != null && !terminated ? (
+            <Link to={`/admin/usuarios/${user.id}/editar`} className={styles.ghostButton}>
               Editar
             </Link>
           ) : null}

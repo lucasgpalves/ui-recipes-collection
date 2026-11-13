@@ -92,9 +92,17 @@ Na navbar pública, admin autenticado pode usar atalho que faz logout e envia a 
 
 ### 3.4 Perfil e edição
 
-1. Perfil (`/admin/usuarios/:id`): leitura; atalhos Editar / Desativar se ativo.
+1. Perfil (`/admin/usuarios/:id`): leitura; atalhos **Criar acesso** / Editar / Desativar se ativo.
 2. Edição: bloqueada se `terminatedAt` preenchido.
 3. Form pré-preenchido; submit atualiza e notifica.
+
+### 3.5 Credenciais de acesso (desenho)
+
+1. Do perfil, **Criar acesso** → `/admin/usuarios/:id/credenciais`.
+2. Tela mostra resumo do perfil (nome, papel, userId) + formulário: usuário, senha, confirmar senha.
+3. Usuário desativado: formulário oculto; mensagem de bloqueio.
+4. Validação local: campos obrigatórios, senhas iguais, senha ≥ 4 caracteres.
+5. **Fetch `POST /auth/register` ainda não ligado** — submit válido só confirma o desenho (toast informativo + payload pronto na UI).
 
 ---
 

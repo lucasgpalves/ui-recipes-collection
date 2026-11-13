@@ -10,6 +10,7 @@ import {
   AdminRoleEditPage,
   AdminRolesListPage,
   AdminUserCreatePage,
+  AdminUserCredentialsPage,
   AdminUserEditPage,
   AdminUserProfilePage,
   AdminUsersListPage,
@@ -45,6 +46,7 @@ export default function App() {
                   <Route path="usuarios/novo" element={<AdminUserCreatePage />} />
                   <Route path="usuarios/:id" element={<AdminUserProfilePage />} />
                   <Route path="usuarios/:id/editar" element={<AdminUserEditPage />} />
+                  <Route path="usuarios/:id/credenciais" element={<AdminUserCredentialsPage />} />
                   <Route path="categorias" element={<AdminCategoriesListPage />} />
                   <Route path="categorias/nova" element={<AdminCategoryCreatePage />} />
                   <Route path="categorias/:id/editar" element={<AdminCategoryEditPage />} />
