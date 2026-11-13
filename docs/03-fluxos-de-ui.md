@@ -1,0 +1,144 @@
+# Fluxos de UI
+
+Jornadas do usuário na interface. Regras de domínio por trás das chamadas: ver docs da API.
+
+---
+
+## 1. Área pública
+
+### 1.1 Home
+
+1. Usuário abre `/`.
+2. Vê marca (Taberu FOOD), headline, texto de apoio e CTAs.
+3. CTA primário **Explorar receitas** → `/receitas`.
+4. CTA secundário conforme sessão:
+   - COOK → **Minhas receitas** → `/cook/receitas`
+   - ADMIN → **Ir ao admin** → `/admin/usuarios`
+   - Autenticado sem painel → **Entrar como cozinheiro** → `/login`
+   - Anônimo → **Entrar** → `/login`
+
+### 1.2 Navegação por categoria e busca
+
+1. Em páginas com navbar completa, carrega categorias (`GET /categories` ou demo).
+2. Se a lista vier vazia, usa categorias comuns de fallback (ex.: Bolos, Carnes, Doces).
+3. Chip **Todas** → `/receitas`.
+4. Chip de categoria → `/categorias/{nome}`.
+5. `SearchBar`: vazio → `/receitas`; com texto → `/receitas?q=…`.
+
+### 1.3 Listagem / resultados
+
+1. Carrega receitas.
+2. Filtra no cliente:
+   - por `categoryName` (rota de categoria), ou
+   - por `q` em nome, categoria ou autor.
+3. Estados: carregando / erro / vazio / grade de cards.
+4. Card com `id` nulo não navega; card válido → `/receitas/:id`.
+
+### 1.4 Detalhe da receita
+
+1. Valida `:id` numérico.
+2. Carrega receita; carrega reviews (falha de reviews → trata como lista vazia).
+3. Exibe mídia (se houver), autor, data, ingredientes, porções, descrição, modo de preparo, duração.
+4. Mostra média das reviews filtradas por `recipeId` (estrelas); **não** lista comentários individuais.
+5. **Baixar PDF** aparece apenas fora do modo demo e com `id` válido → `{apiBase}/recipes/{id}/download`.
+6. Voltar → `/receitas`.
+
+---
+
+## 2. Autenticação
+
+### 2.1 Login
+
+1. Usuário abre `/login`.
+2. Se já autenticado → redirect por papel ([mapa de rotas](02-mapa-de-rotas.md)).
+3. Informa usuário e senha (ambos obrigatórios no HTML).
+4. Submit: `username` com trim; chama login.
+5. Sucesso: grava token; navega para home do papel.
+6. Falha 401/403 → “Usuário ou senha inválidos.”
+7. Outra falha → “Não foi possível entrar. Tente novamente.”
+8. Durante submit: botão desabilitado (“Entrando…”).
+9. Link **Voltar ao início** → `/`.
+
+### 2.2 Logout
+
+1. Ação **Sair** (navbar ou sidebar): remove token e redireciona (`/` ou `/login`, conforme o ponto de saída).
+2. Qualquer `apiRequest` com 401/403: limpa token automaticamente.
+
+### 2.3 Troca de contexto (admin → cook)
+
+Na navbar pública, admin autenticado pode usar atalho que faz logout e envia a `/login` para entrar como cozinheiro (credenciais distintas).
+
+---
+
+## 3. Admin — usuários
+
+### 3.1 Listagem
+
+1. `/admin/usuarios` lista usuários.
+2. Ações: **Novo usuário**, **Perfil**, **Editar**, **Desativar** (somente ativos com `id`).
+3. Usuário desativado: badge “Desativado”; sem editar/desativar.
+
+### 3.2 Desativar
+
+1. Usuário confirma no diálogo (“Desativar usuário” / tom danger).
+2. Cancelar → nenhuma chamada.
+3. Confirmar → `PUT` terminate → atualiza lista → notificação de sucesso/erro.
+
+### 3.3 Cadastro
+
+1. `/admin/usuarios/novo` → `UserForm`.
+2. Sucesso: se a resposta trouxer `id` (demo), vai ao perfil; senão, volta à listagem.
+3. Referência de campos/validações: [RN-UI usuários](04-regras-de-negocio-ui.md#rn-ui-usuários).
+
+### 3.4 Perfil e edição
+
+1. Perfil (`/admin/usuarios/:id`): leitura; atalhos Editar / Desativar se ativo.
+2. Edição: bloqueada se `terminatedAt` preenchido.
+3. Form pré-preenchido; submit atualiza e notifica.
+
+---
+
+## 4. Admin — categorias, papéis e metas
+
+Padrão comum:
+
+1. **Listagem** com Editar e Excluir.
+2. **Excluir** → confirmação danger → chamada DELETE → refresh + notify.
+3. **Novo / Editar** → formulário → sucesso → volta à listagem + notify.
+
+Rotas: ver [mapa](02-mapa-de-rotas.md). Validações: [regras UI](04-regras-de-negocio-ui.md).
+
+---
+
+## 5. Cook — receitas
+
+### 5.1 Listagem
+
+1. `/cook/receitas` lista receitas do cozinheiro autenticado (filtro pelo `username` da sessão).
+2. Ações: **Nova receita**, **Editar**.
+
+### 5.2 Cadastro
+
+1. `/cook/receitas/nova` → `RecipeForm`.
+2. Usuário monta ingredientes no composer (Adicionar à lista / Enter).
+3. Opcional: **Prévia** abre modal de leitura.
+4. Submit válido → cria receita → `/cook/receitas`.
+
+### 5.3 Edição
+
+1. `/cook/receitas/:id/editar` carrega a receita.
+2. Se `userName` da receita ≠ username da sessão → mensagem de não pertencimento; não segue como edição válida.
+3. Form pré-preenchido (incluindo ingredientes e tempo a partir de `durationMinutes`).
+4. Submit → atualiza → `/cook/receitas`.
+
+---
+
+## 6. Padrões transversais de fluxo
+
+| Padrão | Comportamento |
+|--------|----------------|
+| Loading de lista | Mensagem de carregamento até a promise resolver |
+| Lista vazia | Mensagem específica (“Nenhuma…” / equivalente) |
+| Erro de carga | Mensagem + notify de erro quando aplicável |
+| Submit | Botão desabilitado; erros de validação no form + toast warning |
+| Confirmação destrutiva | Modal bloqueante; Escape/Cancel = aborta |
