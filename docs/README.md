@@ -15,6 +15,15 @@ Consultas sobre **comportamento de backend, contratos de API, ownership, ciclo d
 
 Este frontend **não duplica** as RNs da API. Quando a UI depende de uma regra de domínio, cita o documento da API como referência.
 
+### Como a API referencia este frontend
+
+Caminho relativo a partir de `api-recipes-collection/docs/`:
+
+`../../frontend-recipes-collection/docs/`
+
+Funcionalidade de apresentação do COOK + referências:  
+[`06-perfil-cook-contexto.md`](06-perfil-cook-contexto.md) — ID **`FN-UI-COOK-PROFILE`**.
+
 ## Índice
 
 | Documento | Conteúdo |
@@ -24,6 +33,7 @@ Este frontend **não duplica** as RNs da API. Quando a UI depende de uma regra d
 | [Fluxos de UI](03-fluxos-de-ui.md) | Jornadas passo a passo (público, auth, admin, cook) |
 | [Regras de negócio da UI](04-regras-de-negocio-ui.md) | Validações, máscaras, confirmações, notificações |
 | [Módulos e pendências](05-modulos-e-pendencias.md) | O que está na UI vs. próximo corte |
+| [Perfil COOK / contexto de referências](06-perfil-cook-contexto.md) | `FN-UI-COOK-PROFILE` — hub de perfil e leitura embutida |
 
 ## Convenções
 

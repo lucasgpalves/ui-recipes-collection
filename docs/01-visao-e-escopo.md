@@ -38,12 +38,19 @@ Autorização HTTP e matriz de endpoints: ver API — [Papéis e permissões](..
 
 ### Admin
 
-- Usuários: listar, criar, perfil, editar, desativar
-- Categorias, papéis e metas: CRUD com confirmação de exclusão
+- Usuários: listar, criar, perfil, editar, desativar; tela de credenciais
+- Categorias, papéis, metas e restaurantes: CRUD com confirmação de exclusão
+- Referências de emprego no **perfil COOK** ([FN-UI-COOK-PROFILE](06-perfil-cook-contexto.md)); restaurantes como catálogo auxiliar
 
 ### Cook
 
 - Receitas: listar (próprias), criar, editar (formulário com ingredientes, medidas e prévia)
+
+## Escopo especificado, implementação parcial
+
+| Funcionalidade | Doc | Estado UI |
+|----------------|-----|-----------|
+| Perfil COOK + referências no contexto do usuário | [06-perfil-cook-contexto.md](06-perfil-cook-contexto.md) | Implementado na UI; embed de `references` no DTO de usuário ainda evolutivo na API |
 
 ## Fora do escopo atual da UI
 
@@ -52,7 +59,6 @@ Itens existentes ou planejados na API, **sem tela** neste frontend:
 - Painel **EDITOR** (livros, aprovação/merge de ingredientes)
 - Painel **TASTER** (criação de reviews)
 - Fetch de credenciais (`POST /auth/register`) — tela já desenhada no perfil
-- Restaurantes e referências de emprego
 - Progresso de metas (`GET /goals/{id}/progress`)
 - Publicação de receita / toggle `isPublished` pela UI
 - Upload de imagem de receita

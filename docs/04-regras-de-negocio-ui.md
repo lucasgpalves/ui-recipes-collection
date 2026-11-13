@@ -76,6 +76,32 @@ Regras de domínio (unicidade, ownership na API, publicação, progresso etc.): 
 
 ---
 
+## RN-UI-RST — Restaurantes
+
+| ID | Regra | Critério de aceite |
+|----|--------|-------------------|
+| RN-UI-RST-01 | Nome, cidade, endereço e tipo obrigatórios | Trim; vazios bloqueiam submit |
+| RN-UI-RST-02 | Categoria obrigatória | `categoryId` deve existir na lista carregada |
+| RN-UI-RST-03 | CNPJ opcional | Trim ou `null` |
+| RN-UI-RST-04 | Exclusão confirma | Diálogo danger |
+
+## RN-UI-JOB — Referências de emprego
+
+| ID | Regra | Critério de aceite |
+|----|--------|-------------------|
+| RN-UI-JOB-01 | Só COOK ativo | No atalho global, select limitado a `COOK` sem `terminatedAt`; no perfil, `userId` implícito |
+| RN-UI-JOB-02 | Restaurante cadastrado | Nome escolhido na lista de restaurantes |
+| RN-UI-JOB-03 | `startsAt` obrigatório | Input date válido |
+| RN-UI-JOB-04 | `endsAt` opcional | Vazio = aberto; se preenchido, `endsAt >= startsAt` |
+| RN-UI-JOB-05 | Contato obrigatório | Regex mínima: dígitos e `+()- ` |
+| RN-UI-JOB-06 | Exclusão confirma | Diálogo danger |
+| RN-UI-JOB-07 | Hub no perfil COOK | Seção Experiência só se `roleName === 'COOK'`; CRUD sob `/admin/usuarios/:id/referencias/*` |
+| RN-UI-JOB-08 | Restaurante como apoio | Atalho de cadastro no fluxo com retorno e restaurante pré-selecionado |
+
+**Referência API:** `docs/versao-2/RN-referencia-emprego.md`.
+
+---
+
 ## RN-UI-REC — Receitas (formulário cook)
 
 | ID | Regra | Critério de aceite |

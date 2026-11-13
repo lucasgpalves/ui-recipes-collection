@@ -75,8 +75,9 @@ Na navbar pública, admin autenticado pode usar atalho que faz logout e envia a 
 ### 3.1 Listagem
 
 1. `/admin/usuarios` lista usuários.
-2. Ações: **Novo usuário**, **Perfil**, **Editar**, **Desativar** (somente ativos com `id`).
-3. Usuário desativado: badge “Desativado”; sem editar/desativar.
+2. Filtro opcional por papel **COOK** (atalho para a jornada de experiência).
+3. Ações: **Novo usuário**, **Perfil**, **Editar**, **Desativar** (somente ativos com `id`).
+4. Usuário desativado: badge “Desativado”; sem editar/desativar.
 
 ### 3.2 Desativar
 
@@ -93,8 +94,9 @@ Na navbar pública, admin autenticado pode usar atalho que faz logout e envia a 
 ### 3.4 Perfil e edição
 
 1. Perfil (`/admin/usuarios/:id`): leitura; atalhos **Criar acesso** / Editar / Desativar se ativo.
-2. Edição: bloqueada se `terminatedAt` preenchido.
-3. Form pré-preenchido; submit atualiza e notifica.
+2. Se `roleName === 'COOK'`: seção **Experiência profissional** com listagem, adicionar, editar e remover referências ([FN-UI-COOK-PROFILE](06-perfil-cook-contexto.md)).
+3. Edição: bloqueada se `terminatedAt` preenchido.
+4. Form pré-preenchido; submit atualiza e notifica.
 
 ### 3.5 Credenciais de acesso (desenho)
 
@@ -115,6 +117,26 @@ Padrão comum:
 3. **Novo / Editar** → formulário → sucesso → volta à listagem + notify.
 
 Rotas: ver [mapa](02-mapa-de-rotas.md). Validações: [regras UI](04-regras-de-negocio-ui.md).
+
+---
+
+## 4.1 Admin — restaurantes
+
+1. `/admin/restaurantes` lista nome, cidade, tipo e categoria.
+2. Cadastro/edição: nome, cidade, endereço, tipo, CNPJ (opcional), categoria (`categoryId`).
+3. Exclusão com confirmação; no demo, bloqueia se houver referência de emprego ligada.
+
+## 4.2 Admin — referências de emprego (`FN-UI-COOK-PROFILE`)
+
+**Jornada principal:** perfil do COOK.
+
+1. Em `/admin/usuarios/:id` (COOK), seção Experiência lista restaurante (+ cidade), período e contato.
+2. **Adicionar** → `/admin/usuarios/:id/referencias/nova` com `userId` implícito (não selecionável).
+3. **Editar** → `/admin/usuarios/:id/referencias/:referenceId/editar`.
+4. No formulário, atalho **Cadastrar restaurante** (`returnTo` + `restaurantName` ao voltar).
+5. `startsAt` obrigatório; `endsAt` opcional; contato com dígitos/`+()- `; demo rejeita sobreposição (409).
+
+Rotas `/admin/referencias*` permanecem como atalho global (fora da sidebar).
 
 ---
 

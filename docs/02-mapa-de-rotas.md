@@ -12,9 +12,11 @@
 | `/admin` | `RequireAdmin` | Redirect → `usuarios` |
 | `/admin/usuarios` | Admin | Listagem de usuários |
 | `/admin/usuarios/novo` | Admin | Cadastro de usuário |
-| `/admin/usuarios/:id` | Admin | Perfil |
+| `/admin/usuarios/:id` | Admin | Perfil (hub; COOK inclui Experiência) |
 | `/admin/usuarios/:id/editar` | Admin | Edição |
 | `/admin/usuarios/:id/credenciais` | Admin | Criar acesso (username/senha) |
+| `/admin/usuarios/:id/referencias/nova` | Admin | Nova referência no contexto do COOK |
+| `/admin/usuarios/:id/referencias/:referenceId/editar` | Admin | Editar referência no contexto do COOK |
 | `/admin/categorias` | Admin | Listagem |
 | `/admin/categorias/nova` | Admin | Cadastro |
 | `/admin/categorias/:id/editar` | Admin | Edição |
@@ -24,6 +26,12 @@
 | `/admin/metas` | Admin | Listagem |
 | `/admin/metas/nova` | Admin | Cadastro |
 | `/admin/metas/:id/editar` | Admin | Edição |
+| `/admin/restaurantes` | Admin | Listagem |
+| `/admin/restaurantes/novo` | Admin | Cadastro |
+| `/admin/restaurantes/:id/editar` | Admin | Edição |
+| `/admin/referencias` | Admin | Listagem global (atalho; jornada principal = perfil COOK) |
+| `/admin/referencias/nova` | Admin | Cadastro global (atalho) |
+| `/admin/referencias/:id/editar` | Admin | Edição global (atalho) |
 | `/cook` | `RequireCook` | Redirect → `receitas` |
 | `/cook/receitas` | Cook | Minhas receitas |
 | `/cook/receitas/nova` | Cook | Nova receita |
@@ -57,7 +65,7 @@
 | Layout | Conteúdo típico |
 |--------|-----------------|
 | `PublicLayout` | Navbar (marca, chips de categoria, login/sair), área principal |
-| `AdminLayout` | Sidebar (usuários, categorias, papéis, metas), “Ver site”, sair |
+| `AdminLayout` | Sidebar (usuários, categorias, papéis, metas, restaurantes), “Ver site”, sair — referências via perfil COOK |
 | `CookLayout` | Sidebar (receitas: listagem / cadastro), “Ver site”, sair |
 
 ## Sessão

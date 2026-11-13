@@ -14,8 +14,8 @@ Estado da UI em relação aos requisitos de tela. Capacidade da API corresponden
 | Admin — categorias | Feito | CRUD |
 | Admin — papéis | Feito | CRUD; depende de `id` na resposta para editar/excluir |
 | Admin — metas | Feito (parcial) | CRUD; sem tela de progresso |
-| Admin — restaurantes | Não iniciado | Domínio na API |
-| Admin — referências de emprego | Não iniciado | Depende de usuário COOK na API |
+| Admin — restaurantes | Feito (demo) | CRUD; `id` no demo (API pode omitir) |
+| Admin — referências de emprego | Feito (demo) | Hub no perfil COOK ([FN-UI-COOK-PROFILE](06-perfil-cook-contexto.md)); rotas globais como atalho |
 | Cook — receitas (list / create / edit) | Feito | Prévia + ingredientes + medidas |
 | Cook — CRUD de medidas/ingredientes avulso | Não iniciado | Medidas embutidas no form de receita |
 | Editor — livros / ingredientes | Não iniciado | Sem rotas |
@@ -40,11 +40,17 @@ Estado da UI em relação aos requisitos de tela. Capacidade da API corresponden
 2. CRUD explícito de ingredientes/medidas fora do formulário de receita (se produto exigir).
 3. Ação de publicação / indicador `isPublished` editável (se regra de negócio liberar na API).
 
+### P2.5 — Hub perfil COOK (`FN-UI-COOK-PROFILE`) — feito na UI
+
+1. ~~Seção **Experiência profissional** no perfil do COOK~~
+2. ~~Criar/editar/remover referência a partir do perfil (`userId` implícito); restaurante como apoio~~
+3. Leitura atual: `GET /references?userId=` (ou filtro local no demo). Embed em `UserResponse` ainda evolutivo na API — ver [06-perfil-cook-contexto.md](06-perfil-cook-contexto.md).
+4. ~~Sidebar sem item raiz “Referências”~~
+
 ### P3 — Novos painéis
 
 1. **EDITOR** — shell + livros + fluxo de ingredientes (approve / aliases / merge).
 2. **TASTER** — criar/editar review na receita.
-3. Admin: restaurantes e job references.
 
 ### P4 — Metas
 
