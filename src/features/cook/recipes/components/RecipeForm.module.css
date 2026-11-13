@@ -1,0 +1,192 @@
+.ingredientsBlock {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem 1rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  background: color-mix(in srgb, var(--brand) 4%, var(--surface));
+}
+
+.ingredientsHeader h2 {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.25rem;
+}
+
+.ingredientsHeader p {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 0.9rem;
+  max-width: 48ch;
+}
+
+.composer {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(8rem, 11rem) minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.composerLabel {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+.composerInput,
+.composerSelect {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  padding: 0.65rem 0.75rem;
+  font: inherit;
+  font-size: 0.95rem;
+}
+
+.composerInput:focus,
+.composerSelect:focus {
+  outline: 2px solid color-mix(in srgb, var(--brand) 45%, transparent);
+  outline-offset: 1px;
+  border-color: color-mix(in srgb, var(--brand) 55%, var(--border));
+}
+
+.composerPreview {
+  grid-column: 1 / -1;
+  margin: 0;
+  min-height: 1.25rem;
+  font-size: 0.9rem;
+  color: var(--ink-muted);
+}
+
+.composerPreview strong {
+  color: var(--ink);
+  font-weight: 650;
+}
+
+.addButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 10px;
+  padding: 0.7rem 1.05rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: var(--brand);
+  color: #0a120e;
+  white-space: nowrap;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.addButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: var(--brand-strong);
+  color: #fff;
+}
+
+.addButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.emptyList {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  border: 1px dashed var(--border);
+  color: var(--ink-muted);
+  font-size: 0.9rem;
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+}
+
+.listItem {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.7rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  animation: ingredientIn 0.28s ease;
+}
+
+.listIndex {
+  width: 1.6rem;
+  height: 1.6rem;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: color-mix(in srgb, var(--brand) 18%, var(--surface));
+  color: var(--ink);
+}
+
+.listText {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.removeButton {
+  border: 0;
+  background: transparent;
+  color: var(--danger);
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  padding: 0.35rem 0.45rem;
+  border-radius: 8px;
+}
+
+.removeButton:hover {
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+}
+
+.composerError {
+  margin: 0;
+  color: var(--danger);
+  font-size: 0.85rem;
+}
+
+@keyframes ingredientIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 720px) {
+  .composer {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .composerLabel:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+
+  .addButton {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}
