@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ApiError } from '../../../../shared/api/client'
 import { formatCpf } from '../../../../shared/lib/cpf'
@@ -8,12 +8,22 @@ import { useNotify } from '../../../../shared/ui/notify'
 import { fetchUsers, terminateUser } from '../api/users'
 import styles from '../../shared/pages.module.css'
 
+type RoleFilter = 'ALL' | 'COOK'
+
 export function AdminUsersListPage() {
   const notify = useNotify()
   const { confirm } = useConfirm()
   const [users, setUsers] = useState<UserResponse[]>([])
+  const [roleFilter, setRoleFilter] = useState<RoleFilter>('ALL')
   const [loading, setLoading] = useState(true)
   const [terminatingId, setTerminatingId] = useState<number | null>(null)
+
+  const visibleUsers = useMemo(() => {
+    if (roleFilter === 'COOK') {
+      return users.filter((user) => user.roleName === 'COOK')
+    }
+    return users
+  }, [users, roleFilter])
 
   const loadUsers = useCallback(async () => {
     setLoading(true)
@@ -61,9 +71,24 @@ export function AdminUsersListPage() {
       <header className={styles.intro}>
         <div>
           <h1>Usuários</h1>
-          <p>Listagem de perfis cadastrados. Abra um perfil para visualizar ou editar.</p>
+          <p>
+            Listagem de perfis cadastrados. No perfil de um COOK, gerencie a experiência
+            profissional.
+          </p>
         </div>
         <div className={styles.actions}>
+          <label className={styles.label}>
+            Papel
+            <select
+              className={styles.input}
+              value={roleFilter}
+              onChange={(event) => setRoleFilter(event.target.value as RoleFilter)}
+              aria-label="Filtrar por papel"
+            >
+              <option value="ALL">Todos</option>
+              <option value="COOK">COOK</option>
+            </select>
+          </label>
           <Link to="/admin/usuarios/novo" className={styles.primaryButton}>
             Novo usuário
           </Link>
@@ -74,8 +99,11 @@ export function AdminUsersListPage() {
       {!loading && users.length === 0 ? (
         <p className={styles.muted}>Nenhum usuário cadastrado ainda.</p>
       ) : null}
+      {!loading && users.length > 0 && visibleUsers.length === 0 ? (
+        <p className={styles.muted}>Nenhum usuário COOK encontrado com o filtro atual.</p>
+      ) : null}
 
-      {users.length > 0 ? (
+      {visibleUsers.length > 0 ? (
         <div className={styles.tableWrap}>
           <table className={styles.table}>
             <thead>
@@ -88,7 +116,7 @@ export function AdminUsersListPage() {
               </tr>
             </thead>
             <tbody>
-              {users.map((user) => {
+              {visibleUsers.map((user) => {
                 const id = user.id
                 const terminated = Boolean(user.terminatedAt)
                 return (

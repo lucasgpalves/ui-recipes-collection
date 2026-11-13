@@ -10,6 +10,16 @@ export {
   AdminGoalsListPage,
 } from './goals'
 export {
+  AdminReferenceCreatePage,
+  AdminReferenceEditPage,
+  AdminReferencesListPage,
+} from './references'
+export {
+  AdminRestaurantCreatePage,
+  AdminRestaurantEditPage,
+  AdminRestaurantsListPage,
+} from './restaurants'
+export {
   AdminRoleCreatePage,
   AdminRoleEditPage,
   AdminRolesListPage,
@@ -20,5 +30,7 @@ export {
   AdminUserCredentialsPage,
   AdminUserEditPage,
   AdminUserProfilePage,
+  AdminUserReferenceCreatePage,
+  AdminUserReferenceEditPage,
   AdminUsersListPage,
 } from './users'

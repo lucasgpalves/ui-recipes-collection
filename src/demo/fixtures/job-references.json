@@ -1,0 +1,15 @@
+[
+  {
+    "id": 1,
+    "restaurantName": "Restaurante Demo",
+    "startsAt": "01/01/2023",
+    "endsAt": "31/12/2024",
+    "contactNumber": "61999999999",
+    "userId": 1,
+    "user": {
+      "name": "Cozinheiro Demo",
+      "roleName": "COOK",
+      "fantasyName": null
+    }
+  }
+]

@@ -6,6 +6,12 @@ import {
   AdminGoalCreatePage,
   AdminGoalEditPage,
   AdminGoalsListPage,
+  AdminReferenceCreatePage,
+  AdminReferenceEditPage,
+  AdminReferencesListPage,
+  AdminRestaurantCreatePage,
+  AdminRestaurantEditPage,
+  AdminRestaurantsListPage,
   AdminRoleCreatePage,
   AdminRoleEditPage,
   AdminRolesListPage,
@@ -13,6 +19,8 @@ import {
   AdminUserCredentialsPage,
   AdminUserEditPage,
   AdminUserProfilePage,
+  AdminUserReferenceCreatePage,
+  AdminUserReferenceEditPage,
   AdminUsersListPage,
   RequireAdmin,
 } from '../features/admin'
@@ -47,6 +55,14 @@ export default function App() {
                   <Route path="usuarios/:id" element={<AdminUserProfilePage />} />
                   <Route path="usuarios/:id/editar" element={<AdminUserEditPage />} />
                   <Route path="usuarios/:id/credenciais" element={<AdminUserCredentialsPage />} />
+                  <Route
+                    path="usuarios/:id/referencias/nova"
+                    element={<AdminUserReferenceCreatePage />}
+                  />
+                  <Route
+                    path="usuarios/:id/referencias/:referenceId/editar"
+                    element={<AdminUserReferenceEditPage />}
+                  />
                   <Route path="categorias" element={<AdminCategoriesListPage />} />
                   <Route path="categorias/nova" element={<AdminCategoryCreatePage />} />
                   <Route path="categorias/:id/editar" element={<AdminCategoryEditPage />} />
@@ -56,6 +72,12 @@ export default function App() {
                   <Route path="metas" element={<AdminGoalsListPage />} />
                   <Route path="metas/nova" element={<AdminGoalCreatePage />} />
                   <Route path="metas/:id/editar" element={<AdminGoalEditPage />} />
+                  <Route path="restaurantes" element={<AdminRestaurantsListPage />} />
+                  <Route path="restaurantes/novo" element={<AdminRestaurantCreatePage />} />
+                  <Route path="restaurantes/:id/editar" element={<AdminRestaurantEditPage />} />
+                  <Route path="referencias" element={<AdminReferencesListPage />} />
+                  <Route path="referencias/nova" element={<AdminReferenceCreatePage />} />
+                  <Route path="referencias/:id/editar" element={<AdminReferenceEditPage />} />
                 </Route>
               </Route>
               <Route element={<RequireCook />}>

@@ -11,7 +11,7 @@ export function AdminLayout() {
   const isUsersSection = pathname.startsWith('/admin/usuarios')
   const isUsersListOrProfile =
     pathname === '/admin/usuarios' ||
-    /^\/admin\/usuarios\/\d+(\/(editar|credenciais))?$/.test(pathname)
+    /^\/admin\/usuarios\/\d+(\/(editar|credenciais|referencias(\/.*)?)?)?$/.test(pathname)
   const isUsersCreate = pathname === '/admin/usuarios/novo'
 
   const isCategoriesSection = pathname.startsWith('/admin/categorias')
@@ -28,6 +28,11 @@ export function AdminLayout() {
   const isGoalsList = pathname === '/admin/metas'
   const isGoalsCreate = pathname === '/admin/metas/nova'
   const isGoalsEdit = /^\/admin\/metas\/\d+\/editar$/.test(pathname)
+
+  const isRestaurantsSection = pathname.startsWith('/admin/restaurantes')
+  const isRestaurantsList = pathname === '/admin/restaurantes'
+  const isRestaurantsCreate = pathname === '/admin/restaurantes/novo'
+  const isRestaurantsEdit = /^\/admin\/restaurantes\/\d+\/editar$/.test(pathname)
 
   return (
     <div className={styles.shell}>
@@ -112,6 +117,27 @@ export function AdminLayout() {
           <NavLink
             to="/admin/metas/nova"
             className={() => (isGoalsCreate ? styles.navActive : styles.navLink)}
+          >
+            Cadastro
+          </NavLink>
+        </nav>
+
+        <p className={styles.sectionLabel}>Restaurantes</p>
+        <nav className={styles.nav} aria-label="Restaurantes">
+          <NavLink
+            to="/admin/restaurantes"
+            end
+            className={() =>
+              isRestaurantsSection && (isRestaurantsList || isRestaurantsEdit)
+                ? styles.navActive
+                : styles.navLink
+            }
+          >
+            Listagem
+          </NavLink>
+          <NavLink
+            to="/admin/restaurantes/novo"
+            className={() => (isRestaurantsCreate ? styles.navActive : styles.navLink)}
           >
             Cadastro
           </NavLink>

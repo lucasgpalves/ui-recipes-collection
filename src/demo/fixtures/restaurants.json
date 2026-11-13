@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "name": "Restaurante Demo",
+    "city": "Brasília",
+    "address": "SQN 100, Bloco A",
+    "restaurantType": "Contemporâneo",
+    "cnpj": "00000000000191",
+    "categoryName": "Sobremesa",
+    "categoryId": 5
+  },
+  {
+    "id": 2,
+    "name": "Casa da Massa",
+    "city": "São Paulo",
+    "address": "Rua Augusta, 500",
+    "restaurantType": "Italiana",
+    "cnpj": "11222333000181",
+    "categoryName": "Massas",
+    "categoryId": 4
+  }
+]

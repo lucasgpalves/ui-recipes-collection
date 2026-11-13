@@ -147,3 +147,58 @@ export type RegisterRequest = {
   password: string
   userId: number
 }
+
+/** Espelha RestaurantRequestDTO (JSON camelCase). */
+export type RestaurantRequest = {
+  name: string
+  city: string
+  address: string
+  restaurantType: string
+  cnpj?: string | null
+  categoryId: number
+}
+
+/**
+ * Espelha RestaurantResponseDTO.
+ * `id` e `categoryId` existem no demo para edição; a API real ainda não devolve `id`.
+ */
+export type Restaurant = {
+  id?: number | null
+  name: string | null
+  city: string | null
+  address: string | null
+  restaurantType: string | null
+  cnpj: string | null
+  categoryName: string | null
+  categoryId?: number | null
+}
+
+/** Espelha UserSummaryResponseDTO. */
+export type UserSummary = {
+  name: string | null
+  roleName: string | null
+  fantasyName: string | null
+}
+
+/** Espelha JobReferenceRequestDTO (JSON camelCase). Datas em ISO `YYYY-MM-DD`. */
+export type JobReferenceRequest = {
+  restaurantName: string
+  startsAt: string
+  endsAt?: string | null
+  contactNumber: string
+  userId: number
+}
+
+/**
+ * Espelha JobReferenceResponseDTO.
+ * Datas na API vêm como `dd/MM/yyyy`. `id`/`userId` só no demo para edição.
+ */
+export type JobReference = {
+  id?: number | null
+  restaurantName: string | null
+  startsAt: string | null
+  endsAt: string | null
+  contactNumber: string | null
+  user: UserSummary | null
+  userId?: number | null
+}

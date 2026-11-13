@@ -4,9 +4,13 @@ import type {
   CategoryRequest,
   Goal,
   GoalRequest,
+  JobReference,
+  JobReferenceRequest,
   Recipe,
   RecipeRequest,
   RecipeSummary,
+  Restaurant,
+  RestaurantRequest,
   Review,
   Role,
   RoleRequest,
@@ -15,6 +19,7 @@ import type {
   UserResponse,
 } from '../shared/api/types'
 import { ApiError } from '../shared/api/client'
+import { formatBrDate, isValidIsoDate } from '../shared/lib/dates'
 
 const DEMO_LATENCY_MS = 420
 const DEMO_ADMIN_USERNAME = 'admin'
@@ -24,8 +29,20 @@ const DEMO_COOK_PASSWORD = 'cook'
 /** userId fixo do cook demo para RecipeRequestDTO. */
 export const DEMO_COOK_USER_ID = 1
 
-let nextUserId = 1
-const usersStore: UserResponse[] = []
+let nextUserId = 2
+/** Seed alinhado ao job-references.json (userId 1 = COOK). */
+const usersStore: UserResponse[] = [
+  {
+    id: 1,
+    cpf: '52998224725',
+    name: 'Cozinheiro Demo',
+    roleName: 'COOK',
+    salary: 4500,
+    ingressedAt: '01/01/2023 09:00:00',
+    terminatedAt: null,
+    fantasyName: null,
+  },
+]
 
 let categoriesStore: Category[] | null = null
 let nextCategoryId = 1
@@ -38,6 +55,12 @@ let nextGoalId = 1
 
 let recipesDetailStore: Recipe[] | null = null
 let nextRecipeId = 1
+
+let restaurantsStore: Restaurant[] | null = null
+let nextRestaurantId = 1
+
+let jobReferencesStore: JobReference[] | null = null
+let nextJobReferenceId = 1
 
 async function ensureCategoriesStore(): Promise<Category[]> {
   if (categoriesStore) return categoriesStore
@@ -474,4 +497,301 @@ export async function demoTerminateUser(id: number): Promise<void> {
     terminatedAt: formatDemoDateTime(new Date()),
   }
   await withLatency(undefined, 320)
+}
+
+async function ensureRestaurantsStore(): Promise<Restaurant[]> {
+  if (restaurantsStore) return restaurantsStore
+  const seed = await demoRequest<Restaurant[]>(
+    new URL('./fixtures/restaurants.json', import.meta.url).href,
+    0,
+  )
+  restaurantsStore = seed.map((item) => structuredClone(item))
+  nextRestaurantId =
+    Math.max(0, ...restaurantsStore.map((item) => (typeof item.id === 'number' ? item.id : 0))) + 1
+  return restaurantsStore
+}
+
+async function ensureJobReferencesStore(): Promise<JobReference[]> {
+  if (jobReferencesStore) return jobReferencesStore
+  const seed = await demoRequest<JobReference[]>(
+    new URL('./fixtures/job-references.json', import.meta.url).href,
+    0,
+  )
+  jobReferencesStore = seed.map((item) => structuredClone(item))
+  nextJobReferenceId =
+    Math.max(
+      0,
+      ...jobReferencesStore.map((item) => (typeof item.id === 'number' ? item.id : 0)),
+    ) + 1
+  return jobReferencesStore
+}
+
+async function resolveCategoryForRestaurant(categoryId: number): Promise<Category> {
+  const categories = await ensureCategoriesStore()
+  const category = categories.find((item) => item.id === categoryId)
+  if (!category) {
+    throw new ApiError(400, `Demo category ${categoryId} not found`)
+  }
+  return category
+}
+
+export async function demoFetchRestaurants(): Promise<Restaurant[]> {
+  const store = await ensureRestaurantsStore()
+  return withLatency(store.map((item) => structuredClone(item)), 260)
+}
+
+export async function demoFetchRestaurantById(id: number): Promise<Restaurant> {
+  const store = await ensureRestaurantsStore()
+  const restaurant = store.find((item) => item.id === id)
+  if (!restaurant) {
+    throw new ApiError(404, `Demo restaurant ${id} not found`)
+  }
+  return withLatency(structuredClone(restaurant), 220)
+}
+
+export async function demoCreateRestaurant(request: RestaurantRequest): Promise<Restaurant> {
+  const store = await ensureRestaurantsStore()
+  const category = await resolveCategoryForRestaurant(request.categoryId)
+  const created: Restaurant = {
+    id: nextRestaurantId++,
+    name: request.name.trim(),
+    city: request.city.trim(),
+    address: request.address.trim(),
+    restaurantType: request.restaurantType.trim(),
+    cnpj: request.cnpj?.trim() ? request.cnpj.trim() : null,
+    categoryName: category.name,
+    categoryId: category.id,
+  }
+  store.push(created)
+  return withLatency(structuredClone(created), 380)
+}
+
+export async function demoUpdateRestaurant(
+  id: number,
+  request: RestaurantRequest,
+): Promise<Restaurant> {
+  const store = await ensureRestaurantsStore()
+  const index = store.findIndex((item) => item.id === id)
+  if (index < 0) {
+    throw new ApiError(404, `Demo restaurant ${id} not found`)
+  }
+  const category = await resolveCategoryForRestaurant(request.categoryId)
+  const updated: Restaurant = {
+    id,
+    name: request.name.trim(),
+    city: request.city.trim(),
+    address: request.address.trim(),
+    restaurantType: request.restaurantType.trim(),
+    cnpj: request.cnpj?.trim() ? request.cnpj.trim() : null,
+    categoryName: category.name,
+    categoryId: category.id,
+  }
+  store[index] = updated
+  return withLatency(structuredClone(updated), 380)
+}
+
+export async function demoDeleteRestaurant(id: number): Promise<void> {
+  const store = await ensureRestaurantsStore()
+  const index = store.findIndex((item) => item.id === id)
+  if (index < 0) {
+    throw new ApiError(404, `Demo restaurant ${id} not found`)
+  }
+  const name = store[index].name
+  const refs = await ensureJobReferencesStore()
+  if (refs.some((item) => item.restaurantName === name)) {
+    throw new ApiError(400, 'Demo restaurant has job references')
+  }
+  store.splice(index, 1)
+  await withLatency(undefined, 280)
+}
+
+function assertCookUser(userId: number): UserResponse {
+  const user = usersStore.find((item) => item.id === userId)
+  if (!user) {
+    throw new ApiError(404, `Demo user ${userId} not found`)
+  }
+  if (user.roleName !== 'COOK') {
+    throw new ApiError(400, 'This user is not a COOK!')
+  }
+  if (user.terminatedAt) {
+    throw new ApiError(400, 'Demo user is terminated')
+  }
+  return user
+}
+
+function assertRestaurantName(restaurantName: string): Restaurant {
+  if (!restaurantsStore) {
+    throw new ApiError(400, 'Demo restaurants not loaded')
+  }
+  const restaurant = restaurantsStore.find(
+    (item) => (item.name ?? '').toLowerCase() === restaurantName.trim().toLowerCase(),
+  )
+  if (!restaurant) {
+    throw new ApiError(404, `Demo restaurant "${restaurantName}" not found`)
+  }
+  return restaurant
+}
+
+function periodsOverlap(
+  startA: string,
+  endA: string | null,
+  startB: string,
+  endB: string | null,
+): boolean {
+  const a0 = startA
+  const a1 = endA ?? '9999-12-31'
+  const b0 = startB
+  const b1 = endB ?? '9999-12-31'
+  return a0 <= b1 && b0 <= a1
+}
+
+function toIsoFromStored(value: string | null): string | null {
+  if (!value) return null
+  if (isValidIsoDate(value)) return value
+  const br = value.match(/^(\d{2})\/(\d{2})\/(\d{4})$/)
+  if (br) return `${br[3]}-${br[2]}-${br[1]}`
+  return null
+}
+
+export async function demoFetchJobReferences(): Promise<JobReference[]> {
+  await ensureRestaurantsStore()
+  const store = await ensureJobReferencesStore()
+  return withLatency(store.map((item) => structuredClone(item)), 260)
+}
+
+export async function demoFetchJobReferenceById(id: number): Promise<JobReference> {
+  await ensureRestaurantsStore()
+  const store = await ensureJobReferencesStore()
+  const item = store.find((ref) => ref.id === id)
+  if (!item) {
+    throw new ApiError(404, `Demo job reference ${id} not found`)
+  }
+  return withLatency(structuredClone(item), 220)
+}
+
+export async function demoCreateJobReference(
+  request: JobReferenceRequest,
+): Promise<JobReference> {
+  await ensureRestaurantsStore()
+  const store = await ensureJobReferencesStore()
+  const user = assertCookUser(request.userId)
+  const restaurant = assertRestaurantName(request.restaurantName)
+
+  if (!isValidIsoDate(request.startsAt)) {
+    throw new ApiError(400, 'Invalid startsAt')
+  }
+  const endsAt = request.endsAt?.trim() ? request.endsAt.trim() : null
+  if (endsAt && !isValidIsoDate(endsAt)) {
+    throw new ApiError(400, 'Invalid endsAt')
+  }
+  if (endsAt && endsAt < request.startsAt) {
+    throw new ApiError(400, 'endsAt must be >= startsAt')
+  }
+
+  const contact = request.contactNumber.trim()
+  if (!contact || !/^[\d+\-() ]+$/.test(contact)) {
+    throw new ApiError(400, 'Invalid contactNumber')
+  }
+
+  const overlap = store.some((item) => {
+    if (item.userId !== request.userId) return false
+    if ((item.restaurantName ?? '').toLowerCase() !== (restaurant.name ?? '').toLowerCase()) {
+      return false
+    }
+    const existingStart = toIsoFromStored(item.startsAt)
+    const existingEnd = toIsoFromStored(item.endsAt)
+    if (!existingStart) return false
+    return periodsOverlap(request.startsAt, endsAt, existingStart, existingEnd)
+  })
+  if (overlap) {
+    throw new ApiError(409, 'Overlapping job reference period')
+  }
+
+  const created: JobReference = {
+    id: nextJobReferenceId++,
+    restaurantName: restaurant.name,
+    startsAt: formatBrDate(request.startsAt),
+    endsAt: formatBrDate(endsAt),
+    contactNumber: contact,
+    userId: user.id ?? request.userId,
+    user: {
+      name: user.name,
+      roleName: user.roleName,
+      fantasyName: user.fantasyName,
+    },
+  }
+  store.push(created)
+  return withLatency(structuredClone(created), 380)
+}
+
+export async function demoUpdateJobReference(
+  id: number,
+  request: JobReferenceRequest,
+): Promise<JobReference> {
+  await ensureRestaurantsStore()
+  const store = await ensureJobReferencesStore()
+  const index = store.findIndex((item) => item.id === id)
+  if (index < 0) {
+    throw new ApiError(404, `Demo job reference ${id} not found`)
+  }
+
+  const user = assertCookUser(request.userId)
+  const restaurant = assertRestaurantName(request.restaurantName)
+
+  if (!isValidIsoDate(request.startsAt)) {
+    throw new ApiError(400, 'Invalid startsAt')
+  }
+  const endsAt = request.endsAt?.trim() ? request.endsAt.trim() : null
+  if (endsAt && !isValidIsoDate(endsAt)) {
+    throw new ApiError(400, 'Invalid endsAt')
+  }
+  if (endsAt && endsAt < request.startsAt) {
+    throw new ApiError(400, 'endsAt must be >= startsAt')
+  }
+
+  const contact = request.contactNumber.trim()
+  if (!contact || !/^[\d+\-() ]+$/.test(contact)) {
+    throw new ApiError(400, 'Invalid contactNumber')
+  }
+
+  const overlap = store.some((item, itemIndex) => {
+    if (itemIndex === index) return false
+    if (item.userId !== request.userId) return false
+    if ((item.restaurantName ?? '').toLowerCase() !== (restaurant.name ?? '').toLowerCase()) {
+      return false
+    }
+    const existingStart = toIsoFromStored(item.startsAt)
+    const existingEnd = toIsoFromStored(item.endsAt)
+    if (!existingStart) return false
+    return periodsOverlap(request.startsAt, endsAt, existingStart, existingEnd)
+  })
+  if (overlap) {
+    throw new ApiError(409, 'Overlapping job reference period')
+  }
+
+  const updated: JobReference = {
+    id,
+    restaurantName: restaurant.name,
+    startsAt: formatBrDate(request.startsAt),
+    endsAt: formatBrDate(endsAt),
+    contactNumber: contact,
+    userId: user.id ?? request.userId,
+    user: {
+      name: user.name,
+      roleName: user.roleName,
+      fantasyName: user.fantasyName,
+    },
+  }
+  store[index] = updated
+  return withLatency(structuredClone(updated), 380)
+}
+
+export async function demoDeleteJobReference(id: number): Promise<void> {
+  const store = await ensureJobReferencesStore()
+  const index = store.findIndex((item) => item.id === id)
+  if (index < 0) {
+    throw new ApiError(404, `Demo job reference ${id} not found`)
+  }
+  store.splice(index, 1)
+  await withLatency(undefined, 280)
 }
