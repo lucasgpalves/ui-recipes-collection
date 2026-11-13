@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "userName": "Fulano de Tal",
+    "userName": "cook",
     "name": "Yakisoba caseiro",
     "categoryName": "Japonesa",
     "createdAt": "2001-01-01T12:00:00Z",
@@ -21,7 +21,7 @@
   },
   {
     "id": 2,
-    "userName": "Ana Costa",
+    "userName": "cook",
     "name": "Bolo de cenoura com cobertura",
     "categoryName": "Bolos",
     "createdAt": "2024-03-12T15:30:00Z",

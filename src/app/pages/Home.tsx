@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom'
+import { useAuth } from '../../features/auth'
 import { brand } from '../../shared/brand'
 import styles from './Home.module.css'
 
 export function HomePage() {
+  const { isAuthenticated, isCook, isAdmin } = useAuth()
+
   return (
     <div className={styles.page}>
       <section className={styles.hero} aria-label="Apresentação">
@@ -23,9 +26,23 @@ export function HomePage() {
             <Link to="/receitas" className={styles.ctaPrimary}>
               Explorar receitas
             </Link>
-            <Link to="/login" className={styles.ctaSecondary}>
-              Entrar
-            </Link>
+            {isCook ? (
+              <Link to="/cook/receitas" className={styles.ctaSecondary}>
+                Minhas receitas
+              </Link>
+            ) : isAdmin ? (
+              <Link to="/admin/usuarios" className={styles.ctaSecondary}>
+                Ir ao admin
+              </Link>
+            ) : isAuthenticated ? (
+              <Link to="/login" className={styles.ctaSecondary}>
+                Entrar como cozinheiro
+              </Link>
+            ) : (
+              <Link to="/login" className={styles.ctaSecondary}>
+                Entrar
+              </Link>
+            )}
           </div>
         </div>
       </section>
@@ -34,7 +51,8 @@ export function HomePage() {
         <h2>Como funciona</h2>
         <p>
           Esta é a vitrine pública do acervo: navegue pelas receitas publicadas, filtre por categoria e
-          abra o passo a passo. O login fica reservado para quem gerencia o conteúdo.
+          abra o passo a passo. Para gerenciar suas próprias receitas no modo demo, entre com{' '}
+          <strong>cook / cook</strong>.
         </p>
       </section>
     </div>

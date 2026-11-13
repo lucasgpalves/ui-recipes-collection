@@ -5,6 +5,7 @@ import type {
   Goal,
   GoalRequest,
   Recipe,
+  RecipeRequest,
   RecipeSummary,
   Review,
   Role,
@@ -18,6 +19,10 @@ import { ApiError } from '../shared/api/client'
 const DEMO_LATENCY_MS = 420
 const DEMO_ADMIN_USERNAME = 'admin'
 const DEMO_ADMIN_PASSWORD = 'admin'
+const DEMO_COOK_USERNAME = 'cook'
+const DEMO_COOK_PASSWORD = 'cook'
+/** userId fixo do cook demo para RecipeRequestDTO. */
+export const DEMO_COOK_USER_ID = 1
 
 let nextUserId = 1
 const usersStore: UserResponse[] = []
@@ -30,6 +35,9 @@ let nextRoleId = 1
 
 let goalsStore: Goal[] | null = null
 let nextGoalId = 1
+
+let recipesDetailStore: Recipe[] | null = null
+let nextRecipeId = 1
 
 async function ensureCategoriesStore(): Promise<Category[]> {
   if (categoriesStore) return categoriesStore
@@ -104,19 +112,109 @@ async function demoRequest<T>(fixtureUrl: string, latency = DEMO_LATENCY_MS): Pr
   return data
 }
 
-export function demoFetchRecipes(): Promise<RecipeSummary[]> {
-  return demoRequest(new URL('./fixtures/recipes.json', import.meta.url).href)
+async function ensureRecipesDetailStore(): Promise<Recipe[]> {
+  if (recipesDetailStore) return recipesDetailStore
+  const seed = await demoRequest<Recipe[]>(
+    new URL('./fixtures/recipe-details.json', import.meta.url).href,
+    0,
+  )
+  recipesDetailStore = seed.map((item) => structuredClone(item))
+  nextRecipeId =
+    Math.max(0, ...recipesDetailStore.map((item) => (typeof item.id === 'number' ? item.id : 0))) +
+    1
+  return recipesDetailStore
+}
+
+function toRecipeSummary(recipe: Recipe): RecipeSummary {
+  return {
+    id: recipe.id,
+    userName: recipe.userName,
+    name: recipe.name,
+    categoryName: recipe.categoryName,
+    imageUrl: recipe.imageUrl,
+    description: recipe.description,
+  }
+}
+
+export async function demoFetchRecipes(): Promise<RecipeSummary[]> {
+  const store = await ensureRecipesDetailStore()
+  return withLatency(store.map(toRecipeSummary), DEMO_LATENCY_MS)
 }
 
 export async function demoFetchRecipe(id: number): Promise<Recipe> {
-  const recipes = await demoRequest<Recipe[]>(
-    new URL('./fixtures/recipe-details.json', import.meta.url).href,
-  )
-  const recipe = recipes.find((item) => item.id === id)
+  const store = await ensureRecipesDetailStore()
+  const recipe = store.find((item) => item.id === id)
   if (!recipe) {
     throw new ApiError(404, `Demo recipe ${id} not found`)
   }
-  return structuredClone(recipe)
+  return withLatency(structuredClone(recipe), DEMO_LATENCY_MS)
+}
+
+export async function demoFetchCookRecipes(authorUsername: string): Promise<Recipe[]> {
+  const store = await ensureRecipesDetailStore()
+  const mine = store.filter(
+    (item) => (item.userName ?? '').toLowerCase() === authorUsername.trim().toLowerCase(),
+  )
+  return withLatency(mine.map((item) => structuredClone(item)), 280)
+}
+
+export async function demoCreateRecipe(
+  request: RecipeRequest,
+  authorUsername: string,
+): Promise<Recipe> {
+  const store = await ensureRecipesDetailStore()
+  const created: Recipe = {
+    id: nextRecipeId++,
+    userName: authorUsername.trim() || 'cook',
+    name: request.name.trim(),
+    categoryName: request.categoryName.trim(),
+    createdAt: formatDemoDateTime(new Date()),
+    preparationMethod: request.preparationMethod.trim(),
+    portions: request.portions,
+    ingredients: request.ingredientsRecipe.map((item) => ({
+      amount: item.amount,
+      ingredientName: item.ingredientName.trim(),
+      measurementName: item.measurementName.trim(),
+    })),
+    description: request.description?.trim() ? request.description.trim() : '',
+    isPublished: false,
+    isRated: false,
+    durationMinutes: request.preparationTime,
+  }
+  store.unshift(created)
+  return withLatency(structuredClone(created), 420)
+}
+
+export async function demoUpdateRecipe(
+  id: number,
+  request: RecipeRequest,
+  authorUsername: string,
+): Promise<Recipe> {
+  const store = await ensureRecipesDetailStore()
+  const index = store.findIndex((item) => item.id === id)
+  if (index < 0) {
+    throw new ApiError(404, `Demo recipe ${id} not found`)
+  }
+  const current = store[index]
+  if ((current.userName ?? '').toLowerCase() !== authorUsername.trim().toLowerCase()) {
+    throw new ApiError(403, 'Demo recipe does not belong to this cook')
+  }
+  const updated: Recipe = {
+    ...current,
+    name: request.name.trim(),
+    categoryName: request.categoryName.trim(),
+    preparationMethod: request.preparationMethod.trim(),
+    portions: request.portions,
+    ingredients: request.ingredientsRecipe.map((item) => ({
+      amount: item.amount,
+      ingredientName: item.ingredientName.trim(),
+      measurementName: item.measurementName.trim(),
+    })),
+    description: request.description?.trim() ? request.description.trim() : '',
+    durationMinutes: request.preparationTime,
+  }
+  store[index] = updated
+  return withLatency(structuredClone(updated), 420)
 }
 
 export async function demoFetchCategories(): Promise<Category[]> {
@@ -297,9 +395,15 @@ export async function demoLogin(username: string, password: string): Promise<Tok
     throw new ApiError(401, 'Credenciais inválidas')
   }
 
-  const isAdmin = user === DEMO_ADMIN_USERNAME && pass === DEMO_ADMIN_PASSWORD
+  let role: string | null = null
+  if (user === DEMO_ADMIN_USERNAME && pass === DEMO_ADMIN_PASSWORD) {
+    role = 'ADMIN'
+  } else if (user === DEMO_COOK_USERNAME && pass === DEMO_COOK_PASSWORD) {
+    role = 'COOK'
+  }
+
   return {
-    token: createDemoToken(user, isAdmin ? 'ADMIN' : null),
+    token: createDemoToken(user, role),
   }
 }
 

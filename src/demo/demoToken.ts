@@ -51,3 +51,7 @@ export function parseDemoToken(token: string | null): DemoTokenPayload | null {
 export function roleFromToken(token: string | null): string | null {
   return parseDemoToken(token)?.role ?? null
 }
+
+export function subjectFromToken(token: string | null): string | null {
+  return parseDemoToken(token)?.sub ?? null
+}

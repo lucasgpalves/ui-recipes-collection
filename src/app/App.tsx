@@ -16,10 +16,17 @@ import {
   RequireAdmin,
 } from '../features/admin'
 import { AuthProvider, LoginPage } from '../features/auth'
+import {
+  CookRecipeCreatePage,
+  CookRecipeEditPage,
+  CookRecipesListPage,
+  RequireCook,
+} from '../features/cook'
 import { RecipeDetailPage, SearchResultsPage } from '../features/recipes'
 import { ConfirmProvider } from '../shared/ui/confirm'
 import { NotifyProvider } from '../shared/ui/notify'
 import { AdminLayout } from './layout/AdminLayout'
+import { CookLayout } from './layout/CookLayout'
 import { PublicLayout } from './layout/PublicLayout'
 import { HomePage } from './pages/Home'
 
@@ -47,6 +54,14 @@ export default function App() {
                   <Route path="metas" element={<AdminGoalsListPage />} />
                   <Route path="metas/nova" element={<AdminGoalCreatePage />} />
                   <Route path="metas/:id/editar" element={<AdminGoalEditPage />} />
+                </Route>
+              </Route>
+              <Route element={<RequireCook />}>
+                <Route path="/cook" element={<CookLayout />}>
+                  <Route index element={<Navigate to="receitas" replace />} />
+                  <Route path="receitas" element={<CookRecipesListPage />} />
+                  <Route path="receitas/nova" element={<CookRecipeCreatePage />} />
+                  <Route path="receitas/:id/editar" element={<CookRecipeEditPage />} />
                 </Route>
               </Route>
               <Route element={<PublicLayout />}>

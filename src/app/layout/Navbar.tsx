@@ -10,7 +10,7 @@ type NavbarProps = {
 }
 
 export function Navbar({ categories = [], variant = 'default' }: NavbarProps) {
-  const { isAuthenticated, isAdmin, logout } = useAuth()
+  const { isAuthenticated, isAdmin, isCook, username, logout } = useAuth()
   const navigate = useNavigate()
   const isLanding = variant === 'landing'
   const showCategories = !isLanding && categories.length > 0
@@ -30,7 +30,43 @@ export function Navbar({ categories = [], variant = 'default' }: NavbarProps) {
                   Admin
                 </Link>
               ) : null}
-              <span className={styles.session}>Sessão ativa</span>
+              {isCook ? (
+                <Link to="/cook/receitas" className={styles.adminLink}>
+                  Minhas receitas
+                </Link>
+              ) : null}
+              {isAdmin ? (
+                <Link
+                  to="/login"
+                  className={styles.adminLink}
+                  title="Sai da sessão admin e entre com cook/cook"
+                  onClick={(event) => {
+                    event.preventDefault()
+                    logout()
+                    navigate('/login')
+                  }}
+                >
+                  Entrar como cozinheiro
+                </Link>
+              ) : null}
+              {!isAdmin && !isCook ? (
+                <Link
+                  to="/login"
+                  className={styles.adminLink}
+                  title="Use cook/cook no modo demo"
+                  onClick={(event) => {
+                    event.preventDefault()
+                    logout()
+                    navigate('/login')
+                  }}
+                >
+                  Painel do cozinheiro
+                </Link>
+              ) : null}
+              <span className={styles.session}>
+                {username ? `${username}` : 'Sessão'}
+                {isCook ? ' · cozinheiro' : isAdmin ? ' · admin' : ''}
+              </span>
               <button
                 type="button"
                 className={styles.logout}

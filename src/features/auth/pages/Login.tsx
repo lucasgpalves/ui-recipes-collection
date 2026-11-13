@@ -4,11 +4,11 @@ import { roleFromToken } from '../../../demo/demoToken'
 import { ApiError } from '../../../shared/api/client'
 import { env } from '../../../shared/config/env'
 import { brand } from '../../../shared/brand'
-import { useAuth } from '../AuthContext'
+import { homePathForRole, useAuth } from '../AuthContext'
 import styles from './Login.module.css'
 
 export function LoginPage() {
-  const { login, isAuthenticated, isAdmin } = useAuth()
+  const { login, isAuthenticated, role } = useAuth()
   const navigate = useNavigate()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -16,7 +16,7 @@ export function LoginPage() {
   const [submitting, setSubmitting] = useState(false)
 
   if (isAuthenticated) {
-    return <Navigate to={isAdmin ? '/admin/usuarios' : '/'} replace />
+    return <Navigate to={homePathForRole(role)} replace />
   }
 
   async function onSubmit(event: FormEvent) {
@@ -26,8 +26,7 @@ export function LoginPage() {
     try {
       await login(username.trim(), password)
       const token = sessionStorage.getItem('receitou.auth.token')
-      const admin = roleFromToken(token) === 'ADMIN'
-      navigate(admin ? '/admin/usuarios' : '/', { replace: true })
+      navigate(homePathForRole(roleFromToken(token)), { replace: true })
     } catch (err) {
       if (err instanceof ApiError && (err.status === 403 || err.status === 401)) {
         setError('Usuário ou senha inválidos.')
@@ -52,7 +51,7 @@ export function LoginPage() {
           <h1>Login</h1>
           <p className={styles.subtitle}>
             {env.useDemoApi
-              ? 'Modo demo — use admin / admin para o painel'
+              ? 'Modo demo — admin/admin (admin) · cook/cook (cozinheiro)'
               : 'Acesse com as credenciais da API'}
           </p>
           <form className={styles.form} onSubmit={onSubmit}>

@@ -7,7 +7,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { roleFromToken } from '../../demo/demoToken'
+import { roleFromToken, subjectFromToken } from '../../demo/demoToken'
 import { setUnauthorizedHandler } from '../../shared/api/client'
 import { loginRequest } from './api/login'
 
@@ -15,9 +15,11 @@ const TOKEN_KEY = 'receitou.auth.token'
 
 type AuthContextValue = {
   token: string | null
+  username: string | null
   role: string | null
   isAuthenticated: boolean
   isAdmin: boolean
+  isCook: boolean
   login: (username: string, password: string) => Promise<void>
   logout: () => void
 }
@@ -58,18 +60,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const role = roleFromToken(token)
+  const username = subjectFromToken(token)
   const isAdmin = role === 'ADMIN'
+  const isCook = role === 'COOK'
 
   const value = useMemo<AuthContextValue>(
     () => ({
       token,
+      username,
       role,
       isAuthenticated: Boolean(token),
       isAdmin,
+      isCook,
       login,
       logout,
     }),
-    [token, role, isAdmin, login, logout],
+    [token, username, role, isAdmin, isCook, login, logout],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
@@ -81,4 +87,10 @@ export function useAuth(): AuthContextValue {
     throw new Error('useAuth must be used within AuthProvider')
   }
   return ctx
+}
+
+export function homePathForRole(role: string | null): string {
+  if (role === 'ADMIN') return '/admin/usuarios'
+  if (role === 'COOK') return '/cook/receitas'
+  return '/'
 }

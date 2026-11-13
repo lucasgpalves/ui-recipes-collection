@@ -31,6 +31,25 @@ export type Recipe = {
   durationMinutes?: number | null
 }
 
+/** Espelha RecipeIngredientsRequestDTO. */
+export type RecipeIngredientRequest = {
+  amount: number
+  ingredientName: string
+  measurementName: string
+}
+
+/** Espelha RecipeRequestDTO (JSON camelCase). */
+export type RecipeRequest = {
+  userId: number
+  name: string
+  categoryName: string
+  preparationMethod: string
+  portions: number
+  preparationTime: number
+  ingredientsRecipe: RecipeIngredientRequest[]
+  description?: string | null
+}
+
 export type Category = {
   id: number
   name: string | null

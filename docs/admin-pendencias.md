@@ -14,9 +14,7 @@ Já coberto no front (modo demo): cadastro, listagem, perfil, edição, desativa
    - Campos condicionais por papel (`fantasyName` / `restaurantName`)
 4. **Alinhamento API** — `restaurantName` existe no `UserRequestDTO` mas o service atual não persiste; salário na listagem foi omitido no front (ajustável no DTO se desejado).
 
-## Próximos módulos admin (telas)
-
-Ordem sugerida para fechar fatias verticais no mesmo padrão (sidebar + listagem + formulário):
+## Módulos admin (telas)
 
 | Módulo        | Prioridade | Notas                                      |
 |---------------|------------|--------------------------------------------|
@@ -26,14 +24,24 @@ Ordem sugerida para fechar fatias verticais no mesmo padrão (sidebar + listagem
 | Restaurants   | Depois     | Ligado a usuários / job references         |
 | Job references| Depois     | Depende de usuário COOK                    |
 
-## Painéis por tipo de usuário (fora do admin puro)
+## Painéis por tipo de usuário
 
-Ainda não iniciados — superfícies autenticadas por papel:
+### COOK — iniciado
 
-- **COOK** — receitas, ingredientes, medidas
-- **EDITOR** — livros / seleção de receitas
+- Shell `/cook` + guard `RequireCook`
+- Login demo: `cook` / `cook`
+- Receitas: listagem + cadastro (`RecipeRequestDTO`)
+
+Próximos COOK:
+
+- Edição de receita
+- CRUD de ingredientes e medidas
+
+### Ainda não iniciados
+
+- **EDITOR** — livros / seleção de receitas / aprovação de ingredientes
 - **TASTER** — reviews
 
 ## Decisão atual
 
-Pendências de usuários registradas acima. Fatias **Categorias**, **Papéis** e **Metas** finalizadas no admin (demo). Progresso de meta (`GET /goals/{id}/progress?userId=`) fica para um próximo incremento. Próximo módulo natural: **Restaurants**.
+Painel **COOK** (shell + receitas list/create) feito no demo. Próximo natural: edição de receita no COOK, ou shell EDITOR/TASTER.
