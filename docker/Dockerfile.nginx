@@ -1,0 +1,16 @@
+FROM nginx:1.27-alpine
+
+RUN apk add --no-cache gettext
+
+COPY docker/nginx.conf.template /etc/nginx/templates/default.conf.template
+COPY docker/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+# Conteúdo estático vem do volume frontend_assets (compose), não da imagem.
+
+ENV API_UPSTREAM=http://host.docker.internal:8080
+
+EXPOSE 80
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]

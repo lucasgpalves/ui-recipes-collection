@@ -4,8 +4,16 @@ server {
     root /usr/share/nginx/html;
     index index.html;
 
+    # Evita listagem acidental do volume de assets.
+    autoindex off;
+
     gzip on;
     gzip_types text/css application/javascript application/json image/svg+xml;
+
+    # Bloqueia dotfiles (.env, .git, etc.) se existirem no root.
+    location ~ /\. {
+        deny all;
+    }
 
     location /api/ {
         proxy_pass ${API_UPSTREAM}/;
