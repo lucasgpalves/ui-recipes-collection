@@ -52,3 +52,41 @@ export type LoginRequest = {
 export type TokenResponse = {
   token: string | null
 }
+
+/** Espelha RoleResponseDTO (JSON camelCase). */
+export type Role = {
+  name: string | null
+  description: string | null
+}
+
+/** Espelha UserRequestDTO (JSON camelCase). */
+export type UserRequest = {
+  cpf: string
+  name: string
+  roleName: string
+  salary: number
+  fantasyName?: string | null
+  restaurantName?: string | null
+}
+
+/**
+ * Espelha UserResponseDTO.
+ * `id` existe no demo para listagem; a API real ainda não devolve.
+ */
+export type UserResponse = {
+  id?: number | null
+  cpf: string | null
+  name: string | null
+  roleName: string | null
+  salary: number | null
+  ingressedAt: string | null
+  terminatedAt: string | null
+  fantasyName: string | null
+}
+
+/** Espelha RegisterRequestDTO — tipado para o próximo corte. */
+export type RegisterRequest = {
+  username: string
+  password: string
+  userId: number
+}

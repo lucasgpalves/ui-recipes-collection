@@ -7,6 +7,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
+import { roleFromToken } from '../../demo/demoToken'
 import { setUnauthorizedHandler } from '../../shared/api/client'
 import { loginRequest } from './api/login'
 
@@ -14,7 +15,9 @@ const TOKEN_KEY = 'receitou.auth.token'
 
 type AuthContextValue = {
   token: string | null
+  role: string | null
   isAuthenticated: boolean
+  isAdmin: boolean
   login: (username: string, password: string) => Promise<void>
   logout: () => void
 }
@@ -54,14 +57,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => setUnauthorizedHandler(null)
   }, [])
 
+  const role = roleFromToken(token)
+  const isAdmin = role === 'ADMIN'
+
   const value = useMemo<AuthContextValue>(
     () => ({
       token,
+      role,
       isAuthenticated: Boolean(token),
+      isAdmin,
       login,
       logout,
     }),
-    [token, login, logout],
+    [token, role, isAdmin, login, logout],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

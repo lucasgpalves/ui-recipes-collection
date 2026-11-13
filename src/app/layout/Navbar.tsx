@@ -10,7 +10,7 @@ type NavbarProps = {
 }
 
 export function Navbar({ categories = [], variant = 'default' }: NavbarProps) {
-  const { isAuthenticated, logout } = useAuth()
+  const { isAuthenticated, isAdmin, logout } = useAuth()
   const navigate = useNavigate()
   const isLanding = variant === 'landing'
   const showCategories = !isLanding && categories.length > 0
@@ -25,6 +25,11 @@ export function Navbar({ categories = [], variant = 'default' }: NavbarProps) {
         <div className={styles.actions}>
           {isAuthenticated ? (
             <>
+              {isAdmin ? (
+                <Link to="/admin/usuarios" className={styles.adminLink}>
+                  Admin
+                </Link>
+              ) : null}
               <span className={styles.session}>Sessão ativa</span>
               <button
                 type="button"

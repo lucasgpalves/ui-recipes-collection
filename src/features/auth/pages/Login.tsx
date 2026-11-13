@@ -1,12 +1,14 @@
 import { useState, type FormEvent } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { roleFromToken } from '../../../demo/demoToken'
 import { ApiError } from '../../../shared/api/client'
+import { env } from '../../../shared/config/env'
 import { brand } from '../../../shared/brand'
 import { useAuth } from '../AuthContext'
 import styles from './Login.module.css'
 
 export function LoginPage() {
-  const { login, isAuthenticated } = useAuth()
+  const { login, isAuthenticated, isAdmin } = useAuth()
   const navigate = useNavigate()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -14,7 +16,7 @@ export function LoginPage() {
   const [submitting, setSubmitting] = useState(false)
 
   if (isAuthenticated) {
-    return <Navigate to="/" replace />
+    return <Navigate to={isAdmin ? '/admin/usuarios' : '/'} replace />
   }
 
   async function onSubmit(event: FormEvent) {
@@ -23,7 +25,9 @@ export function LoginPage() {
     setError(null)
     try {
       await login(username.trim(), password)
-      navigate('/', { replace: true })
+      const token = sessionStorage.getItem('receitou.auth.token')
+      const admin = roleFromToken(token) === 'ADMIN'
+      navigate(admin ? '/admin/usuarios' : '/', { replace: true })
     } catch (err) {
       if (err instanceof ApiError && (err.status === 403 || err.status === 401)) {
         setError('Usuário ou senha inválidos.')
@@ -46,7 +50,11 @@ export function LoginPage() {
       <section className={styles.panel}>
         <div className={`${styles.card} fade-up`}>
           <h1>Login</h1>
-          <p className={styles.subtitle}>Acesse com as credenciais da API</p>
+          <p className={styles.subtitle}>
+            {env.useDemoApi
+              ? 'Modo demo — use admin / admin para o painel'
+              : 'Acesse com as credenciais da API'}
+          </p>
           <form className={styles.form} onSubmit={onSubmit}>
             <label className={styles.label}>
               Usuário
