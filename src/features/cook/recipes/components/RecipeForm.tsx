@@ -1,6 +1,7 @@
-import { useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent } from 'react'
+import { useCallback, useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent } from 'react'
 import { DEMO_COOK_USER_ID } from '../../../../demo/demoApi'
 import { fetchCategories } from '../../../catalog'
+import { useAuth } from '../../../auth'
 import type {
   Category,
   Recipe,
@@ -16,6 +17,7 @@ import {
   normalizeMeasurement,
   type MeasurementValue,
 } from '../lib/measurements'
+import { RecipePreviewModal } from './RecipePreviewModal'
 import styles from './RecipeForm.module.css'
 
 type RecipeFormProps = {
@@ -47,13 +49,16 @@ function ingredientsFromRecipe(recipe?: Recipe | null): RecipeIngredientRequest[
 
 export function RecipeForm({ initial, submitLabel, onSubmit }: RecipeFormProps) {
   const notify = useNotify()
+  const { username } = useAuth()
   const listHeadingId = useId()
   const nameInputRef = useRef<HTMLInputElement>(null)
 
   const [name, setName] = useState(initial?.name ?? '')
   const [categoryName, setCategoryName] = useState(initial?.categoryName ?? '')
   const [preparationMethod, setPreparationMethod] = useState(initial?.preparationMethod ?? '')
-  const [portions, setPortions] = useState(initial?.portions ?? 1)
+  const [portions, setPortions] = useState(
+    Number.isInteger(initial?.portions) ? (initial?.portions as number) : Math.max(1, Math.round(initial?.portions ?? 1)),
+  )
   const [preparationTime, setPreparationTime] = useState(initial?.durationMinutes ?? 30)
   const [description, setDescription] = useState(initial?.description ?? '')
   const [ingredients, setIngredients] = useState<RecipeIngredientRequest[]>(() =>
@@ -65,6 +70,9 @@ export function RecipeForm({ initial, submitLabel, onSubmit }: RecipeFormProps) 
   const [loadingCategories, setLoadingCategories] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [previewOpen, setPreviewOpen] = useState(false)
+
+  const closePreview = useCallback(() => setPreviewOpen(false), [])
 
   const draftPreview =
     draft.ingredientName.trim() && Number.isFinite(draft.amount) && draft.amount > 0
@@ -164,8 +172,8 @@ export function RecipeForm({ initial, submitLabel, onSubmit }: RecipeFormProps) 
       notify.warning(message, 'Validação')
       return
     }
-    if (!Number.isFinite(portions) || portions <= 0) {
-      const message = 'Porções deve ser um número maior que zero.'
+    if (!Number.isInteger(portions) || portions <= 0) {
+      const message = 'Porções deve ser um inteiro maior que zero.'
       setError(message)
       notify.warning(message, 'Validação')
       return
@@ -250,10 +258,11 @@ export function RecipeForm({ initial, submitLabel, onSubmit }: RecipeFormProps) 
             className={pageStyles.input}
             name="portions"
             type="number"
-            min={0.1}
-            step={0.5}
+            min={1}
+            step={1}
+            inputMode="numeric"
             value={portions}
-            onChange={(event) => setPortions(Number(event.target.value))}
+            onChange={(event) => setPortions(Number.parseInt(event.target.value, 10) || 0)}
             required
           />
         </label>
@@ -405,13 +414,38 @@ export function RecipeForm({ initial, submitLabel, onSubmit }: RecipeFormProps) 
 
       {error ? <p className={pageStyles.error}>{error}</p> : null}
 
-      <button
-        className={pageStyles.submit}
-        type="submit"
-        disabled={submitting || loadingCategories || categories.length === 0}
-      >
-        {submitting ? 'Salvando…' : submitLabel}
-      </button>
+      <div className={styles.formActions}>
+        <button
+          type="button"
+          className={styles.previewButton}
+          onClick={() => setPreviewOpen(true)}
+        >
+          Ver prévia
+        </button>
+        <button
+          className={pageStyles.submit}
+          type="submit"
+          disabled={submitting || loadingCategories || categories.length === 0}
+        >
+          {submitting ? 'Salvando…' : submitLabel}
+        </button>
+      </div>
+
+      <RecipePreviewModal
+        open={previewOpen}
+        onClose={closePreview}
+        data={{
+          name,
+          categoryName,
+          description,
+          preparationMethod,
+          portions,
+          preparationTime,
+          authorName: username ?? initial?.userName ?? null,
+          imageUrl: initial?.imageUrl ?? null,
+          ingredients,
+        }}
+      />
     </form>
   )
 }
