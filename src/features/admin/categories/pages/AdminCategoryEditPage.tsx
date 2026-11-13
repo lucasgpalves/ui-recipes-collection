@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ApiError } from '../../../../shared/api/client'
 import type { Category, CategoryRequest } from '../../../../shared/api/types'
+import { useNotify } from '../../../../shared/ui/notify'
 import { CategoryForm } from '../components/CategoryForm'
 import { fetchCategoryById, updateCategory } from '../api/categories'
 import styles from '../../shared/pages.module.css'
@@ -10,6 +11,7 @@ export function AdminCategoryEditPage() {
   const { id } = useParams()
   const categoryId = Number(id)
   const navigate = useNavigate()
+  const notify = useNotify()
   const [category, setCategory] = useState<Category | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -28,7 +30,10 @@ export function AdminCategoryEditPage() {
         if (active) setCategory(data)
       })
       .catch(() => {
-        if (active) setError('Não foi possível carregar a categoria.')
+        if (active) {
+          setError('Não foi possível carregar a categoria.')
+          notify.error('Não foi possível carregar a categoria.', 'Falha ao carregar')
+        }
       })
       .finally(() => {
         if (active) setLoading(false)
@@ -37,7 +42,7 @@ export function AdminCategoryEditPage() {
     return () => {
       active = false
     }
-  }, [categoryId])
+  }, [categoryId, notify])
 
   const initial = useMemo<Partial<CategoryRequest> | undefined>(() => {
     if (!category) return undefined
@@ -50,6 +55,7 @@ export function AdminCategoryEditPage() {
   async function handleUpdate(payload: CategoryRequest) {
     try {
       await updateCategory(categoryId, payload)
+      notify.success(`Categoria "${payload.name}" atualizada.`, 'Edição')
       navigate('/admin/categorias', { replace: true })
     } catch (err) {
       if (err instanceof ApiError) {

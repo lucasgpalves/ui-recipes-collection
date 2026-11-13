@@ -1,32 +1,60 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { ApiError } from '../../../../shared/api/client'
 import { formatCpf } from '../../../../shared/lib/cpf'
 import type { UserResponse } from '../../../../shared/api/types'
-import { fetchUsers } from '../api/users'
+import { useConfirm } from '../../../../shared/ui/confirm'
+import { useNotify } from '../../../../shared/ui/notify'
+import { fetchUsers, terminateUser } from '../api/users'
 import styles from '../../shared/pages.module.css'
 
 export function AdminUsersListPage() {
+  const notify = useNotify()
+  const { confirm } = useConfirm()
   const [users, setUsers] = useState<UserResponse[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [terminatingId, setTerminatingId] = useState<number | null>(null)
+
+  const loadUsers = useCallback(async () => {
+    setLoading(true)
+    try {
+      setUsers(await fetchUsers())
+    } catch {
+      notify.error('Não foi possível carregar os usuários.', 'Falha ao carregar')
+    } finally {
+      setLoading(false)
+    }
+  }, [notify])
 
   useEffect(() => {
-    let active = true
-    setLoading(true)
-    fetchUsers()
-      .then((data) => {
-        if (active) setUsers(data)
-      })
-      .catch(() => {
-        if (active) setError('Não foi possível carregar os usuários.')
-      })
-      .finally(() => {
-        if (active) setLoading(false)
-      })
-    return () => {
-      active = false
+    void loadUsers()
+  }, [loadUsers])
+
+  async function handleTerminate(user: UserResponse) {
+    if (user.id == null || user.terminatedAt) return
+    const confirmed = await confirm({
+      title: 'Desativar usuário',
+      message: `Desativar o usuário "${user.name ?? user.id}"? Essa ação não pode ser desfeita por aqui.`,
+      confirmLabel: 'Desativar',
+      tone: 'danger',
+    })
+    if (!confirmed) return
+
+    setTerminatingId(user.id)
+    try {
+      await terminateUser(user.id)
+      setUsers(await fetchUsers())
+      notify.success(`Usuário "${user.name ?? user.id}" desativado.`, 'Desativação')
+    } catch (err) {
+      if (err instanceof ApiError) {
+        notify.error(`Falha ao desativar (status ${err.status}).`, 'Desativação')
+      } else {
+        notify.error('Não foi possível desativar o usuário.', 'Desativação')
+      }
+    } finally {
+      setTerminatingId(null)
     }
-  }, [])
+  }
 
   return (
     <div className={`${styles.page} fade-up`}>
@@ -42,7 +70,6 @@ export function AdminUsersListPage() {
         </div>
       </header>
 
-      {error ? <p className={styles.error}>{error}</p> : null}
       {loading ? <p className={styles.muted}>Carregando…</p> : null}
       {!loading && users.length === 0 ? (
         <p className={styles.muted}>Nenhum usuário cadastrado ainda.</p>
@@ -86,9 +113,19 @@ export function AdminUsersListPage() {
                             Perfil
                           </Link>
                           {!terminated ? (
-                            <Link to={`/admin/usuarios/${id}/editar`} className={styles.linkButton}>
-                              Editar
-                            </Link>
+                            <>
+                              <Link to={`/admin/usuarios/${id}/editar`} className={styles.linkButton}>
+                                Editar
+                              </Link>
+                              <button
+                                type="button"
+                                className={styles.dangerButton}
+                                onClick={() => void handleTerminate(user)}
+                                disabled={terminatingId === id}
+                              >
+                                {terminatingId === id ? 'Desativando…' : 'Desativar'}
+                              </button>
+                            </>
                           ) : null}
                         </div>
                       ) : (

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ApiError } from '../../../../shared/api/client'
 import type { Goal, GoalRequest } from '../../../../shared/api/types'
+import { useNotify } from '../../../../shared/ui/notify'
 import { GoalForm } from '../components/GoalForm'
 import { fetchGoalById, updateGoal } from '../api/goals'
 import styles from '../../shared/pages.module.css'
@@ -10,6 +11,7 @@ export function AdminGoalEditPage() {
   const { id } = useParams()
   const goalId = Number(id)
   const navigate = useNavigate()
+  const notify = useNotify()
   const [goal, setGoal] = useState<Goal | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -52,6 +54,7 @@ export function AdminGoalEditPage() {
   async function handleUpdate(payload: GoalRequest) {
     try {
       await updateGoal(goalId, payload)
+      notify.success(`Meta "${payload.title}" atualizada.`, 'Edição')
       navigate('/admin/metas', { replace: true })
     } catch (err) {
       if (err instanceof ApiError) {

@@ -1,0 +1,106 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  background: rgba(10, 18, 14, 0.48);
+  backdrop-filter: blur(3px);
+  animation: confirm-fade 0.18s ease both;
+}
+
+.dialog {
+  width: min(100%, 420px);
+  padding: 1.35rem 1.25rem 1.2rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+  animation: confirm-pop 0.22s ease both;
+}
+
+.title {
+  margin: 0 0 0.45rem;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  letter-spacing: -0.02em;
+}
+
+.message {
+  margin: 0 0 1.25rem;
+  color: var(--ink-muted);
+  line-height: 1.45;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.cancel,
+.confirm,
+.confirmDanger {
+  border-radius: 10px;
+  padding: 0.55rem 1.05rem;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.cancel {
+  background: transparent;
+  color: var(--ink-muted);
+  border-color: var(--border);
+}
+
+.cancel:hover {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+}
+
+.confirm {
+  background: var(--brand);
+  color: #0a120e;
+}
+
+.confirm:hover {
+  transform: translateY(-1px);
+  background: var(--brand-strong);
+  color: #fff;
+}
+
+.confirmDanger {
+  background: color-mix(in srgb, var(--danger) 12%, var(--surface));
+  color: var(--danger);
+  border-color: color-mix(in srgb, var(--danger) 35%, var(--border));
+}
+
+.confirmDanger:hover {
+  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--danger) 18%, var(--surface));
+}
+
+@keyframes confirm-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes confirm-pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

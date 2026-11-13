@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import type { GoalRequest, Role } from '../../../../shared/api/types'
+import { useNotify } from '../../../../shared/ui/notify'
 import { fetchRoles } from '../../roles'
 import styles from '../../shared/pages.module.css'
 
@@ -17,6 +18,7 @@ const EMPTY: GoalRequest = {
 }
 
 export function GoalForm({ initial, submitLabel, onSubmit }: GoalFormProps) {
+  const notify = useNotify()
   const [form, setForm] = useState<GoalRequest>({ ...EMPTY, ...initial })
   const [roles, setRoles] = useState<Role[]>([])
   const [loadingRoles, setLoadingRoles] = useState(true)
@@ -56,14 +58,17 @@ export function GoalForm({ initial, submitLabel, onSubmit }: GoalFormProps) {
 
     if (!title || !roleName) {
       setError('Preencha título e papel.')
+      notify.warning('Preencha título e papel.', 'Validação')
       return
     }
     if (!Number.isInteger(amount) || amount < 1) {
       setError('A meta (amount) deve ser um inteiro maior ou igual a 1.')
+      notify.warning('A meta deve ser um inteiro maior ou igual a 1.', 'Validação')
       return
     }
     if (!roles.some((role) => role.name === roleName)) {
       setError('Selecione um papel válido.')
+      notify.warning('Selecione um papel válido.', 'Validação')
       return
     }
 
@@ -76,7 +81,9 @@ export function GoalForm({ initial, submitLabel, onSubmit }: GoalFormProps) {
         description: form.description?.trim() || '',
       })
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Não foi possível salvar a meta.')
+      const message = err instanceof Error ? err.message : 'Não foi possível salvar a meta.'
+      setError(message)
+      notify.error(message, 'Falha na operação')
     } finally {
       setSubmitting(false)
     }

@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import type { RoleRequest } from '../../../../shared/api/types'
+import { useNotify } from '../../../../shared/ui/notify'
 import styles from '../../shared/pages.module.css'
 
 type RoleFormProps = {
@@ -14,6 +15,7 @@ const EMPTY: RoleRequest = {
 }
 
 export function RoleForm({ initial, submitLabel, onSubmit }: RoleFormProps) {
+  const notify = useNotify()
   const [form, setForm] = useState<RoleRequest>({ ...EMPTY, ...initial })
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -25,6 +27,7 @@ export function RoleForm({ initial, submitLabel, onSubmit }: RoleFormProps) {
     const name = form.name.trim().toUpperCase()
     if (!name) {
       setError('Informe o nome do papel.')
+      notify.warning('Informe o nome do papel.', 'Validação')
       return
     }
 
@@ -35,7 +38,9 @@ export function RoleForm({ initial, submitLabel, onSubmit }: RoleFormProps) {
         description: form.description?.trim() || null,
       })
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Não foi possível salvar o papel.')
+      const message = err instanceof Error ? err.message : 'Não foi possível salvar o papel.'
+      setError(message)
+      notify.error(message, 'Falha na operação')
     } finally {
       setSubmitting(false)
     }

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ApiError } from '../../../../shared/api/client'
 import type { UserRequest, UserResponse } from '../../../../shared/api/types'
+import { useNotify } from '../../../../shared/ui/notify'
 import { UserForm } from '../components/UserForm'
 import { fetchUserById, updateUser } from '../api/users'
 import styles from '../../shared/pages.module.css'
@@ -10,6 +11,7 @@ export function AdminUserEditPage() {
   const { id } = useParams()
   const userId = Number(id)
   const navigate = useNavigate()
+  const notify = useNotify()
   const [user, setUser] = useState<UserResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -54,6 +56,7 @@ export function AdminUserEditPage() {
   async function handleUpdate(payload: UserRequest) {
     try {
       await updateUser(userId, payload)
+      notify.success(`Usuário "${payload.name}" atualizado.`, 'Edição')
       navigate(`/admin/usuarios/${userId}`, { replace: true })
     } catch (err) {
       if (err instanceof ApiError) {

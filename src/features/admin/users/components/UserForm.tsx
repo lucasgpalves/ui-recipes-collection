@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { digitsOnlyCpf, formatCpf, isValidCpf } from '../../../../shared/lib/cpf'
 import { formatMoney, parseMoneyInput } from '../../../../shared/lib/money'
 import type { Role, UserRequest } from '../../../../shared/api/types'
+import { useNotify } from '../../../../shared/ui/notify'
 import { fetchRoles } from '../../roles'
 import styles from '../../shared/pages.module.css'
 
@@ -21,6 +22,7 @@ const EMPTY: UserRequest = {
 }
 
 export function UserForm({ initial, submitLabel, onSubmit }: UserFormProps) {
+  const notify = useNotify()
   const [form, setForm] = useState<UserRequest>({ ...EMPTY, ...initial })
   const [roles, setRoles] = useState<Role[]>([])
   const [loadingRoles, setLoadingRoles] = useState(true)
@@ -65,18 +67,22 @@ export function UserForm({ initial, submitLabel, onSubmit }: UserFormProps) {
 
     if (!name || !roleName) {
       setError('Preencha CPF, nome e papel.')
+      notify.warning('Preencha CPF, nome e papel.', 'Validação')
       return
     }
     if (!isValidCpf(cpf)) {
       setError('CPF inválido.')
+      notify.warning('CPF inválido.', 'Validação')
       return
     }
     if (Number.isNaN(salary) || salary < 0) {
       setError('Salário deve ser um número maior ou igual a zero.')
+      notify.warning('Salário deve ser maior ou igual a zero.', 'Validação')
       return
     }
     if (!roles.some((role) => role.name === roleName)) {
       setError('Selecione um papel válido.')
+      notify.warning('Selecione um papel válido.', 'Validação')
       return
     }
 
@@ -91,7 +97,9 @@ export function UserForm({ initial, submitLabel, onSubmit }: UserFormProps) {
         restaurantName: form.restaurantName?.trim() || null,
       })
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Não foi possível salvar o usuário.')
+      const message = err instanceof Error ? err.message : 'Não foi possível salvar o usuário.'
+      setError(message)
+      notify.error(message, 'Falha na operação')
     } finally {
       setSubmitting(false)
     }

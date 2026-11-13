@@ -2,27 +2,28 @@ import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ApiError } from '../../../../shared/api/client'
 import type { Role } from '../../../../shared/api/types'
+import { useConfirm } from '../../../../shared/ui/confirm'
+import { useNotify } from '../../../../shared/ui/notify'
 import { deleteRole, fetchRoles } from '../api/roles'
 import styles from '../../shared/pages.module.css'
 
 export function AdminRolesListPage() {
+  const notify = useNotify()
+  const { confirm } = useConfirm()
   const [roles, setRoles] = useState<Role[]>([])
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState<number | null>(null)
-  const [error, setError] = useState<string | null>(null)
 
   const loadRoles = useCallback(async () => {
     setLoading(true)
     try {
-      const data = await fetchRoles()
-      setRoles(data)
-      setError(null)
+      setRoles(await fetchRoles())
     } catch {
-      setError('Não foi possível carregar os papéis.')
+      notify.error('Não foi possível carregar os papéis.', 'Falha ao carregar')
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [notify])
 
   useEffect(() => {
     void loadRoles()
@@ -30,22 +31,24 @@ export function AdminRolesListPage() {
 
   async function handleDelete(role: Role) {
     if (role.id == null) return
-    const confirmed = window.confirm(
-      `Excluir o papel "${role.name ?? role.id}"? Usuários que usam esse papel podem falhar no cadastro.`,
-    )
+    const confirmed = await confirm({
+      title: 'Excluir papel',
+      message: `Excluir o papel "${role.name ?? role.id}"? Usuários que usam esse papel podem falhar no cadastro.`,
+      confirmLabel: 'Excluir',
+      tone: 'danger',
+    })
     if (!confirmed) return
 
     setDeletingId(role.id)
-    setError(null)
     try {
       await deleteRole(role.id)
-      const refreshed = await fetchRoles()
-      setRoles(refreshed)
+      setRoles(await fetchRoles())
+      notify.success(`Papel "${role.name ?? role.id}" excluído.`, 'Exclusão')
     } catch (err) {
       if (err instanceof ApiError) {
-        setError(`Falha ao excluir (status ${err.status}).`)
+        notify.error(`Falha ao excluir (status ${err.status}).`, 'Exclusão')
       } else {
-        setError('Não foi possível excluir o papel.')
+        notify.error('Não foi possível excluir o papel.', 'Exclusão')
       }
     } finally {
       setDeletingId(null)
@@ -66,7 +69,6 @@ export function AdminRolesListPage() {
         </div>
       </header>
 
-      {error ? <p className={styles.error}>{error}</p> : null}
       {loading ? <p className={styles.muted}>Carregando…</p> : null}
       {!loading && roles.length === 0 ? (
         <p className={styles.muted}>Nenhum papel cadastrado ainda.</p>

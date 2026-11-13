@@ -4,12 +4,16 @@ import { ApiError } from '../../../../shared/api/client'
 import { formatCpf } from '../../../../shared/lib/cpf'
 import { formatMoney } from '../../../../shared/lib/money'
 import type { UserResponse } from '../../../../shared/api/types'
+import { useConfirm } from '../../../../shared/ui/confirm'
+import { useNotify } from '../../../../shared/ui/notify'
 import { fetchUserById, terminateUser } from '../api/users'
 import styles from '../../shared/pages.module.css'
 
 export function AdminUserProfilePage() {
   const { id } = useParams()
   const userId = Number(id)
+  const notify = useNotify()
+  const { confirm } = useConfirm()
   const [user, setUser] = useState<UserResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [terminating, setTerminating] = useState(false)
@@ -42,9 +46,12 @@ export function AdminUserProfilePage() {
 
   async function handleTerminate() {
     if (!user?.id || user.terminatedAt) return
-    const confirmed = window.confirm(
-      `Desativar o usuário "${user.name ?? user.id}"? Essa ação marca terminatedAt e não pode ser desfeita por aqui.`,
-    )
+    const confirmed = await confirm({
+      title: 'Desativar usuário',
+      message: `Desativar o usuário "${user.name ?? user.id}"? Essa ação marca terminatedAt e não pode ser desfeita por aqui.`,
+      confirmLabel: 'Desativar',
+      tone: 'danger',
+    })
     if (!confirmed) return
 
     setTerminating(true)
@@ -53,11 +60,15 @@ export function AdminUserProfilePage() {
       await terminateUser(user.id)
       const refreshed = await fetchUserById(user.id)
       setUser(refreshed)
+      notify.success(`Usuário "${user.name ?? user.id}" desativado.`, 'Desativação')
     } catch (err) {
       if (err instanceof ApiError) {
-        setError(`Falha ao desativar (status ${err.status}).`)
+        const message = `Falha ao desativar (status ${err.status}).`
+        setError(message)
+        notify.error(message, 'Desativação')
       } else {
         setError('Não foi possível desativar o usuário.')
+        notify.error('Não foi possível desativar o usuário.', 'Desativação')
       }
     } finally {
       setTerminating(false)

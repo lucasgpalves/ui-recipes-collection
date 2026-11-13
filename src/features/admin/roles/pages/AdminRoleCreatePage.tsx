@@ -1,16 +1,19 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { ApiError } from '../../../../shared/api/client'
 import type { RoleRequest } from '../../../../shared/api/types'
+import { useNotify } from '../../../../shared/ui/notify'
 import { RoleForm } from '../components/RoleForm'
 import { createRole } from '../api/roles'
 import styles from '../../shared/pages.module.css'
 
 export function AdminRoleCreatePage() {
   const navigate = useNavigate()
+  const notify = useNotify()
 
   async function handleCreate(payload: RoleRequest) {
     try {
       await createRole(payload)
+      notify.success(`Papel "${payload.name}" cadastrado.`, 'Cadastro')
       navigate('/admin/papeis', { replace: true })
     } catch (err) {
       if (err instanceof ApiError) {

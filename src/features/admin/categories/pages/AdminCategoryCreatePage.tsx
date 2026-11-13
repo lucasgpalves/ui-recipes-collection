@@ -1,20 +1,19 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { ApiError } from '../../../../shared/api/client'
 import type { CategoryRequest } from '../../../../shared/api/types'
+import { useNotify } from '../../../../shared/ui/notify'
 import { CategoryForm } from '../components/CategoryForm'
 import { createCategory } from '../api/categories'
 import styles from '../../shared/pages.module.css'
 
 export function AdminCategoryCreatePage() {
   const navigate = useNavigate()
+  const notify = useNotify()
 
   async function handleCreate(payload: CategoryRequest) {
     try {
-      const created = await createCategory(payload)
-      if (created?.id != null) {
-        navigate('/admin/categorias', { replace: true })
-        return
-      }
+      await createCategory(payload)
+      notify.success(`Categoria "${payload.name}" cadastrada.`, 'Cadastro')
       navigate('/admin/categorias', { replace: true })
     } catch (err) {
       if (err instanceof ApiError) {

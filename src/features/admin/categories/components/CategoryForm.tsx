@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import type { CategoryRequest } from '../../../../shared/api/types'
+import { useNotify } from '../../../../shared/ui/notify'
 import styles from '../../shared/pages.module.css'
 
 type CategoryFormProps = {
@@ -14,6 +15,7 @@ const EMPTY: CategoryRequest = {
 }
 
 export function CategoryForm({ initial, submitLabel, onSubmit }: CategoryFormProps) {
+  const notify = useNotify()
   const [form, setForm] = useState<CategoryRequest>({ ...EMPTY, ...initial })
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -25,6 +27,7 @@ export function CategoryForm({ initial, submitLabel, onSubmit }: CategoryFormPro
     const name = form.name.trim()
     if (!name) {
       setError('Informe o nome da categoria.')
+      notify.warning('Informe o nome da categoria.', 'Validação')
       return
     }
 
@@ -35,7 +38,9 @@ export function CategoryForm({ initial, submitLabel, onSubmit }: CategoryFormPro
         description: form.description?.trim() || null,
       })
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Não foi possível salvar a categoria.')
+      const message = err instanceof Error ? err.message : 'Não foi possível salvar a categoria.'
+      setError(message)
+      notify.error(message, 'Falha na operação')
     } finally {
       setSubmitting(false)
     }

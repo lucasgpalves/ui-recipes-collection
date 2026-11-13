@@ -1,16 +1,19 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { ApiError } from '../../../../shared/api/client'
 import type { UserRequest } from '../../../../shared/api/types'
+import { useNotify } from '../../../../shared/ui/notify'
 import { UserForm } from '../components/UserForm'
 import { createUser } from '../api/users'
 import styles from '../../shared/pages.module.css'
 
 export function AdminUserCreatePage() {
   const navigate = useNavigate()
+  const notify = useNotify()
 
   async function handleCreate(payload: UserRequest) {
     try {
       const created = await createUser(payload)
+      notify.success(`Usuário "${payload.name}" cadastrado.`, 'Cadastro')
       if (created?.id != null) {
         navigate(`/admin/usuarios/${created.id}`, { replace: true })
         return

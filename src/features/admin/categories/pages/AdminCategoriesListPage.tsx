@@ -2,49 +2,54 @@ import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ApiError } from '../../../../shared/api/client'
 import type { Category } from '../../../../shared/api/types'
+import { useConfirm } from '../../../../shared/ui/confirm'
+import { useNotify } from '../../../../shared/ui/notify'
 import { deleteCategory, fetchAdminCategories } from '../api/categories'
 import styles from '../../shared/pages.module.css'
 
 export function AdminCategoriesListPage() {
+  const notify = useNotify()
+  const { confirm } = useConfirm()
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState<number | null>(null)
-  const [error, setError] = useState<string | null>(null)
 
   const loadCategories = useCallback(async () => {
     setLoading(true)
     try {
       const data = await fetchAdminCategories()
       setCategories(data)
-      setError(null)
     } catch {
-      setError('Não foi possível carregar as categorias.')
+      notify.error('Não foi possível carregar as categorias.', 'Falha ao carregar')
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [notify])
 
   useEffect(() => {
     void loadCategories()
   }, [loadCategories])
 
   async function handleDelete(category: Category) {
-    const confirmed = window.confirm(
-      `Excluir a categoria "${category.name ?? category.id}"? Essa ação não pode ser desfeita.`,
-    )
+    const confirmed = await confirm({
+      title: 'Excluir categoria',
+      message: `Excluir a categoria "${category.name ?? category.id}"? Essa ação não pode ser desfeita.`,
+      confirmLabel: 'Excluir',
+      tone: 'danger',
+    })
     if (!confirmed) return
 
     setDeletingId(category.id)
-    setError(null)
     try {
       await deleteCategory(category.id)
       const refreshed = await fetchAdminCategories()
       setCategories(refreshed)
+      notify.success(`Categoria "${category.name ?? category.id}" excluída.`, 'Exclusão')
     } catch (err) {
       if (err instanceof ApiError) {
-        setError(`Falha ao excluir (status ${err.status}).`)
+        notify.error(`Falha ao excluir (status ${err.status}).`, 'Exclusão')
       } else {
-        setError('Não foi possível excluir a categoria.')
+        notify.error('Não foi possível excluir a categoria.', 'Exclusão')
       }
     } finally {
       setDeletingId(null)
@@ -65,7 +70,6 @@ export function AdminCategoriesListPage() {
         </div>
       </header>
 
-      {error ? <p className={styles.error}>{error}</p> : null}
       {loading ? <p className={styles.muted}>Carregando…</p> : null}
       {!loading && categories.length === 0 ? (
         <p className={styles.muted}>Nenhuma categoria cadastrada ainda.</p>

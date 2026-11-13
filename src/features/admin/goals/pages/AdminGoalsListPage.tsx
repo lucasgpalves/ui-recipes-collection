@@ -2,27 +2,28 @@ import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ApiError } from '../../../../shared/api/client'
 import type { Goal } from '../../../../shared/api/types'
+import { useConfirm } from '../../../../shared/ui/confirm'
+import { useNotify } from '../../../../shared/ui/notify'
 import { deleteGoal, fetchGoals } from '../api/goals'
 import styles from '../../shared/pages.module.css'
 
 export function AdminGoalsListPage() {
+  const notify = useNotify()
+  const { confirm } = useConfirm()
   const [goals, setGoals] = useState<Goal[]>([])
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState<number | null>(null)
-  const [error, setError] = useState<string | null>(null)
 
   const loadGoals = useCallback(async () => {
     setLoading(true)
     try {
-      const data = await fetchGoals()
-      setGoals(data)
-      setError(null)
+      setGoals(await fetchGoals())
     } catch {
-      setError('Não foi possível carregar as metas.')
+      notify.error('Não foi possível carregar as metas.', 'Falha ao carregar')
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [notify])
 
   useEffect(() => {
     void loadGoals()
@@ -30,22 +31,24 @@ export function AdminGoalsListPage() {
 
   async function handleDelete(goal: Goal) {
     if (goal.id == null) return
-    const confirmed = window.confirm(
-      `Excluir a meta "${goal.title ?? goal.id}"? Essa ação não pode ser desfeita.`,
-    )
+    const confirmed = await confirm({
+      title: 'Excluir meta',
+      message: `Excluir a meta "${goal.title ?? goal.id}"? Essa ação não pode ser desfeita.`,
+      confirmLabel: 'Excluir',
+      tone: 'danger',
+    })
     if (!confirmed) return
 
     setDeletingId(goal.id)
-    setError(null)
     try {
       await deleteGoal(goal.id)
-      const refreshed = await fetchGoals()
-      setGoals(refreshed)
+      setGoals(await fetchGoals())
+      notify.success(`Meta "${goal.title ?? goal.id}" excluída.`, 'Exclusão')
     } catch (err) {
       if (err instanceof ApiError) {
-        setError(`Falha ao excluir (status ${err.status}).`)
+        notify.error(`Falha ao excluir (status ${err.status}).`, 'Exclusão')
       } else {
-        setError('Não foi possível excluir a meta.')
+        notify.error('Não foi possível excluir a meta.', 'Exclusão')
       }
     } finally {
       setDeletingId(null)
@@ -66,7 +69,6 @@ export function AdminGoalsListPage() {
         </div>
       </header>
 
-      {error ? <p className={styles.error}>{error}</p> : null}
       {loading ? <p className={styles.muted}>Carregando…</p> : null}
       {!loading && goals.length === 0 ? (
         <p className={styles.muted}>Nenhuma meta cadastrada ainda.</p>

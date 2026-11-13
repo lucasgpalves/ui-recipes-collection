@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ApiError } from '../../../../shared/api/client'
 import type { Role, RoleRequest } from '../../../../shared/api/types'
+import { useNotify } from '../../../../shared/ui/notify'
 import { RoleForm } from '../components/RoleForm'
 import { fetchRoleById, updateRole } from '../api/roles'
 import styles from '../../shared/pages.module.css'
@@ -10,6 +11,7 @@ export function AdminRoleEditPage() {
   const { id } = useParams()
   const roleId = Number(id)
   const navigate = useNavigate()
+  const notify = useNotify()
   const [role, setRole] = useState<Role | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -50,6 +52,7 @@ export function AdminRoleEditPage() {
   async function handleUpdate(payload: RoleRequest) {
     try {
       await updateRole(roleId, payload)
+      notify.success(`Papel "${payload.name}" atualizado.`, 'Edição')
       navigate('/admin/papeis', { replace: true })
     } catch (err) {
       if (err instanceof ApiError) {

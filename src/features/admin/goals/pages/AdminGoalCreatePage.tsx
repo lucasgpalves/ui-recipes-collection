@@ -1,16 +1,19 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { ApiError } from '../../../../shared/api/client'
 import type { GoalRequest } from '../../../../shared/api/types'
+import { useNotify } from '../../../../shared/ui/notify'
 import { GoalForm } from '../components/GoalForm'
 import { createGoal } from '../api/goals'
 import styles from '../../shared/pages.module.css'
 
 export function AdminGoalCreatePage() {
   const navigate = useNavigate()
+  const notify = useNotify()
 
   async function handleCreate(payload: GoalRequest) {
     try {
       await createGoal(payload)
+      notify.success(`Meta "${payload.title}" cadastrada.`, 'Cadastro')
       navigate('/admin/metas', { replace: true })
     } catch (err) {
       if (err instanceof ApiError) {
