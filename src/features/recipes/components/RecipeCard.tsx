@@ -23,9 +23,14 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
     .join(' · ')
 
   const showImage = Boolean(recipe.imageUrl) && !imageFailed
+  const title = recipe.name ?? 'Nome receita'
 
   return (
-    <article className={styles.card}>
+    <Link
+      className={styles.card}
+      to={`/receitas/${recipe.id}`}
+      aria-label={`Ver receita ${title}`}
+    >
       <div className={`${styles.media} ${showImage ? '' : styles.mediaFallback}`}>
         {showImage && (
           <img
@@ -39,12 +44,10 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
         )}
       </div>
       <div className={styles.body}>
-        <h3 className={styles.title}>{recipe.name ?? 'Nome receita'}</h3>
+        <h3 className={styles.title}>{title}</h3>
         {snippet && <p className={styles.meta}>{snippet}</p>}
-        <Link className={styles.link} to={`/receitas/${recipe.id}`}>
-          Ver esta receita
-        </Link>
+        <span className={styles.link}>Ver esta receita</span>
       </div>
-    </article>
+    </Link>
   )
 }
