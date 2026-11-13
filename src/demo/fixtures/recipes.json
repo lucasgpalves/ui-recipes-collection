@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "userName": "Fulano de Tal",
+    "name": "Yakisoba caseiro",
+    "categoryName": "Japonesa",
+    "imageUrl": "https://images.unsplash.com/photo-1552611052-33e04de081de?auto=format&fit=crop&w=900&q=80",
+    "description": "Macarrão salteado com legumes crocantes e molho agridocinho."
+  },
+  {
+    "id": 2,
+    "userName": "Ana Costa",
+    "name": "Bolo de cenoura com cobertura",
+    "categoryName": "Bolos",
+    "imageUrl": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80",
+    "description": "Clássico fofinho com cobertura de chocolate brilhante."
+  },
+  {
+    "id": 3,
+    "userName": "Marcos Lima",
+    "name": "Picanha na manteiga de ervas",
+    "categoryName": "Carnes",
+    "imageUrl": "https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=900&q=80",
+    "description": "Peça selada e finalizada com manteiga aromática."
+  },
+  {
+    "id": 4,
+    "userName": "Julia Mendes",
+    "name": "Brigadeiro gourmet",
+    "categoryName": "Doces",
+    "imageUrl": "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=900&q=80",
+    "description": "Brigadeiro cremoso com cacau 70% e granulado belga."
+  },
+  {
+    "id": 5,
+    "userName": "Pedro Alves",
+    "name": "Lasanha à bolonhesa",
+    "categoryName": "Massas",
+    "imageUrl": "https://images.unsplash.com/photo-1574894709920-11b28e7367e3?auto=format&fit=crop&w=900&q=80",
+    "description": "Camadas de massa fresca, molho lento e queijo gratinado."
+  },
+  {
+    "id": 6,
+    "userName": "Carla Nunes",
+    "name": "Pudim de leite condensado",
+    "categoryName": "Sobremesa",
+    "imageUrl": "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=900&q=80",
+    "description": "Pudim clássico com calda de caramelo dourada."
+  },
+  {
+    "id": 7,
+    "userName": "Rafael Souza",
+    "name": "Sopa de abóbora assada",
+    "categoryName": "Sopas",
+    "imageUrl": "https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?auto=format&fit=crop&w=900&q=80",
+    "description": "Creme aveludado com toque de gengibre e crocante."
+  },
+  {
+    "id": 8,
+    "userName": "Helena Dias",
+    "name": "Moqueca de camarão",
+    "categoryName": "Frutos do mar",
+    "imageUrl": "https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=900&q=80",
+    "description": "Moqueca baiana com leite de coco e dendê."
+  },
+  {
+    "id": 9,
+    "userName": "Lucas Rocha",
+    "name": "Risotto de funghi",
+    "categoryName": "Italiana",
+    "imageUrl": "https://images.unsplash.com/photo-1476124369491-e7addf5db371?auto=format&fit=crop&w=900&q=80",
+    "description": "Arroz arbóreo cremoso com mix de cogumelos."
+  },
+  {
+    "id": 10,
+    "userName": "Beatriz Prado",
+    "name": "Tiramisù clássico",
+    "categoryName": "Italiana",
+    "imageUrl": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=900&q=80",
+    "description": "Camadas de café, mascarpone e cacau."
+  }
+]

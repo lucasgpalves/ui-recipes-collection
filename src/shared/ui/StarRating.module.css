@@ -1,0 +1,26 @@
+.wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.stars {
+  display: inline-flex;
+  gap: 0.12rem;
+  line-height: 1;
+}
+
+.star {
+  color: color-mix(in srgb, var(--border) 70%, var(--ink-muted));
+  font-size: 1.15rem;
+}
+
+.filled {
+  color: var(--brand);
+}
+
+.value {
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 1rem;
+}

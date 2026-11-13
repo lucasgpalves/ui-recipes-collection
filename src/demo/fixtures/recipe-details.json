@@ -1,0 +1,203 @@
+[
+  {
+    "id": 1,
+    "userName": "Fulano de Tal",
+    "name": "Yakisoba caseiro",
+    "categoryName": "Japonesa",
+    "createdAt": "2001-01-01T12:00:00Z",
+    "preparationMethod": "Ferva a água e cozinhe o macarrão até ficar al dente.\nEm uma wok bem quente, salteie os legumes com um fio de óleo.\nAdicione o macarrão e o molho, misturando rapidamente.\nFinalize com gergelim e sirva imediatamente.",
+    "portions": 2,
+    "durationMinutes": 30,
+    "ingredients": [
+      { "amount": 1, "ingredientName": "ovo", "measurementName": "unidade de" },
+      { "amount": 1, "ingredientName": "leite", "measurementName": "Litro de" },
+      { "amount": 2, "ingredientName": "farinha", "measurementName": "xícaras de" },
+      { "amount": 100, "ingredientName": "queijo", "measurementName": "gramas de" }
+    ],
+    "description": "Um yakisoba equilibrado, com legumes crocantes e molho agridocinho. Ideal para o dia a dia, sem abrir mão do visual de restaurante.\n\nA textura do macarrão e o ponto do salteado fazem a diferença: o fogo alto e o preparo rápido são o segredo.",
+    "isPublished": true,
+    "isRated": true,
+    "imageUrl": "https://images.unsplash.com/photo-1552611052-33e04de081de?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "id": 2,
+    "userName": "Ana Costa",
+    "name": "Bolo de cenoura com cobertura",
+    "categoryName": "Bolos",
+    "createdAt": "2024-03-12T15:30:00Z",
+    "preparationMethod": "Bata no liquidificador as cenouras, ovos e óleo.\nMisture a farinha e o fermento até incorporar.\nAsse em forno médio por cerca de 40 minutos.\nPrepare a cobertura e espalhe sobre o bolo frio.",
+    "portions": 12,
+    "durationMinutes": 55,
+    "ingredients": [
+      { "amount": 3, "ingredientName": "cenoura", "measurementName": "unidades de" },
+      { "amount": 3, "ingredientName": "ovos", "measurementName": "unidades de" },
+      { "amount": 2, "ingredientName": "açúcar", "measurementName": "xícaras de" },
+      { "amount": 2, "ingredientName": "farinha de trigo", "measurementName": "xícaras de" },
+      { "amount": 1, "ingredientName": "fermento", "measurementName": "colher de sopa de" }
+    ],
+    "description": "Bolo úmido de cenoura com cobertura de chocolate que derrete na boca.\n\nPerfeito para café da tarde e celebrações simples em casa.",
+    "isPublished": true,
+    "isRated": true,
+    "imageUrl": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "id": 3,
+    "userName": "Marcos Lima",
+    "name": "Picanha na manteiga de ervas",
+    "categoryName": "Carnes",
+    "createdAt": "2024-06-02T19:00:00Z",
+    "preparationMethod": "Tempere a peça com sal grosso e deixe em temperatura ambiente.\nSele em frigideira bem quente dos dois lados.\nFinalize no forno com manteiga de ervas.\nDescanse alguns minutos antes de fatiar.",
+    "portions": 4,
+    "durationMinutes": 45,
+    "ingredients": [
+      { "amount": 1, "ingredientName": "picanha", "measurementName": "kg de" },
+      { "amount": 2, "ingredientName": "manteiga", "measurementName": "colheres de sopa de" },
+      { "amount": 1, "ingredientName": "alecrim", "measurementName": "ramo de" },
+      { "amount": 1, "ingredientName": "sal grosso", "measurementName": "colher de sopa de" }
+    ],
+    "description": "Picanha selada com crosta dourada e miolo macio, finalizada com manteiga aromática.\n\nUma receita de impacto para churrasco de apartamento.",
+    "isPublished": true,
+    "isRated": true,
+    "imageUrl": "https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "id": 4,
+    "userName": "Julia Mendes",
+    "name": "Brigadeiro gourmet",
+    "categoryName": "Doces",
+    "createdAt": "2024-08-20T10:00:00Z",
+    "preparationMethod": "Misture leite condensado, cacau e manteiga em fogo baixo.\nMexa até desgrudar do fundo da panela.\nDeixe esfriar e enrole.\nPasse no granulado e sirva.",
+    "portions": 30,
+    "durationMinutes": 25,
+    "ingredients": [
+      { "amount": 1, "ingredientName": "leite condensado", "measurementName": "lata de" },
+      { "amount": 3, "ingredientName": "cacau 70%", "measurementName": "colheres de sopa de" },
+      { "amount": 1, "ingredientName": "manteiga", "measurementName": "colher de sopa de" },
+      { "amount": 100, "ingredientName": "granulado", "measurementName": "gramas de" }
+    ],
+    "description": "Brigadeiro intenso de cacau, cremoso e com ponto certeiro para enrolar.\n\nIdeal para festas e caixas de presente.",
+    "isPublished": true,
+    "isRated": true,
+    "imageUrl": "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "id": 5,
+    "userName": "Pedro Alves",
+    "name": "Lasanha à bolonhesa",
+    "categoryName": "Massas",
+    "createdAt": "2023-11-08T18:20:00Z",
+    "preparationMethod": "Prepare o molho bolonhesa em fogo baixo.\nFaça o molho bechamel até engrossar.\nMonte as camadas de massa, molhos e queijo.\nAsse até gratinar e descanse antes de servir.",
+    "portions": 6,
+    "durationMinutes": 90,
+    "ingredients": [
+      { "amount": 500, "ingredientName": "carne moída", "measurementName": "gramas de" },
+      { "amount": 12, "ingredientName": "massa para lasanha", "measurementName": "folhas de" },
+      { "amount": 300, "ingredientName": "mussarela", "measurementName": "gramas de" },
+      { "amount": 1, "ingredientName": "leite", "measurementName": "litro de" }
+    ],
+    "description": "Lasanha generosa, com molho lento e queijo gratinado.\n\nReceita de domingo para a família inteira.",
+    "isPublished": true,
+    "isRated": true,
+    "imageUrl": "https://images.unsplash.com/photo-1574894709920-11b28e7367e3?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "id": 6,
+    "userName": "Carla Nunes",
+    "name": "Pudim de leite condensado",
+    "categoryName": "Sobremesa",
+    "createdAt": "2024-01-15T14:00:00Z",
+    "preparationMethod": "Faça a calda de caramelo e forre a forma.\nBata os ingredientes do pudim no liquidificador.\nAsse em banho-maria até firmar.\nDesenforme gelado.",
+    "portions": 8,
+    "durationMinutes": 70,
+    "ingredients": [
+      { "amount": 1, "ingredientName": "leite condensado", "measurementName": "lata de" },
+      { "amount": 2, "ingredientName": "leite", "measurementName": "medidas de" },
+      { "amount": 3, "ingredientName": "ovos", "measurementName": "unidades de" },
+      { "amount": 1, "ingredientName": "açúcar", "measurementName": "xícara de" }
+    ],
+    "description": "Pudim clássico com calda brilhante e textura aveludada.\n\nUma sobremesa que nunca sai de moda.",
+    "isPublished": true,
+    "isRated": true,
+    "imageUrl": "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "id": 7,
+    "userName": "Rafael Souza",
+    "name": "Sopa de abóbora assada",
+    "categoryName": "Sopas",
+    "createdAt": "2024-05-03T12:10:00Z",
+    "preparationMethod": "Asse a abóbora com azeite e sal.\nRefogue cebola e gengibre.\nBata tudo com caldo até obter creme.\nAjuste o sal e finalize com sementes.",
+    "portions": 4,
+    "durationMinutes": 40,
+    "ingredients": [
+      { "amount": 800, "ingredientName": "abóbora", "measurementName": "gramas de" },
+      { "amount": 1, "ingredientName": "cebola", "measurementName": "unidade de" },
+      { "amount": 1, "ingredientName": "gengibre", "measurementName": "colher de chá de" },
+      { "amount": 750, "ingredientName": "caldo de legumes", "measurementName": "ml de" }
+    ],
+    "description": "Creme aconchegante com doçura natural da abóbora e toque de gengibre.\n\nLeve e reconfortante para noites frias.",
+    "isPublished": true,
+    "isRated": true,
+    "imageUrl": "https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "id": 8,
+    "userName": "Helena Dias",
+    "name": "Moqueca de camarão",
+    "categoryName": "Frutos do mar",
+    "createdAt": "2024-07-22T20:00:00Z",
+    "preparationMethod": "Tempere os camarões com limão e sal.\nRefogue pimentões, tomate e cebola.\nAdicione leite de coco e dendê.\nIncorpore os camarões e cozinhe até ficarem rosados.",
+    "portions": 4,
+    "durationMinutes": 35,
+    "ingredients": [
+      { "amount": 500, "ingredientName": "camarão", "measurementName": "gramas de" },
+      { "amount": 200, "ingredientName": "leite de coco", "measurementName": "ml de" },
+      { "amount": 1, "ingredientName": "azeite de dendê", "measurementName": "colher de sopa de" },
+      { "amount": 2, "ingredientName": "pimentões", "measurementName": "unidades de" }
+    ],
+    "description": "Moqueca aromática, com leite de coco e dendê no ponto certo.\n\nSirva com arroz branco e farofa.",
+    "isPublished": true,
+    "isRated": true,
+    "imageUrl": "https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "id": 9,
+    "userName": "Lucas Rocha",
+    "name": "Risotto de funghi",
+    "categoryName": "Italiana",
+    "createdAt": "2024-09-01T13:45:00Z",
+    "preparationMethod": "Refogue os cogumelos e reserve.\nToste o arroz com cebola e vinho branco.\nAdicione o caldo aos poucos, mexendo sempre.\nFinalize com manteiga, parmesão e os cogumelos.",
+    "portions": 3,
+    "durationMinutes": 40,
+    "ingredients": [
+      { "amount": 250, "ingredientName": "arroz arbóreo", "measurementName": "gramas de" },
+      { "amount": 300, "ingredientName": "cogumelos", "measurementName": "gramas de" },
+      { "amount": 80, "ingredientName": "parmesão", "measurementName": "gramas de" },
+      { "amount": 1, "ingredientName": "vinho branco", "measurementName": "taça de" }
+    ],
+    "description": "Risotto cremoso com sabor profundo de cogumelos.\n\nUma receita elegante para jantares especiais.",
+    "isPublished": true,
+    "isRated": true,
+    "imageUrl": "https://images.unsplash.com/photo-1476124369491-e7addf5db371?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "id": 10,
+    "userName": "Beatriz Prado",
+    "name": "Tiramisù clássico",
+    "categoryName": "Italiana",
+    "createdAt": "2024-02-14T16:00:00Z",
+    "preparationMethod": "Bata as gemas com açúcar até clarear.\nIncorpore o mascarpone com cuidado.\nMolhe os biscoitos no café e monte as camadas.\nFinalize com cacau e leve à geladeira.",
+    "portions": 6,
+    "durationMinutes": 30,
+    "ingredients": [
+      { "amount": 250, "ingredientName": "mascarpone", "measurementName": "gramas de" },
+      { "amount": 3, "ingredientName": "gemas", "measurementName": "unidades de" },
+      { "amount": 200, "ingredientName": "biscoito champagne", "measurementName": "gramas de" },
+      { "amount": 200, "ingredientName": "café forte", "measurementName": "ml de" }
+    ],
+    "description": "Tiramisù clássico, leve e com o equilíbrio certo entre café e creme.\n\nMelhor ainda no dia seguinte.",
+    "isPublished": true,
+    "isRated": true,
+    "imageUrl": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=1200&q=80"
+  }
+]

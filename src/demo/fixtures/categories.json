@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "name": "Bolos",
+    "description": "Bolos caseiros e festivos"
+  },
+  {
+    "id": 2,
+    "name": "Carnes",
+    "description": "Carnes assadas, grelhadas e ensopadas"
+  },
+  {
+    "id": 3,
+    "name": "Doces",
+    "description": "Doces e sobremesas rápidas"
+  },
+  {
+    "id": 4,
+    "name": "Massas",
+    "description": "Massas frescas e molhos"
+  },
+  {
+    "id": 5,
+    "name": "Sobremesa",
+    "description": "Sobremesas elaboradas"
+  },
+  {
+    "id": 6,
+    "name": "Sopas",
+    "description": "Sopas e caldos"
+  },
+  {
+    "id": 7,
+    "name": "Frutos do mar",
+    "description": "Peixes e frutos do mar"
+  },
+  {
+    "id": 8,
+    "name": "Japonesa",
+    "description": "Culinária japonesa"
+  },
+  {
+    "id": 9,
+    "name": "Italiana",
+    "description": "Clássicos italianos"
+  }
+]

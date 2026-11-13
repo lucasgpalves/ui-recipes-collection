@@ -1,0 +1,15 @@
+.state {
+  padding: 2rem 1.5rem;
+  color: var(--ink-muted);
+  text-align: center;
+}
+
+.error {
+  color: var(--danger);
+}
+
+.empty {
+  padding: 2rem 0;
+  color: var(--ink-muted);
+  text-align: center;
+}
