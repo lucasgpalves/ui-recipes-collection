@@ -8,9 +8,20 @@ export function AdminLayout() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
 
+  const isUsersSection = pathname.startsWith('/admin/usuarios')
   const isUsersListOrProfile =
     pathname === '/admin/usuarios' || /^\/admin\/usuarios\/\d+(\/editar)?$/.test(pathname)
   const isUsersCreate = pathname === '/admin/usuarios/novo'
+
+  const isCategoriesSection = pathname.startsWith('/admin/categorias')
+  const isCategoriesList = pathname === '/admin/categorias'
+  const isCategoriesCreate = pathname === '/admin/categorias/nova'
+  const isCategoriesEdit = /^\/admin\/categorias\/\d+\/editar$/.test(pathname)
+
+  const isRolesSection = pathname.startsWith('/admin/papeis')
+  const isRolesList = pathname === '/admin/papeis'
+  const isRolesCreate = pathname === '/admin/papeis/novo'
+  const isRolesEdit = /^\/admin\/papeis\/\d+\/editar$/.test(pathname)
 
   return (
     <div className={styles.shell}>
@@ -23,17 +34,59 @@ export function AdminLayout() {
         </div>
 
         <p className={styles.sectionLabel}>Usuários</p>
-        <nav className={styles.nav} aria-label="Administração">
+        <nav className={styles.nav} aria-label="Usuários">
           <NavLink
             to="/admin/usuarios"
             end
-            className={() => (isUsersListOrProfile ? styles.navActive : styles.navLink)}
+            className={() =>
+              isUsersSection && isUsersListOrProfile ? styles.navActive : styles.navLink
+            }
           >
             Listagem
           </NavLink>
           <NavLink
             to="/admin/usuarios/novo"
             className={() => (isUsersCreate ? styles.navActive : styles.navLink)}
+          >
+            Cadastro
+          </NavLink>
+        </nav>
+
+        <p className={styles.sectionLabel}>Categorias</p>
+        <nav className={styles.nav} aria-label="Categorias">
+          <NavLink
+            to="/admin/categorias"
+            end
+            className={() =>
+              isCategoriesSection && (isCategoriesList || isCategoriesEdit)
+                ? styles.navActive
+                : styles.navLink
+            }
+          >
+            Listagem
+          </NavLink>
+          <NavLink
+            to="/admin/categorias/nova"
+            className={() => (isCategoriesCreate ? styles.navActive : styles.navLink)}
+          >
+            Cadastro
+          </NavLink>
+        </nav>
+
+        <p className={styles.sectionLabel}>Papéis</p>
+        <nav className={styles.nav} aria-label="Papéis">
+          <NavLink
+            to="/admin/papeis"
+            end
+            className={() =>
+              isRolesSection && (isRolesList || isRolesEdit) ? styles.navActive : styles.navLink
+            }
+          >
+            Listagem
+          </NavLink>
+          <NavLink
+            to="/admin/papeis/novo"
+            className={() => (isRolesCreate ? styles.navActive : styles.navLink)}
           >
             Cadastro
           </NavLink>

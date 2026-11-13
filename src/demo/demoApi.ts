@@ -1,10 +1,12 @@
 import { createDemoToken } from './demoToken'
 import type {
   Category,
+  CategoryRequest,
   Recipe,
   RecipeSummary,
   Review,
   Role,
+  RoleRequest,
   TokenResponse,
   UserRequest,
   UserResponse,
@@ -17,6 +19,35 @@ const DEMO_ADMIN_PASSWORD = 'admin'
 
 let nextUserId = 1
 const usersStore: UserResponse[] = []
+
+let categoriesStore: Category[] | null = null
+let nextCategoryId = 1
+
+let rolesStore: Role[] | null = null
+let nextRoleId = 1
+
+async function ensureCategoriesStore(): Promise<Category[]> {
+  if (categoriesStore) return categoriesStore
+  const seed = await demoRequest<Category[]>(
+    new URL('./fixtures/categories.json', import.meta.url).href,
+    0,
+  )
+  categoriesStore = seed.map((item) => structuredClone(item))
+  nextCategoryId = Math.max(0, ...categoriesStore.map((item) => item.id)) + 1
+  return categoriesStore
+}
+
+async function ensureRolesStore(): Promise<Role[]> {
+  if (rolesStore) return rolesStore
+  const seed = await demoRequest<Role[]>(
+    new URL('./fixtures/roles.json', import.meta.url).href,
+    0,
+  )
+  rolesStore = seed.map((item) => structuredClone(item))
+  nextRoleId =
+    Math.max(0, ...rolesStore.map((item) => (typeof item.id === 'number' ? item.id : 0))) + 1
+  return rolesStore
+}
 
 async function withLatency<T>(value: T, latency = DEMO_LATENCY_MS): Promise<T> {
   await new Promise((resolve) => window.setTimeout(resolve, latency))
@@ -57,16 +88,116 @@ export async function demoFetchRecipe(id: number): Promise<Recipe> {
   return structuredClone(recipe)
 }
 
-export function demoFetchCategories(): Promise<Category[]> {
-  return demoRequest(new URL('./fixtures/categories.json', import.meta.url).href, 280)
+export async function demoFetchCategories(): Promise<Category[]> {
+  const store = await ensureCategoriesStore()
+  return withLatency(store.map((item) => structuredClone(item)), 280)
+}
+
+export async function demoFetchCategoryById(id: number): Promise<Category> {
+  const store = await ensureCategoriesStore()
+  const category = store.find((item) => item.id === id)
+  if (!category) {
+    throw new ApiError(404, `Demo category ${id} not found`)
+  }
+  return withLatency(structuredClone(category), 240)
+}
+
+export async function demoCreateCategory(request: CategoryRequest): Promise<Category> {
+  const store = await ensureCategoriesStore()
+  const created: Category = {
+    id: nextCategoryId++,
+    name: request.name.trim(),
+    description: request.description?.trim() ? request.description.trim() : null,
+  }
+  store.push(created)
+  return withLatency(structuredClone(created), 380)
+}
+
+export async function demoUpdateCategory(id: number, request: CategoryRequest): Promise<Category> {
+  const store = await ensureCategoriesStore()
+  const index = store.findIndex((item) => item.id === id)
+  if (index < 0) {
+    throw new ApiError(404, `Demo category ${id} not found`)
+  }
+  const updated: Category = {
+    id,
+    name: request.name.trim(),
+    description: request.description?.trim() ? request.description.trim() : null,
+  }
+  store[index] = updated
+  return withLatency(structuredClone(updated), 380)
+}
+
+export async function demoDeleteCategory(id: number): Promise<void> {
+  const store = await ensureCategoriesStore()
+  const index = store.findIndex((item) => item.id === id)
+  if (index < 0) {
+    throw new ApiError(404, `Demo category ${id} not found`)
+  }
+  store.splice(index, 1)
+  await withLatency(undefined, 300)
 }
 
 export function demoFetchReviews(): Promise<Review[]> {
   return demoRequest(new URL('./fixtures/reviews.json', import.meta.url).href, 320)
 }
 
-export function demoFetchRoles(): Promise<Role[]> {
-  return demoRequest(new URL('./fixtures/roles.json', import.meta.url).href, 240)
+export async function demoFetchRoles(): Promise<Role[]> {
+  const store = await ensureRolesStore()
+  return withLatency(store.map((item) => structuredClone(item)), 240)
+}
+
+export async function demoFetchRoleById(id: number): Promise<Role> {
+  const store = await ensureRolesStore()
+  const role = store.find((item) => item.id === id)
+  if (!role) {
+    throw new ApiError(404, `Demo role ${id} not found`)
+  }
+  return withLatency(structuredClone(role), 220)
+}
+
+export async function demoCreateRole(request: RoleRequest): Promise<Role> {
+  const store = await ensureRolesStore()
+  const name = request.name.trim().toUpperCase()
+  if (store.some((item) => item.name === name)) {
+    throw new ApiError(400, 'Demo role already exists')
+  }
+  const created: Role = {
+    id: nextRoleId++,
+    name,
+    description: request.description?.trim() ? request.description.trim() : null,
+  }
+  store.push(created)
+  return withLatency(structuredClone(created), 360)
+}
+
+export async function demoUpdateRole(id: number, request: RoleRequest): Promise<Role> {
+  const store = await ensureRolesStore()
+  const index = store.findIndex((item) => item.id === id)
+  if (index < 0) {
+    throw new ApiError(404, `Demo role ${id} not found`)
+  }
+  const name = request.name.trim().toUpperCase()
+  if (store.some((item) => item.name === name && item.id !== id)) {
+    throw new ApiError(400, 'Demo role name already exists')
+  }
+  const updated: Role = {
+    id,
+    name,
+    description: request.description?.trim() ? request.description.trim() : null,
+  }
+  store[index] = updated
+  return withLatency(structuredClone(updated), 360)
+}
+
+export async function demoDeleteRole(id: number): Promise<void> {
+  const store = await ensureRolesStore()
+  const index = store.findIndex((item) => item.id === id)
+  if (index < 0) {
+    throw new ApiError(404, `Demo role ${id} not found`)
+  }
+  store.splice(index, 1)
+  await withLatency(undefined, 280)
 }
 
 export async function demoLogin(username: string, password: string): Promise<TokenResponse> {

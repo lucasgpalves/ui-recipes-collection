@@ -1,5 +1,11 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import {
+  AdminCategoriesListPage,
+  AdminCategoryCreatePage,
+  AdminCategoryEditPage,
+  AdminRoleCreatePage,
+  AdminRoleEditPage,
+  AdminRolesListPage,
   AdminUserCreatePage,
   AdminUserEditPage,
   AdminUserProfilePage,
@@ -25,6 +31,12 @@ export default function App() {
               <Route path="usuarios/novo" element={<AdminUserCreatePage />} />
               <Route path="usuarios/:id" element={<AdminUserProfilePage />} />
               <Route path="usuarios/:id/editar" element={<AdminUserEditPage />} />
+              <Route path="categorias" element={<AdminCategoriesListPage />} />
+              <Route path="categorias/nova" element={<AdminCategoryCreatePage />} />
+              <Route path="categorias/:id/editar" element={<AdminCategoryEditPage />} />
+              <Route path="papeis" element={<AdminRolesListPage />} />
+              <Route path="papeis/novo" element={<AdminRoleCreatePage />} />
+              <Route path="papeis/:id/editar" element={<AdminRoleEditPage />} />
             </Route>
           </Route>
           <Route element={<PublicLayout />}>

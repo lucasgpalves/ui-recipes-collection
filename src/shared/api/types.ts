@@ -37,6 +37,12 @@ export type Category = {
   description: string | null
 }
 
+/** Espelha CategoryRequestDTO (JSON camelCase). */
+export type CategoryRequest = {
+  name: string
+  description?: string | null
+}
+
 export type Review = {
   rating: number | null
   description: string | null
@@ -53,10 +59,17 @@ export type TokenResponse = {
   token: string | null
 }
 
-/** Espelha RoleResponseDTO (JSON camelCase). */
+/** Espelha RoleResponseDTO (JSON camelCase). `id` só no demo; a API real ainda não devolve. */
 export type Role = {
+  id?: number | null
   name: string | null
   description: string | null
+}
+
+/** Espelha RoleRequestDTO (JSON camelCase). */
+export type RoleRequest = {
+  name: string
+  description?: string | null
 }
 
 /** Espelha UserRequestDTO (JSON camelCase). */

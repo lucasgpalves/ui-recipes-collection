@@ -5,7 +5,7 @@ import { formatCpf } from '../../../../shared/lib/cpf'
 import { formatMoney } from '../../../../shared/lib/money'
 import type { UserResponse } from '../../../../shared/api/types'
 import { fetchUserById, terminateUser } from '../api/users'
-import styles from './users.module.css'
+import styles from '../../shared/pages.module.css'
 
 export function AdminUserProfilePage() {
   const { id } = useParams()

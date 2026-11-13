@@ -3,7 +3,7 @@ import { ApiError } from '../../../../shared/api/client'
 import type { UserRequest } from '../../../../shared/api/types'
 import { UserForm } from '../components/UserForm'
 import { createUser } from '../api/users'
-import styles from './users.module.css'
+import styles from '../../shared/pages.module.css'
 
 export function AdminUserCreatePage() {
   const navigate = useNavigate()

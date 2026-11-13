@@ -3,7 +3,7 @@ import { digitsOnlyCpf, formatCpf, isValidCpf } from '../../../../shared/lib/cpf
 import { formatMoney, parseMoneyInput } from '../../../../shared/lib/money'
 import type { Role, UserRequest } from '../../../../shared/api/types'
 import { fetchRoles } from '../../roles'
-import styles from '../pages/users.module.css'
+import styles from '../../shared/pages.module.css'
 
 type UserFormProps = {
   initial?: Partial<UserRequest>

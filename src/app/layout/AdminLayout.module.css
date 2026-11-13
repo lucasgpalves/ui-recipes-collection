@@ -53,7 +53,6 @@
 .nav {
   display: grid;
   gap: 0.25rem;
-  flex: 1;
   align-content: start;
 }
 
@@ -81,6 +80,7 @@
 .sidebarFooter {
   display: grid;
   gap: 0.65rem;
+  margin-top: auto;
   padding-top: 0.75rem;
   border-top: 1px solid var(--border);
 }

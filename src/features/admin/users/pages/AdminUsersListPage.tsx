@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { formatCpf } from '../../../../shared/lib/cpf'
 import type { UserResponse } from '../../../../shared/api/types'
 import { fetchUsers } from '../api/users'
-import styles from './users.module.css'
+import styles from '../../shared/pages.module.css'
 
 export function AdminUsersListPage() {
   const [users, setUsers] = useState<UserResponse[]>([])

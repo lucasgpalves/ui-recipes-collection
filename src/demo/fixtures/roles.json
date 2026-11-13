@@ -1,17 +1,21 @@
 [
   {
+    "id": 1,
     "name": "ADMIN",
     "description": "Administração do sistema"
   },
   {
+    "id": 2,
     "name": "COOK",
     "description": "Cadastro e edição de receitas"
   },
   {
+    "id": 3,
     "name": "EDITOR",
     "description": "Seleção de receitas e livros"
   },
   {
+    "id": 4,
     "name": "TASTER",
     "description": "Avaliação de receitas"
   }

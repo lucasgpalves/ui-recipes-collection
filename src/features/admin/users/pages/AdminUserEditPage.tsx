@@ -4,7 +4,7 @@ import { ApiError } from '../../../../shared/api/client'
 import type { UserRequest, UserResponse } from '../../../../shared/api/types'
 import { UserForm } from '../components/UserForm'
 import { fetchUserById, updateUser } from '../api/users'
-import styles from './users.module.css'
+import styles from '../../shared/pages.module.css'
 
 export function AdminUserEditPage() {
   const { id } = useParams()
