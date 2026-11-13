@@ -22,7 +22,7 @@ Ordem sugerida para fechar fatias verticais no mesmo padrão (sidebar + listagem
 |---------------|------------|--------------------------------------------|
 | Categorias    | Feito (demo) | Listagem, cadastro, edição, exclusão      |
 | Roles / Papéis| Feito (demo) | CRUD; `id` só no demo (API ainda não devolve) |
-| Goals         | Depois     | Metas administrativas                      |
+| Goals / Metas | Feito (demo) | CRUD por papel; progresso (`/progress`) pendente |
 | Restaurants   | Depois     | Ligado a usuários / job references         |
 | Job references| Depois     | Depende de usuário COOK                    |
 
@@ -36,4 +36,4 @@ Ainda não iniciados — superfícies autenticadas por papel:
 
 ## Decisão atual
 
-Pendências de usuários registradas acima. Fatias **Categorias** e **Papéis** finalizadas no admin (demo). Próximo módulo natural: **Goals** ou **Restaurants**.
+Pendências de usuários registradas acima. Fatias **Categorias**, **Papéis** e **Metas** finalizadas no admin (demo). Progresso de meta (`GET /goals/{id}/progress?userId=`) fica para um próximo incremento. Próximo módulo natural: **Restaurants**.

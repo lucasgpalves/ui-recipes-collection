@@ -5,6 +5,11 @@ export {
   AdminCategoryEditPage,
 } from './categories'
 export {
+  AdminGoalCreatePage,
+  AdminGoalEditPage,
+  AdminGoalsListPage,
+} from './goals'
+export {
   AdminRoleCreatePage,
   AdminRoleEditPage,
   AdminRolesListPage,

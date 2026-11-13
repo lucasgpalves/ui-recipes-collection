@@ -2,6 +2,8 @@ import { createDemoToken } from './demoToken'
 import type {
   Category,
   CategoryRequest,
+  Goal,
+  GoalRequest,
   Recipe,
   RecipeSummary,
   Review,
@@ -26,6 +28,9 @@ let nextCategoryId = 1
 let rolesStore: Role[] | null = null
 let nextRoleId = 1
 
+let goalsStore: Goal[] | null = null
+let nextGoalId = 1
+
 async function ensureCategoriesStore(): Promise<Category[]> {
   if (categoriesStore) return categoriesStore
   const seed = await demoRequest<Category[]>(
@@ -47,6 +52,32 @@ async function ensureRolesStore(): Promise<Role[]> {
   nextRoleId =
     Math.max(0, ...rolesStore.map((item) => (typeof item.id === 'number' ? item.id : 0))) + 1
   return rolesStore
+}
+
+async function ensureGoalsStore(): Promise<Goal[]> {
+  if (goalsStore) return goalsStore
+  const seed = await demoRequest<Goal[]>(
+    new URL('./fixtures/goals.json', import.meta.url).href,
+    0,
+  )
+  goalsStore = seed.map((item) => structuredClone(item))
+  nextGoalId =
+    Math.max(0, ...goalsStore.map((item) => (typeof item.id === 'number' ? item.id : 0))) + 1
+  return goalsStore
+}
+
+function formatDemoDate(date: Date): string {
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
+}
+
+async function resolveRoleByName(roleName: string): Promise<Role> {
+  const roles = await ensureRolesStore()
+  const role = roles.find((item) => item.name === roleName.toUpperCase())
+  if (!role) {
+    throw new ApiError(400, `Demo role not found: ${roleName}`)
+  }
+  return structuredClone(role)
 }
 
 async function withLatency<T>(value: T, latency = DEMO_LATENCY_MS): Promise<T> {
@@ -195,6 +226,64 @@ export async function demoDeleteRole(id: number): Promise<void> {
   const index = store.findIndex((item) => item.id === id)
   if (index < 0) {
     throw new ApiError(404, `Demo role ${id} not found`)
+  }
+  store.splice(index, 1)
+  await withLatency(undefined, 280)
+}
+
+export async function demoFetchGoals(): Promise<Goal[]> {
+  const store = await ensureGoalsStore()
+  return withLatency(store.map((item) => structuredClone(item)), 260)
+}
+
+export async function demoFetchGoalById(id: number): Promise<Goal> {
+  const store = await ensureGoalsStore()
+  const goal = store.find((item) => item.id === id)
+  if (!goal) {
+    throw new ApiError(404, `Demo goal ${id} not found`)
+  }
+  return withLatency(structuredClone(goal), 220)
+}
+
+export async function demoCreateGoal(request: GoalRequest): Promise<Goal> {
+  const store = await ensureGoalsStore()
+  const role = await resolveRoleByName(request.roleName)
+  const created: Goal = {
+    id: nextGoalId++,
+    title: request.title.trim(),
+    amount: request.amount,
+    description: request.description?.trim() ? request.description.trim() : '',
+    startsAt: formatDemoDate(new Date()),
+    role,
+  }
+  store.push(created)
+  return withLatency(structuredClone(created), 380)
+}
+
+export async function demoUpdateGoal(id: number, request: GoalRequest): Promise<Goal> {
+  const store = await ensureGoalsStore()
+  const index = store.findIndex((item) => item.id === id)
+  if (index < 0) {
+    throw new ApiError(404, `Demo goal ${id} not found`)
+  }
+  const current = store[index]
+  const role = await resolveRoleByName(request.roleName)
+  const updated: Goal = {
+    ...current,
+    title: request.title.trim(),
+    amount: request.amount,
+    description: request.description?.trim() ? request.description.trim() : '',
+    role,
+  }
+  store[index] = updated
+  return withLatency(structuredClone(updated), 380)
+}
+
+export async function demoDeleteGoal(id: number): Promise<void> {
+  const store = await ensureGoalsStore()
+  const index = store.findIndex((item) => item.id === id)
+  if (index < 0) {
+    throw new ApiError(404, `Demo goal ${id} not found`)
   }
   store.splice(index, 1)
   await withLatency(undefined, 280)

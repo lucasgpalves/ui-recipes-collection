@@ -3,6 +3,9 @@ import {
   AdminCategoriesListPage,
   AdminCategoryCreatePage,
   AdminCategoryEditPage,
+  AdminGoalCreatePage,
+  AdminGoalEditPage,
+  AdminGoalsListPage,
   AdminRoleCreatePage,
   AdminRoleEditPage,
   AdminRolesListPage,
@@ -37,6 +40,9 @@ export default function App() {
               <Route path="papeis" element={<AdminRolesListPage />} />
               <Route path="papeis/novo" element={<AdminRoleCreatePage />} />
               <Route path="papeis/:id/editar" element={<AdminRoleEditPage />} />
+              <Route path="metas" element={<AdminGoalsListPage />} />
+              <Route path="metas/nova" element={<AdminGoalCreatePage />} />
+              <Route path="metas/:id/editar" element={<AdminGoalEditPage />} />
             </Route>
           </Route>
           <Route element={<PublicLayout />}>

@@ -72,6 +72,31 @@ export type RoleRequest = {
   description?: string | null
 }
 
+/** Espelha GoalRequestDTO (JSON camelCase). */
+export type GoalRequest = {
+  title: string
+  amount: number
+  description?: string | null
+  roleName: string
+}
+
+/** Espelha GoalResponseDTO (JSON camelCase). */
+export type Goal = {
+  id: number | null
+  title: string | null
+  amount: number
+  description: string | null
+  startsAt: string | null
+  role: Role | null
+}
+
+/** Espelha GoalProgressResponse. */
+export type GoalProgress = {
+  userId: number | null
+  target: number
+  progress: number
+}
+
 /** Espelha UserRequestDTO (JSON camelCase). */
 export type UserRequest = {
   cpf: string

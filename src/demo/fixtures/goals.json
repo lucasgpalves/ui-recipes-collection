@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "title": "Receitas do mês",
+    "amount": 5,
+    "description": "Meta mensal de publicações para cozinheiros",
+    "startsAt": "2026-01-01",
+    "role": {
+      "id": 2,
+      "name": "COOK",
+      "description": "Cadastro e edição de receitas"
+    }
+  },
+  {
+    "id": 2,
+    "title": "Avaliações do mês",
+    "amount": 10,
+    "description": "Meta mensal de reviews para degustadores",
+    "startsAt": "2026-01-01",
+    "role": {
+      "id": 4,
+      "name": "TASTER",
+      "description": "Avaliação de receitas"
+    }
+  }
+]

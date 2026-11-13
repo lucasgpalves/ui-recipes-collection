@@ -23,6 +23,11 @@ export function AdminLayout() {
   const isRolesCreate = pathname === '/admin/papeis/novo'
   const isRolesEdit = /^\/admin\/papeis\/\d+\/editar$/.test(pathname)
 
+  const isGoalsSection = pathname.startsWith('/admin/metas')
+  const isGoalsList = pathname === '/admin/metas'
+  const isGoalsCreate = pathname === '/admin/metas/nova'
+  const isGoalsEdit = /^\/admin\/metas\/\d+\/editar$/.test(pathname)
+
   return (
     <div className={styles.shell}>
       <aside className={styles.sidebar}>
@@ -87,6 +92,25 @@ export function AdminLayout() {
           <NavLink
             to="/admin/papeis/novo"
             className={() => (isRolesCreate ? styles.navActive : styles.navLink)}
+          >
+            Cadastro
+          </NavLink>
+        </nav>
+
+        <p className={styles.sectionLabel}>Metas</p>
+        <nav className={styles.nav} aria-label="Metas">
+          <NavLink
+            to="/admin/metas"
+            end
+            className={() =>
+              isGoalsSection && (isGoalsList || isGoalsEdit) ? styles.navActive : styles.navLink
+            }
+          >
+            Listagem
+          </NavLink>
+          <NavLink
+            to="/admin/metas/nova"
+            className={() => (isGoalsCreate ? styles.navActive : styles.navLink)}
           >
             Cadastro
           </NavLink>
