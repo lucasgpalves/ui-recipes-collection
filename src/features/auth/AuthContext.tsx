@@ -8,13 +8,13 @@ import {
   type ReactNode,
 } from 'react'
 import {
+  parseTokenClaims,
   roleFromToken,
   subjectFromToken,
   userIdFromToken,
 } from '../../shared/auth/tokenClaims'
 import { setMemoryToken, setUnauthorizedHandler } from '../../shared/api/client'
-import { env } from '../../shared/config/env'
-import { fetchAuthMe, loginRequest, logoutRequest } from './api/login'
+import { loginRequest, logoutRequest } from './api/login'
 
 const TOKEN_KEY = 'receitou.auth.token'
 
@@ -32,21 +32,26 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
-function readStoredDemoToken(): string | null {
-  if (!env.useDemoApi) return null
+/** RF-UI-API-06 / RF-UI-API-08: lê JWT de sessionStorage; limpa se ausente/inválido/expirado/demo.* em API real. */
+function readStoredToken(): string | null {
   try {
-    return sessionStorage.getItem(TOKEN_KEY)
+    const raw = sessionStorage.getItem(TOKEN_KEY)
+    if (!raw) return null
+    if (!parseTokenClaims(raw)) {
+      sessionStorage.removeItem(TOKEN_KEY)
+      return null
+    }
+    return raw
   } catch {
     return null
   }
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [token, setToken] = useState<string | null>(() => readStoredDemoToken())
-  const [username, setUsername] = useState<string | null>(() => subjectFromToken(readStoredDemoToken()))
-  const [userId, setUserId] = useState<number | null>(() => userIdFromToken(readStoredDemoToken()))
-  const [role, setRole] = useState<string | null>(() => roleFromToken(readStoredDemoToken()))
-  const [sessionReady, setSessionReady] = useState(env.useDemoApi)
+  const [token, setToken] = useState<string | null>(() => readStoredToken())
+  const [username, setUsername] = useState<string | null>(() => subjectFromToken(readStoredToken()))
+  const [userId, setUserId] = useState<number | null>(() => userIdFromToken(readStoredToken()))
+  const [role, setRole] = useState<string | null>(() => roleFromToken(readStoredToken()))
 
   const clearSession = useCallback(() => {
     try {
@@ -88,33 +93,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => setUnauthorizedHandler(null)
   }, [clearSession])
 
-  // F-05: restaura sessão a partir do cookie HttpOnly (API real).
-  useEffect(() => {
-    if (env.useDemoApi) return
-    let cancelled = false
-    ;(async () => {
-      try {
-        const me = await fetchAuthMe()
-        if (cancelled) return
-        setUsername(me.username)
-        setUserId(me.userId)
-        setRole(me.role)
-        // Marcador de sessão sem JWT em storage (cookie HttpOnly).
-        setToken('cookie-session')
-      } catch {
-        if (!cancelled) clearSession()
-      } finally {
-        if (!cancelled) setSessionReady(true)
-      }
-    })()
-    return () => {
-      cancelled = true
-    }
-  }, [clearSession])
-
   const isAdmin = role === 'ADMIN'
   const isCook = role === 'COOK'
-  const isAuthenticated = Boolean(token) || (Boolean(username) && Boolean(role))
+  const isAuthenticated = Boolean(token)
 
   const value = useMemo<AuthContextValue>(
     () => ({
@@ -122,13 +103,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       username,
       userId,
       role,
-      isAuthenticated: sessionReady ? isAuthenticated : false,
+      isAuthenticated,
       isAdmin,
       isCook,
       login,
       logout,
     }),
-    [token, username, userId, role, isAuthenticated, sessionReady, isAdmin, isCook, login, logout],
+    [token, username, userId, role, isAuthenticated, isAdmin, isCook, login, logout],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

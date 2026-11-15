@@ -159,6 +159,37 @@ describe('sessão JWT em sessionStorage (AC-01 / AC-02 / AC-03 / AC-12)', () => 
     expect(sessionStorage.getItem(TOKEN_KEY)).toBeNull()
   })
 
+  it('AC-02 / RF-UI-API-06: token inválido limpa a sessão', async () => {
+    sessionStorage.setItem(TOKEN_KEY, 'not-a-jwt')
+    render(
+      <AuthProvider>
+        <Probe />
+      </AuthProvider>,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByTestId('authenticated').textContent).toBe('no')
+    })
+    expect(sessionStorage.getItem(TOKEN_KEY)).toBeNull()
+  })
+
+  it('RF-UI-API-06: boot não chama GET /auth/me nem grava cookie-session', async () => {
+    sessionStorage.setItem(TOKEN_KEY, token)
+    render(
+      <AuthProvider>
+        <Probe />
+      </AuthProvider>,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByTestId('authenticated').textContent).toBe('yes')
+    })
+    expect(calls.some((call) => call.url.includes('/auth/me'))).toBe(false)
+    expect(sessionStorage.getItem(TOKEN_KEY)).toBe(token)
+    expect(sessionStorage.getItem(TOKEN_KEY)).not.toBe('cookie-session')
+    expect(screen.getByTestId('role').textContent).toBe('COOK')
+  })
+
   it('RF-UI-API-08: token demo.* é rejeitado na API real', async () => {
     sessionStorage.setItem(TOKEN_KEY, createDemoToken('cook', 'COOK', 1))
     render(

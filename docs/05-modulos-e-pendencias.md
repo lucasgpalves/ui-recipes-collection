@@ -9,7 +9,7 @@ Estado da UI em relação aos requisitos de tela. Capacidade da API corresponden
 | Módulo UI | Status | Observação |
 |-----------|--------|------------|
 | Área pública (home, busca, categorias, detalhe) | Feito | Reviews só como média; PDF fora do demo |
-| Login / sessão / guards ADMIN e COOK | Feito (gap vs spec) | Login/logout JWT em `sessionStorage` (RF-UI-API-05/07); restauração no boot e clear 403 ainda gap ([FN-UI-API-FETCH](07-fn-ui-api-fetch.md)) |
+| Login / sessão / guards ADMIN e COOK | Feito (gap vs spec) | Login/logout/restauração JWT em `sessionStorage` (RF-UI-API-05/06/07); clear 403 ainda gap ([FN-UI-API-FETCH](07-fn-ui-api-fetch.md)) |
 | Admin — usuários | Feito (parcial) | Credenciais: fetch `POST /auth/register` **aprovado**, implementação pendente |
 | Admin — categorias | Feito | CRUD |
 | Admin — papéis | Feito | CRUD; depende de `id` na resposta para editar/excluir |
@@ -27,8 +27,8 @@ Estado da UI em relação aos requisitos de tela. Capacidade da API corresponden
 
 Requisitos aprovados em [07-fn-ui-api-fetch.md](07-fn-ui-api-fetch.md). **Implementação parcial.**
 
-- **Feito:** RF-UI-API-01 — com `VITE_USE_DEMO_API=false`, facades wired usam `apiRequest` (não `demoApi`); AC-05 coberto por testes. RF-UI-API-02 — `VITE_API_BASE_URL` obrigatório; URLs `{apiBaseUrl}{path}`; AC-09 coberto por testes. RF-UI-API-03 — proxy Vite. RF-UI-API-04 — Bearer a partir de `sessionStorage` (`receitou.auth.token`); RNF-UI-API-02 coberto por testes. RF-UI-API-05 — login `POST /auth/login` persiste JWT em `sessionStorage` e atualiza auth; AC-01 coberto por testes. RF-UI-API-07 — logout remove token de `sessionStorage` e limpa estado local.
-- **Pendente:** restante de (A) (RF-UI-API-06 restauração no boot; RF-UI-API-11 clear 401/403; Docker demo=false); (B) `POST /auth/register`; (C) UI GoalProgress.
+- **Feito:** RF-UI-API-01 — com `VITE_USE_DEMO_API=false`, facades wired usam `apiRequest` (não `demoApi`); AC-05 coberto por testes. RF-UI-API-02 — `VITE_API_BASE_URL` obrigatório; URLs `{apiBaseUrl}{path}`; AC-09 coberto por testes. RF-UI-API-03 — proxy Vite. RF-UI-API-04 — Bearer a partir de `sessionStorage` (`receitou.auth.token`); RNF-UI-API-02 coberto por testes. RF-UI-API-05 — login `POST /auth/login` persiste JWT em `sessionStorage` e atualiza auth; AC-01 coberto por testes. RF-UI-API-06 — restauração no boot a partir de `sessionStorage` (claims locais); AC-02 coberto por testes. RF-UI-API-07 — logout remove token de `sessionStorage` e limpa estado local.
+- **Pendente:** restante de (A) (RF-UI-API-11 clear 401/403; Docker demo=false); (B) `POST /auth/register`; (C) UI GoalProgress.
 
 ---
 
