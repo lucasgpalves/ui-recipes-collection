@@ -1,11 +1,13 @@
 export type RecipeSummary = {
   id: number | null
+  userId?: number | null
   userName: string | null
   name: string | null
   categoryName: string | null
   /** Presente na demo; a API real pode omitir até expor mídia. */
   imageUrl?: string | null
   description?: string | null
+  isPublished?: boolean | null
 }
 
 export type RecipeIngredient = {
@@ -16,6 +18,7 @@ export type RecipeIngredient = {
 
 export type Recipe = {
   id: number | null
+  userId?: number | null
   userName: string | null
   name: string | null
   categoryName: string | null
@@ -26,8 +29,11 @@ export type Recipe = {
   description: string | null
   isPublished: boolean | null
   isRated: boolean | null
+  /** Tempo de preparo (API: preparationTime). */
+  preparationTime?: number | null
   /** Presente na demo; a API real pode omitir até expor mídia/tempo. */
   imageUrl?: string | null
+  /** Alias demo legado; preferir preparationTime. */
   durationMinutes?: number | null
 }
 
@@ -76,6 +82,16 @@ export type LoginRequest = {
 
 export type TokenResponse = {
   token: string | null
+  role?: string | null
+  userId?: number | null
+  username?: string | null
+}
+
+/** Espelha AuthMeResponseDTO (sessão via cookie HttpOnly / Bearer). */
+export type AuthMeResponse = {
+  username: string | null
+  role: string | null
+  userId: number | null
 }
 
 /** Espelha RoleResponseDTO (JSON camelCase). `id` só no demo; a API real ainda não devolve. */

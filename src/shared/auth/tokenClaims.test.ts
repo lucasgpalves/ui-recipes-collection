@@ -1,4 +1,12 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+
+vi.mock('../config/env', () => ({
+  env: {
+    apiBaseUrl: '/api',
+    useDemoApi: true,
+  },
+}))
+
 import {
   createDemoToken,
   parseTokenClaims,
@@ -23,6 +31,10 @@ function fakeJwt(payload: Record<string, unknown>): string {
 }
 
 describe('tokenClaims', () => {
+  afterEach(() => {
+    vi.resetModules()
+  })
+
   it('lê role, sub e userId de token demo', () => {
     const token = createDemoToken('cook', 'COOK', 1)
     expect(subjectFromToken(token)).toBe('cook')
@@ -72,5 +84,14 @@ describe('tokenClaims', () => {
     expect(parseTokenClaims(null)).toBeNull()
     expect(parseTokenClaims('not-a-token')).toBeNull()
     expect(roleFromToken('abc.def')).toBeNull()
+  })
+
+  it('rejeita demo.* quando useDemoApi=false (F-11)', async () => {
+    vi.doMock('../config/env', () => ({
+      env: { apiBaseUrl: '/api', useDemoApi: false },
+    }))
+    const mod = await import('./tokenClaims')
+    const demo = mod.createDemoToken('cook', 'COOK', 1)
+    expect(mod.parseTokenClaims(demo)).toBeNull()
   })
 })

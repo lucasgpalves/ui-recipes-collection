@@ -1,7 +1,7 @@
 import { demoLogin } from '../../../demo/demoApi'
 import { env } from '../../../shared/config/env'
 import { apiRequest } from '../../../shared/api/client'
-import type { TokenResponse } from '../../../shared/api/types'
+import type { AuthMeResponse, TokenResponse } from '../../../shared/api/types'
 
 export function loginRequest(username: string, password: string): Promise<TokenResponse> {
   if (env.useDemoApi) return demoLogin(username, password)
@@ -9,4 +9,13 @@ export function loginRequest(username: string, password: string): Promise<TokenR
     method: 'POST',
     body: { username, password },
   })
+}
+
+export function logoutRequest(): Promise<void> {
+  if (env.useDemoApi) return Promise.resolve()
+  return apiRequest<void>('/auth/logout', { method: 'POST' })
+}
+
+export function fetchAuthMe(): Promise<AuthMeResponse> {
+  return apiRequest<AuthMeResponse>('/auth/me')
 }

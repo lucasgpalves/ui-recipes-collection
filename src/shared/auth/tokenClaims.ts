@@ -1,7 +1,10 @@
 /**
  * Leitura de claims do token de sessão (demo ou JWT real da API).
  * Não verifica assinatura — só decodifica o payload para guards/UI (BUG-02).
+ * F-11: tokens `demo.*` só são aceitos com VITE_USE_DEMO_API=true.
  */
+
+import { env } from '../config/env'
 
 export type TokenClaims = {
   sub: string
@@ -106,7 +109,11 @@ export function createDemoToken(
 
 export function parseTokenClaims(token: string | null): TokenClaims | null {
   if (!token) return null
-  return parseDemoClaims(token) ?? parseJwtClaims(token)
+  if (token.startsWith(DEMO_PREFIX)) {
+    if (!env.useDemoApi) return null
+    return parseDemoClaims(token)
+  }
+  return parseJwtClaims(token)
 }
 
 export function roleFromToken(token: string | null): string | null {

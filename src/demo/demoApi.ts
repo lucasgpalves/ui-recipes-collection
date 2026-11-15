@@ -151,11 +151,13 @@ async function ensureRecipesDetailStore(): Promise<Recipe[]> {
 function toRecipeSummary(recipe: Recipe): RecipeSummary {
   return {
     id: recipe.id,
+    userId: recipe.userId ?? null,
     userName: recipe.userName,
     name: recipe.name,
     categoryName: recipe.categoryName,
     imageUrl: recipe.imageUrl,
     description: recipe.description,
+    isPublished: recipe.isPublished,
   }
 }
 
@@ -173,11 +175,18 @@ export async function demoFetchRecipe(id: number): Promise<Recipe> {
   return withLatency(structuredClone(recipe), DEMO_LATENCY_MS)
 }
 
-export async function demoFetchCookRecipes(authorUsername: string): Promise<Recipe[]> {
+export async function demoFetchCookRecipes(actor: {
+  userId: number | null
+  username: string | null
+}): Promise<Recipe[]> {
   const store = await ensureRecipesDetailStore()
-  const mine = store.filter(
-    (item) => (item.userName ?? '').toLowerCase() === authorUsername.trim().toLowerCase(),
-  )
+  const mine = store.filter((item) => {
+    if (actor.userId != null && item.userId != null) {
+      return item.userId === actor.userId
+    }
+    if (!actor.username) return false
+    return (item.userName ?? '').toLowerCase() === actor.username.trim().toLowerCase()
+  })
   return withLatency(mine.map((item) => structuredClone(item)), 280)
 }
 
@@ -188,6 +197,7 @@ export async function demoCreateRecipe(
   const store = await ensureRecipesDetailStore()
   const created: Recipe = {
     id: nextRecipeId++,
+    userId: request.userId,
     userName: authorUsername.trim() || 'cook',
     name: request.name.trim(),
     categoryName: request.categoryName.trim(),
@@ -202,6 +212,7 @@ export async function demoCreateRecipe(
     description: request.description?.trim() ? request.description.trim() : '',
     isPublished: false,
     isRated: false,
+    preparationTime: request.preparationTime,
     durationMinutes: request.preparationTime,
   }
   store.unshift(created)
@@ -219,11 +230,15 @@ export async function demoUpdateRecipe(
     throw new ApiError(404, `Demo recipe ${id} not found`)
   }
   const current = store[index]
-  if ((current.userName ?? '').toLowerCase() !== authorUsername.trim().toLowerCase()) {
+  const ownsById = current.userId != null && current.userId === request.userId
+  const ownsByName =
+    (current.userName ?? '').toLowerCase() === authorUsername.trim().toLowerCase()
+  if (!ownsById && !ownsByName) {
     throw new ApiError(403, 'Demo recipe does not belong to this cook')
   }
   const updated: Recipe = {
     ...current,
+    userId: request.userId,
     name: request.name.trim(),
     categoryName: request.categoryName.trim(),
     preparationMethod: request.preparationMethod.trim(),
@@ -234,6 +249,7 @@ export async function demoUpdateRecipe(
       measurementName: item.measurementName.trim(),
     })),
     description: request.description?.trim() ? request.description.trim() : '',
+    preparationTime: request.preparationTime,
     durationMinutes: request.preparationTime,
   }
   store[index] = updated
@@ -414,23 +430,26 @@ export async function demoLogin(username: string, password: string): Promise<Tok
   await new Promise((resolve) => window.setTimeout(resolve, 500))
   const user = username.trim()
   const pass = password.trim()
-  if (!user || !pass) {
-    throw new ApiError(401, 'Credenciais inválidas')
-  }
 
-  let role: string | null = null
-  let userId: number | null = null
+  // F-15: só emite token para atores de fixture conhecidos.
   if (user === DEMO_ADMIN_USERNAME && pass === DEMO_ADMIN_PASSWORD) {
-    role = 'ADMIN'
-    userId = null
-  } else if (user === DEMO_COOK_USERNAME && pass === DEMO_COOK_PASSWORD) {
-    role = 'COOK'
-    userId = DEMO_COOK_USER_ID
+    return {
+      token: createDemoToken(user, 'ADMIN', null),
+      role: 'ADMIN',
+      userId: null,
+      username: user,
+    }
+  }
+  if (user === DEMO_COOK_USERNAME && pass === DEMO_COOK_PASSWORD) {
+    return {
+      token: createDemoToken(user, 'COOK', DEMO_COOK_USER_ID),
+      role: 'COOK',
+      userId: DEMO_COOK_USER_ID,
+      username: user,
+    }
   }
 
-  return {
-    token: createDemoToken(user, role, userId),
-  }
+  throw new ApiError(401, 'Credenciais inválidas')
 }
 
 function formatDemoDateTime(date: Date): string {

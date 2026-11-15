@@ -16,12 +16,25 @@ type RequestOptions = Omit<RequestInit, 'body'> & {
 }
 
 let onUnauthorized: (() => void) | null = null
+/** Token em memória (não sessionStorage) quando API real + cookie HttpOnly (F-05). */
+let memoryToken: string | null = null
 
 export function setUnauthorizedHandler(handler: (() => void) | null) {
   onUnauthorized = handler
 }
 
+export function setMemoryToken(token: string | null) {
+  memoryToken = token
+}
+
+export function getMemoryToken(): string | null {
+  return memoryToken
+}
+
 function readSessionToken(): string | null {
+  if (!env.useDemoApi) {
+    return memoryToken
+  }
   try {
     return sessionStorage.getItem('receitou.auth.token')
   } catch {
@@ -36,6 +49,7 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
 
   const response = await fetch(url, {
     ...rest,
+    credentials: env.useDemoApi ? 'same-origin' : 'include',
     headers: {
       Accept: 'application/json',
       ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}),
@@ -45,7 +59,8 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
     body: body !== undefined ? JSON.stringify(body) : undefined,
   })
 
-  if (response.status === 403 || response.status === 401) {
+  // F-13: só 401 encerra sessão; 403 é autorização (ownership/papel).
+  if (response.status === 401) {
     onUnauthorized?.()
   }
 
