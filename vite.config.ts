@@ -8,6 +8,9 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
+    esbuild: {
+      jsx: 'automatic',
+    },
     server: {
       proxy: {
         '/api': {
@@ -19,7 +22,7 @@ export default defineConfig(({ mode }) => {
     },
     test: {
       environment: 'node',
-      include: ['src/**/*.test.ts'],
+      include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
     },
   }
 })

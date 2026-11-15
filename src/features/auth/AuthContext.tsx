@@ -49,12 +49,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [sessionReady, setSessionReady] = useState(env.useDemoApi)
 
   const clearSession = useCallback(() => {
-    if (env.useDemoApi) {
-      try {
-        sessionStorage.removeItem(TOKEN_KEY)
-      } catch {
-        /* ignore */
-      }
+    try {
+      sessionStorage.removeItem(TOKEN_KEY)
+    } catch {
+      /* ignore */
     }
     setMemoryToken(null)
     setToken(null)
@@ -71,31 +69,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = useCallback(async (usernameValue: string, password: string) => {
     const response = await loginRequest(usernameValue, password)
 
-    if (env.useDemoApi) {
-      if (!response.token) {
-        throw new Error('Login não retornou token')
-      }
-      sessionStorage.setItem(TOKEN_KEY, response.token)
-      setMemoryToken(null)
-      setToken(response.token)
-      setUsername(response.username ?? subjectFromToken(response.token))
-      setUserId(response.userId ?? userIdFromToken(response.token))
-      setRole(response.role ?? roleFromToken(response.token))
-      return
+    // RF-UI-API-05 / RF-UI-API-08: JWT (real ou demo) em sessionStorage + estado de auth.
+    if (!response.token) {
+      throw new Error('Login não retornou token')
     }
-
-    // F-05: API real — JWT só no cookie HttpOnly; identidade vem no body (sem token).
-    const nextUsername = response.username ?? null
-    const nextRole = response.role ?? null
-    const nextUserId = response.userId ?? null
-    if (!nextUsername || !nextRole) {
-      throw new Error('Login não retornou identidade da sessão')
-    }
+    sessionStorage.setItem(TOKEN_KEY, response.token)
     setMemoryToken(null)
-    setToken('cookie-session')
-    setUsername(nextUsername)
-    setUserId(nextUserId)
-    setRole(nextRole)
+    setToken(response.token)
+    setUsername(response.username ?? subjectFromToken(response.token))
+    setUserId(response.userId ?? userIdFromToken(response.token))
+    setRole(response.role ?? roleFromToken(response.token))
   }, [])
 
   useEffect(() => {

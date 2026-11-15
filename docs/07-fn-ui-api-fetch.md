@@ -1,8 +1,8 @@
 # Funcionalidade — UI: fetch API (modo API real)
 
 **ID:** `FN-UI-API-FETCH`  
-**Status:** requisitos **aprovados** (implementação pendente)  
-**Versão:** 1.1  
+**Status:** requisitos **aprovados** (implementação parcial — RF-UI-API-01/02/03/04/05/07 feito)  
+**Versão:** 1.2  
 **Domínio API relacionado:** autenticação, register, recursos wired e `GET /goals/{id}/progress` — ver `../api-recipes-collection/docs/`
 
 Este documento define o corte de requisitos para a UI operar contra a **API HTTP real** (`VITE_USE_DEMO_API=false`), com sessão JWT em `sessionStorage`, e completar register + GoalProgress.
@@ -30,7 +30,7 @@ Este documento define o corte de requisitos para a UI operar contra a **API HTTP
 
 **Fora do escopo:** painéis EDITOR/TASTER, upload de imagem, toggle `isPublished`, embed obrigatório de `references` no DTO de usuário.
 
-**Gap código ↔ requisito (rastreado, não inventado):** o código pode ainda usar cookie HttpOnly + clear só em 401. A implementação deve alinhar ao modelo desta spec (JWT/`sessionStorage` + 401/403).
+**Gap código ↔ requisito (rastreado, não inventado):** login grava JWT em `sessionStorage` e logout limpa (RF-UI-API-05/07). Restauração no boot ainda pode usar `GET /auth/me` / cookie (RF-UI-API-06); clear em `apiRequest` ainda só em 401 (RF-UI-API-11).
 
 ---
 
@@ -161,7 +161,13 @@ Este documento define o corte de requisitos para a UI operar contra a **API HTTP
 
 ## Checklist de implementação (não marcar sem evidência)
 
-- [ ] Sessão API real: JWT em `sessionStorage` + Bearer (RF-UI-API-04…07)
+- [x] Modo API real nos módulos wired via `apiRequest` (RF-UI-API-01 / AC-05)
+- [x] `VITE_API_BASE_URL` obrigatório; URLs `{apiBaseUrl}{path}` (RF-UI-API-02 / AC-09)
+- [x] Proxy Vite `/api` → `VITE_API_PROXY_TARGET` (default `http://localhost:8080`) com rewrite (RF-UI-API-03)
+- [x] Bearer em API real a partir de `sessionStorage` (`receitou.auth.token`) (RF-UI-API-04 / RNF-UI-API-02)
+- [x] Login API real: `POST /auth/login` persiste JWT em `sessionStorage` e atualiza auth (RF-UI-API-05 / AC-01)
+- [ ] Restauração de sessão a partir de `sessionStorage` no boot (RF-UI-API-06 / AC-02)
+- [x] Logout: remove token de `sessionStorage` e limpa estado local (RF-UI-API-07)
 - [ ] Clear de sessão em 401 e 403 (RF-UI-API-11)
 - [ ] Docker/compose/release com `VITE_USE_DEMO_API=false` (RF-UI-API-10)
 - [ ] Register ligado em credenciais admin (RF-UI-API-17…19 / AC-10)

@@ -16,7 +16,7 @@ type RequestOptions = Omit<RequestInit, 'body'> & {
 }
 
 let onUnauthorized: (() => void) | null = null
-/** Token em memória (não sessionStorage) quando API real + cookie HttpOnly (F-05). */
+/** Mantido para AuthContext/testes; Bearer em apiRequest vem de sessionStorage (RF-UI-API-04). */
 let memoryToken: string | null = null
 
 export function setUnauthorizedHandler(handler: (() => void) | null) {
@@ -32,9 +32,6 @@ export function getMemoryToken(): string | null {
 }
 
 function readSessionToken(): string | null {
-  if (!env.useDemoApi) {
-    return memoryToken
-  }
   try {
     return sessionStorage.getItem('receitou.auth.token')
   } catch {
