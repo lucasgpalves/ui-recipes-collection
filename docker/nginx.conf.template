@@ -7,6 +7,13 @@ server {
     # Evita listagem acidental do volume de assets.
     autoindex off;
 
+    # F-09: security headers
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "DENY" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'" always;
+
     gzip on;
     gzip_types text/css application/javascript application/json image/svg+xml;
 
@@ -22,6 +29,8 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
+        # Propaga cookie HttpOnly da API (F-05)
+        proxy_pass_header Set-Cookie;
     }
 
     location /api {
