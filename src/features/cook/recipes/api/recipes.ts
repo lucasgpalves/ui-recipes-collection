@@ -8,25 +8,32 @@ import { apiRequest } from '../../../../shared/api/client'
 import { env } from '../../../../shared/config/env'
 import type { Recipe, RecipeRequest, RecipeSummary } from '../../../../shared/api/types'
 
-export async function fetchCookRecipes(authorUsername: string): Promise<Recipe[]> {
-  if (env.useDemoApi) return demoFetchCookRecipes(authorUsername)
-  const summaries = await apiRequest<RecipeSummary[]>('/recipes')
-  return summaries
-    .filter((item) => (item.userName ?? '').toLowerCase() === authorUsername.trim().toLowerCase())
-    .map((item) => ({
-      id: item.id,
-      userName: item.userName,
-      name: item.name,
-      categoryName: item.categoryName,
-      createdAt: null,
-      preparationMethod: null,
-      portions: null,
-      ingredients: [],
-      description: item.description ?? null,
-      isPublished: null,
-      isRated: null,
-      imageUrl: item.imageUrl,
-    }))
+type CookActor = {
+  userId: number | null
+  username: string | null
+}
+
+export async function fetchCookRecipes(actor: CookActor): Promise<Recipe[]> {
+  if (env.useDemoApi) {
+    return demoFetchCookRecipes(actor)
+  }
+  // F-03: listagem do autor no servidor (não filtra catálogo público no cliente)
+  const summaries = await apiRequest<RecipeSummary[]>('/recipes/mine')
+  return summaries.map((item) => ({
+    id: item.id,
+    userId: item.userId ?? null,
+    userName: item.userName,
+    name: item.name,
+    categoryName: item.categoryName,
+    createdAt: null,
+    preparationMethod: null,
+    portions: null,
+    ingredients: [],
+    description: item.description ?? null,
+    isPublished: item.isPublished ?? null,
+    isRated: null,
+    imageUrl: item.imageUrl,
+  }))
 }
 
 export function fetchCookRecipe(id: number): Promise<Recipe> {

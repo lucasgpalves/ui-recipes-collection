@@ -6,6 +6,7 @@ import { useNotify } from '../../../../shared/ui/notify'
 import { useAuth } from '../../../auth'
 import { RecipeForm } from '../components/RecipeForm'
 import { fetchCookRecipe, updateRecipe } from '../api/recipes'
+import { isOwnRecipe } from '../lib/ownership'
 import styles from '../../../admin/shared/pages.module.css'
 
 export function CookRecipeEditPage() {
@@ -13,7 +14,7 @@ export function CookRecipeEditPage() {
   const recipeId = Number(id)
   const navigate = useNavigate()
   const notify = useNotify()
-  const { username } = useAuth()
+  const { username, userId } = useAuth()
   const [recipe, setRecipe] = useState<Recipe | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -30,10 +31,7 @@ export function CookRecipeEditPage() {
     fetchCookRecipe(recipeId)
       .then((data) => {
         if (!active) return
-        if (
-          username &&
-          (data.userName ?? '').toLowerCase() !== username.trim().toLowerCase()
-        ) {
+        if (!isOwnRecipe(data, { userId, username })) {
           setError('Esta receita não pertence à sua conta.')
           setRecipe(null)
           return
@@ -53,7 +51,7 @@ export function CookRecipeEditPage() {
     return () => {
       active = false
     }
-  }, [recipeId, username, notify])
+  }, [recipeId, username, userId, notify])
 
   async function handleUpdate(payload: RecipeRequest) {
     if (!username) {

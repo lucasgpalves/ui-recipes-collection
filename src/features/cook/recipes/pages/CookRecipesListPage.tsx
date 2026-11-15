@@ -7,26 +7,26 @@ import { fetchCookRecipes } from '../api/recipes'
 import styles from '../../../admin/shared/pages.module.css'
 
 export function CookRecipesListPage() {
-  const { username } = useAuth()
+  const { username, userId } = useAuth()
   const notify = useNotify()
   const [recipes, setRecipes] = useState<Recipe[]>([])
   const [loading, setLoading] = useState(true)
 
   const loadRecipes = useCallback(async () => {
-    if (!username) {
+    if (!username && userId == null) {
       setRecipes([])
       setLoading(false)
       return
     }
     setLoading(true)
     try {
-      setRecipes(await fetchCookRecipes(username))
+      setRecipes(await fetchCookRecipes({ username, userId }))
     } catch {
       notify.error('Não foi possível carregar suas receitas.', 'Falha ao carregar')
     } finally {
       setLoading(false)
     }
-  }, [notify, username])
+  }, [notify, username, userId])
 
   useEffect(() => {
     void loadRecipes()

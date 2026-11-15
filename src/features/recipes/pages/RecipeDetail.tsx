@@ -177,14 +177,14 @@ export function RecipeDetailPage() {
           <section className={styles.section}>
             <div className={styles.sectionHead}>
               <h2>Modo de preparo</h2>
-              {recipe.durationMinutes != null && (
+              {(recipe.preparationTime ?? recipe.durationMinutes) != null && (
                 <p className={styles.sectionMeta}>
                   <span className={styles.metaIcon} aria-hidden>
                     <svg viewBox="0 0 24 24" focusable="false">
                       <path d="M9 2h6v2H9V2Zm1.5 4h3l.4 1.2A7 7 0 1 1 11 7.2L11.5 6ZM12 9a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm-.8 2.2h1.6v3.3l2.2 1.3-.8 1.3-3-1.8V11.2Z" />
                     </svg>
                   </span>
-                  Duração: {recipe.durationMinutes} minutos
+                  Duração: {recipe.preparationTime ?? recipe.durationMinutes} minutos
                 </p>
               )}
             </div>

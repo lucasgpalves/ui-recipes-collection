@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent } from 'react'
-import { DEMO_COOK_USER_ID } from '../../../../demo/demoApi'
 import { fetchCategories } from '../../../catalog'
 import { useAuth } from '../../../auth'
 import type {
@@ -17,6 +16,7 @@ import {
   normalizeMeasurement,
   type MeasurementValue,
 } from '../lib/measurements'
+import { recipePreparationMinutes } from '../lib/ownership'
 import { RecipePreviewModal } from './RecipePreviewModal'
 import styles from './RecipeForm.module.css'
 
@@ -49,7 +49,7 @@ function ingredientsFromRecipe(recipe?: Recipe | null): RecipeIngredientRequest[
 
 export function RecipeForm({ initial, submitLabel, onSubmit }: RecipeFormProps) {
   const notify = useNotify()
-  const { username } = useAuth()
+  const { username, userId } = useAuth()
   const listHeadingId = useId()
   const nameInputRef = useRef<HTMLInputElement>(null)
 
@@ -59,7 +59,7 @@ export function RecipeForm({ initial, submitLabel, onSubmit }: RecipeFormProps) 
   const [portions, setPortions] = useState(
     Number.isInteger(initial?.portions) ? (initial?.portions as number) : Math.max(1, Math.round(initial?.portions ?? 1)),
   )
-  const [preparationTime, setPreparationTime] = useState(initial?.durationMinutes ?? 30)
+  const [preparationTime, setPreparationTime] = useState(() => recipePreparationMinutes(initial ?? {}))
   const [description, setDescription] = useState(initial?.description ?? '')
   const [ingredients, setIngredients] = useState<RecipeIngredientRequest[]>(() =>
     ingredientsFromRecipe(initial),
@@ -198,10 +198,17 @@ export function RecipeForm({ initial, submitLabel, onSubmit }: RecipeFormProps) 
       return
     }
 
+    if (userId == null) {
+      const message = 'Sessão sem userId. Entre novamente como cozinheiro.'
+      setError(message)
+      notify.warning(message, 'Validação')
+      return
+    }
+
     setSubmitting(true)
     try {
       await onSubmit({
-        userId: DEMO_COOK_USER_ID,
+        userId,
         name: trimmedName,
         categoryName: trimmedCategory,
         preparationMethod: trimmedMethod,
