@@ -58,15 +58,16 @@ Itens existentes ou planejados na API, **sem tela** neste frontend:
 
 - Painel **EDITOR** (livros, aprovação/merge de ingredientes)
 - Painel **TASTER** (criação de reviews)
-- Fetch de credenciais (`POST /auth/register`) — tela já desenhada no perfil
-- Progresso de metas (`GET /goals/{id}/progress`)
 - Publicação de receita / toggle `isPublished` pela UI
 - Upload de imagem de receita
+
+**Corte aprovado (implementação pendente):** [FN-UI-API-FETCH](07-fn-ui-api-fetch.md) — modo API real (JWT em `sessionStorage`), `POST /auth/register`, UI GoalProgress.
 
 Detalhamento: [Módulos e pendências](05-modulos-e-pendencias.md).
 
 ## Premissas
 
 1. A API é a fonte de verdade do domínio; a UI aplica regras de apresentação, validação de formulário e controle de navegação.
-2. Em desenvolvimento, `VITE_USE_DEMO_API=true` (padrão) usa fixtures locais; isso não altera os requisitos de produto da API.
+2. Default oficial de `VITE_USE_DEMO_API` em release/Docker é `false`. Em desenvolvimento local, `true` pode ser usado para fixtures; isso não altera os requisitos de produto da API ([FN-UI-API-FETCH](07-fn-ui-api-fetch.md)).
 3. Requisitos de backend evoluem no repositório da API; requisitos de tela evoluem neste `docs/`.
+4. Sessão na API real: JWT em `sessionStorage` + `Authorization: Bearer` (RN-UI-AUTH-01); 401/403 limpam sessão (RN-UI-AUTH-05).

@@ -9,11 +9,11 @@ Estado da UI em relação aos requisitos de tela. Capacidade da API corresponden
 | Módulo UI | Status | Observação |
 |-----------|--------|------------|
 | Área pública (home, busca, categorias, detalhe) | Feito | Reviews só como média; PDF fora do demo |
-| Login / sessão / guards ADMIN e COOK | Feito | Parser de role alinhado ao token demo; JWT real exige leitura de claims |
-| Admin — usuários | Feito (parcial) | Tela de credenciais desenhada; falta ligar `POST /auth/register` |
+| Login / sessão / guards ADMIN e COOK | Feito (gap vs spec) | Requisito oficial: JWT em `sessionStorage` + clear 401/403 ([FN-UI-API-FETCH](07-fn-ui-api-fetch.md)); alinhar implementação |
+| Admin — usuários | Feito (parcial) | Credenciais: fetch `POST /auth/register` **aprovado**, implementação pendente |
 | Admin — categorias | Feito | CRUD |
 | Admin — papéis | Feito | CRUD; depende de `id` na resposta para editar/excluir |
-| Admin — metas | Feito (parcial) | CRUD; sem tela de progresso |
+| Admin — metas | Feito (parcial) | CRUD; UI GoalProgress **aprovada**, implementação pendente |
 | Admin — restaurantes | Feito (demo) | CRUD; `id` no demo (API pode omitir) |
 | Admin — referências de emprego | Feito (demo) | Hub no perfil COOK ([FN-UI-COOK-PROFILE](06-perfil-cook-contexto.md)); rotas globais como atalho |
 | Cook — receitas (list / create / edit) | Feito | Prévia + ingredientes + medidas |
@@ -23,12 +23,20 @@ Estado da UI em relação aos requisitos de tela. Capacidade da API corresponden
 
 ---
 
+## Corte aprovado — `FN-UI-API-FETCH`
+
+Requisitos aprovados em [07-fn-ui-api-fetch.md](07-fn-ui-api-fetch.md). **Implementação ainda pendente.**
+
+Inclui: (A) modo API real (Bearer + `sessionStorage`, 401/403, Docker demo=false); (B) `POST /auth/register`; (C) UI GoalProgress.
+
+---
+
 ## Pendências priorizadas (UI)
 
 ### P1 — Fechar admin de usuários
 
-1. **Credenciais de acesso** — tela `/admin/usuarios/:id/credenciais` desenhada; **próximo passo: fetch** `POST /auth/register` (+ demoApi).
-2. **`id` estável na API** — sem `id` em listagem/detalhe, edição e exclusão quebram fora do demo (ajuste na API; UI já consome quando presente).
+1. **Credenciais de acesso** — tela desenhada; fetch `POST /auth/register` no corte [FN-UI-API-FETCH](07-fn-ui-api-fetch.md) (implementação pendente).
+2. **`id` estável na API** — sem `id` em listagem/detalhe, edição e exclusão quebram fora do demo (ajuste na API; UI já consome quando presente; aberto na spec, não bloqueante).
 3. Polimentos opcionais:
    - CPF imutável na edição
    - Filtro/busca na listagem (nome, papel, situação)
@@ -36,7 +44,7 @@ Estado da UI em relação aos requisitos de tela. Capacidade da API corresponden
 
 ### P2 — Cook
 
-1. Amarrar `userId` do payload ao ator autenticado (hoje fixo no demo).
+1. Amarrar `userId` do payload ao ator autenticado — requisito em [FN-UI-API-FETCH](07-fn-ui-api-fetch.md) (RF-UI-API-16).
 2. CRUD explícito de ingredientes/medidas fora do formulário de receita (se produto exigir).
 3. Ação de publicação / indicador `isPublished` editável (se regra de negócio liberar na API).
 
@@ -54,7 +62,7 @@ Estado da UI em relação aos requisitos de tela. Capacidade da API corresponden
 
 ### P4 — Metas
 
-1. Tela ou bloco de **progresso** (`GET /goals/{id}/progress`) por usuário/mês.
+1. Tela ou bloco de **progresso** (`GET /goals/{id}/progress`) por usuário/mês — no corte [FN-UI-API-FETCH](07-fn-ui-api-fetch.md) (implementação pendente).
 
 ---
 

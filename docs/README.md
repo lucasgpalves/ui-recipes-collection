@@ -24,6 +24,9 @@ Caminho relativo a partir de `api-recipes-collection/docs/`:
 Funcionalidade de apresentação do COOK + referências:  
 [`06-perfil-cook-contexto.md`](06-perfil-cook-contexto.md) — ID **`FN-UI-COOK-PROFILE`**.
 
+Fetch API (modo API real + register + GoalProgress):  
+[`07-fn-ui-api-fetch.md`](07-fn-ui-api-fetch.md) — ID **`FN-UI-API-FETCH`**.
+
 ## Índice
 
 | Documento | Conteúdo |
@@ -34,10 +37,13 @@ Funcionalidade de apresentação do COOK + referências:
 | [Regras de negócio da UI](04-regras-de-negocio-ui.md) | Validações, máscaras, confirmações, notificações |
 | [Módulos e pendências](05-modulos-e-pendencias.md) | O que está na UI vs. próximo corte |
 | [Perfil COOK / contexto de referências](06-perfil-cook-contexto.md) | `FN-UI-COOK-PROFILE` — hub de perfil e leitura embutida |
+| [Fetch API (modo API real)](07-fn-ui-api-fetch.md) | `FN-UI-API-FETCH` — requisitos aprovados; implementação pendente |
 
 ## Convenções
 
 - **RN-UI-XXX** — regra verificável na interface (independente da API).
+- **FN-UI-XXX** — funcionalidade/corte de requisitos de interface.
 - **Fluxo** — sequência de telas/ações do usuário.
 - Referências à API usam o caminho relativo ao repositório irmão, sem copiar o texto das RNs.
 - Comportamento demo (`VITE_USE_DEMO_API`) é documentado quando altera a experiência; não substitui o contrato da API.
+- Default oficial de release: `VITE_USE_DEMO_API=false` ([FN-UI-API-FETCH](07-fn-ui-api-fetch.md)).

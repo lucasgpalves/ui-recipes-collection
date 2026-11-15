@@ -9,7 +9,7 @@ Regras de domínio (unicidade, ownership na API, publicação, progresso etc.): 
 
 | ID | Regra | Critério de aceite |
 |----|--------|-------------------|
-| RN-UI-AUTH-01 | Token fica só em `sessionStorage` | Não há persistência em `localStorage` nem secret JWT no cliente |
+| RN-UI-AUTH-01 | Token fica só em `sessionStorage` | Não há persistência em `localStorage` nem secret JWT no cliente; API real usa Bearer a partir desse token ([FN-UI-API-FETCH](07-fn-ui-api-fetch.md)) |
 | RN-UI-AUTH-02 | Login exige usuário e senha | Campos `required`; submit bloqueado pelo HTML se vazios |
 | RN-UI-AUTH-03 | Username enviado com trim | Espaços nas pontas não fazem parte do username |
 | RN-UI-AUTH-04 | Erros de credencial são genéricos | 401/403 → “Usuário ou senha inválidos.” |
@@ -21,7 +21,7 @@ Regras de domínio (unicidade, ownership na API, publicação, progresso etc.): 
 | RN-UI-AUTH-10 | Formulário de acesso | Username (trim), senha e confirmação obrigatórios; senhas iguais; senha ≥ 4 caracteres |
 | RN-UI-AUTH-11 | `userId` vem da rota | Não é editável no formulário; vinculado ao perfil aberto |
 
-**Status:** tela desenhada; integração `POST /auth/register` pendente.
+**Status:** tela desenhada; integração `POST /auth/register` **aprovada** em [FN-UI-API-FETCH](07-fn-ui-api-fetch.md) (implementação pendente).
 
 ---
 
@@ -72,7 +72,7 @@ Regras de domínio (unicidade, ownership na API, publicação, progresso etc.): 
 | RN-UI-MET-03 | Descrição opcional | Trim ou `''` |
 | RN-UI-MET-04 | Exclusão confirma | Padrão danger |
 
-**Nota UI:** progresso (`GoalProgress`) ainda **não** tem tela. Cálculo na API: docs da API / `RN-MET`.
+**Nota UI:** progresso (`GoalProgress`) — UI **aprovada** em [FN-UI-API-FETCH](07-fn-ui-api-fetch.md) (implementação pendente). Cálculo na API: docs da API / `RN-MET`.
 
 ---
 
@@ -120,7 +120,7 @@ Regras de domínio (unicidade, ownership na API, publicação, progresso etc.): 
 
 **Referência API:** ciclo de receita, unicidade e ownership — `api-recipes-collection/docs/versao-2/`.
 
-**Limitação atual da UI:** payload de create/update usa `userId` fixo de demo (`DEMO_COOK_USER_ID = 1`). Alinhamento com ownership JWT é responsabilidade conjunta UI+API (v2).
+**Requisito ([FN-UI-API-FETCH](07-fn-ui-api-fetch.md)):** create/update usam `userId` da sessão autenticada (não constante de demo). Ownership na API: docs v2.
 
 ---
 
