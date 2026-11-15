@@ -7,7 +7,11 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { roleFromToken, subjectFromToken } from '../../demo/demoToken'
+import {
+  roleFromToken,
+  subjectFromToken,
+  userIdFromToken,
+} from '../../shared/auth/tokenClaims'
 import { setUnauthorizedHandler } from '../../shared/api/client'
 import { loginRequest } from './api/login'
 
@@ -16,6 +20,7 @@ const TOKEN_KEY = 'receitou.auth.token'
 type AuthContextValue = {
   token: string | null
   username: string | null
+  userId: number | null
   role: string | null
   isAuthenticated: boolean
   isAdmin: boolean
@@ -61,6 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const role = roleFromToken(token)
   const username = subjectFromToken(token)
+  const userId = userIdFromToken(token)
   const isAdmin = role === 'ADMIN'
   const isCook = role === 'COOK'
 
@@ -68,6 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     () => ({
       token,
       username,
+      userId,
       role,
       isAuthenticated: Boolean(token),
       isAdmin,
@@ -75,7 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       login,
       logout,
     }),
-    [token, username, role, isAdmin, isCook, login, logout],
+    [token, username, userId, role, isAdmin, isCook, login, logout],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

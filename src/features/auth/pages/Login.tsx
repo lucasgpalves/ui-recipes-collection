@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
-import { roleFromToken } from '../../../demo/demoToken'
+import { roleFromToken } from '../../../shared/auth/tokenClaims'
 import { ApiError } from '../../../shared/api/client'
 import { env } from '../../../shared/config/env'
 import { brand } from '../../../shared/brand'

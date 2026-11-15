@@ -419,14 +419,17 @@ export async function demoLogin(username: string, password: string): Promise<Tok
   }
 
   let role: string | null = null
+  let userId: number | null = null
   if (user === DEMO_ADMIN_USERNAME && pass === DEMO_ADMIN_PASSWORD) {
     role = 'ADMIN'
+    userId = null
   } else if (user === DEMO_COOK_USERNAME && pass === DEMO_COOK_PASSWORD) {
     role = 'COOK'
+    userId = DEMO_COOK_USER_ID
   }
 
   return {
-    token: createDemoToken(user, role),
+    token: createDemoToken(user, role, userId),
   }
 }
 
