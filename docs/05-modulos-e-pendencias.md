@@ -16,7 +16,7 @@ Estado da UI em relação aos requisitos de tela. Capacidade da API corresponden
 | Admin — metas | Feito (parcial) | CRUD; UI GoalProgress **aprovada**, implementação pendente |
 | Admin — restaurantes | Feito (demo) | CRUD; `id` no demo (API pode omitir) |
 | Admin — referências de emprego | Feito (demo) | Hub no perfil COOK ([FN-UI-COOK-PROFILE](06-perfil-cook-contexto.md)); rotas globais como atalho |
-| Cook — receitas (list / create / edit) | Feito | Prévia + ingredientes + medidas |
+| Cook — receitas (list / create / edit) | Feito | Prévia + ingredientes + medidas; sidebar só “Receitas” ([FN-UI-NAV-SIDEBAR-OBJECT](08-fn-ui-nav-sidebar-object.md)) |
 | Cook — CRUD de medidas/ingredientes avulso | Não iniciado | Medidas embutidas no form de receita |
 | Editor — livros / ingredientes | Não iniciado | Sem rotas |
 | Taster — reviews | Não iniciado | Sem formulário de avaliação |
@@ -48,6 +48,14 @@ Requisitos aprovados em [07-fn-ui-api-fetch.md](07-fn-ui-api-fetch.md). **Implem
 1. Amarrar `userId` do payload ao ator autenticado — requisito em [FN-UI-API-FETCH](07-fn-ui-api-fetch.md) (RF-UI-API-16).
 2. CRUD explícito de ingredientes/medidas fora do formulário de receita (se produto exigir).
 3. Ação de publicação / indicador `isPublished` editável (se regra de negócio liberar na API).
+
+### P2.4 — Sidebar object-only (`FN-UI-NAV-SIDEBAR-OBJECT`) — feito na UI
+
+1. ~~Remover submenu Listagem/Cadastro da sidebar Admin e Cook~~
+2. ~~Um item navegável por domínio (nome do objeto → listagem)~~
+3. ~~Create/edit permanecem páginas full-page acessíveis pelos CTAs da listagem~~
+
+Ver [08-fn-ui-nav-sidebar-object.md](08-fn-ui-nav-sidebar-object.md).
 
 ### P2.5 — Hub perfil COOK (`FN-UI-COOK-PROFILE`) — feito na UI
 

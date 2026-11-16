@@ -38,6 +38,7 @@ Fetch API (modo API real + register + GoalProgress):
 | [Módulos e pendências](05-modulos-e-pendencias.md) | O que está na UI vs. próximo corte |
 | [Perfil COOK / contexto de referências](06-perfil-cook-contexto.md) | `FN-UI-COOK-PROFILE` — hub de perfil e leitura embutida |
 | [Fetch API (modo API real)](07-fn-ui-api-fetch.md) | `FN-UI-API-FETCH` — requisitos aprovados; implementação pendente |
+| [Sidebar: item = nome do objeto](08-fn-ui-nav-sidebar-object.md) | `FN-UI-NAV-SIDEBAR-OBJECT` — sidebar sem Listagem/Cadastro; create/edit via CTAs |
 
 ## Convenções
 

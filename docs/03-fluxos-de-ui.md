@@ -88,9 +88,10 @@ Na navbar pública, admin autenticado pode usar atalho que faz logout e envia a 
 
 ### 3.3 Cadastro
 
-1. `/admin/usuarios/novo` → `UserForm`.
-2. Sucesso: se a resposta trouxer `id` (demo), vai ao perfil; senão, volta à listagem.
-3. Referência de campos/validações: [RN-UI usuários](04-regras-de-negocio-ui.md#rn-ui-usuários).
+1. Entrada pela listagem (**Novo usuário**); a sidebar não oferece atalho de cadastro ([FN-UI-NAV-SIDEBAR-OBJECT](08-fn-ui-nav-sidebar-object.md)).
+2. `/admin/usuarios/novo` → `UserForm`.
+3. Sucesso: se a resposta trouxer `id` (demo), vai ao perfil; senão, volta à listagem.
+4. Referência de campos/validações: [RN-UI usuários](04-regras-de-negocio-ui.md#rn-ui-usuários).
 
 ### 3.4 Perfil e edição
 
@@ -150,10 +151,11 @@ Rotas `/admin/referencias*` permanecem como atalho global (fora da sidebar).
 
 ### 5.2 Cadastro
 
-1. `/cook/receitas/nova` → `RecipeForm`.
-2. Usuário monta ingredientes no composer (Adicionar à lista / Enter).
-3. Opcional: **Prévia** abre modal de leitura.
-4. Submit válido → cria receita → `/cook/receitas`.
+1. Entrada pela listagem (**Nova receita**); a sidebar não oferece atalho de cadastro ([FN-UI-NAV-SIDEBAR-OBJECT](08-fn-ui-nav-sidebar-object.md)).
+2. `/cook/receitas/nova` → `RecipeForm`.
+3. Usuário monta ingredientes no composer (Adicionar à lista / Enter).
+4. Opcional: **Prévia** abre modal de leitura.
+5. Submit válido → cria receita → `/cook/receitas`.
 
 ### 5.3 Edição
 

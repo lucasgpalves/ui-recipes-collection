@@ -65,8 +65,8 @@
 | Layout | Conteúdo típico |
 |--------|-----------------|
 | `PublicLayout` | Navbar (marca, chips de categoria, login/sair), área principal |
-| `AdminLayout` | Sidebar (usuários, categorias, papéis, metas, restaurantes), “Ver site”, sair — referências via perfil COOK |
-| `CookLayout` | Sidebar (receitas: listagem / cadastro), “Ver site”, sair |
+| `AdminLayout` | Sidebar com um item por objeto (Usuários, Categorias, Papéis, Metas, Restaurantes) → listagem; create/edit via CTAs da lista; “Ver site”, sair — referências via perfil COOK |
+| `CookLayout` | Sidebar com item Receitas → listagem; create/edit via CTAs da lista; “Ver site”, sair |
 
 ## Sessão
 
