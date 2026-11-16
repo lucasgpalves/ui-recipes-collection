@@ -8,9 +8,7 @@ export function CookLayout() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
 
-  const isRecipesList = pathname === '/cook/receitas'
-  const isRecipesCreate = pathname === '/cook/receitas/nova'
-  const isRecipesEdit = /\/cook\/receitas\/\d+\/editar$/.test(pathname)
+  const isRecipesSection = pathname.startsWith('/cook/receitas')
 
   return (
     <div className={styles.shell}>
@@ -22,22 +20,12 @@ export function CookLayout() {
           <span className={styles.badge}>Cook</span>
         </div>
 
-        <p className={styles.sectionLabel}>Receitas</p>
-        <nav className={styles.nav} aria-label="Receitas">
+        <nav className={styles.nav} aria-label="Cook">
           <NavLink
             to="/cook/receitas"
-            end
-            className={() =>
-              isRecipesList || isRecipesEdit ? styles.navActive : styles.navLink
-            }
+            className={() => (isRecipesSection ? styles.navActive : styles.navLink)}
           >
-            Listagem
-          </NavLink>
-          <NavLink
-            to="/cook/receitas/nova"
-            className={() => (isRecipesCreate ? styles.navActive : styles.navLink)}
-          >
-            Cadastro
+            Receitas
           </NavLink>
         </nav>
 
