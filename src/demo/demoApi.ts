@@ -28,6 +28,9 @@ const DEMO_ADMIN_USERNAME = 'admin'
 const DEMO_ADMIN_PASSWORD = 'admin'
 const DEMO_COOK_USERNAME = 'cook'
 const DEMO_COOK_PASSWORD = 'cook'
+const DEMO_EDITOR_USERNAME = 'editor'
+const DEMO_EDITOR_PASSWORD = 'editor'
+const DEMO_EDITOR_USER_ID = 12
 /** userId fixo do cook demo para RecipeRequestDTO. */
 export const DEMO_COOK_USER_ID = 1
 
@@ -523,7 +526,16 @@ export async function demoLogin(username: string, password: string): Promise<Tok
     }
   }
 
-  throw new ApiError(401, 'Credenciais inválidas')
+    if (user === DEMO_EDITOR_USERNAME && pass === DEMO_EDITOR_PASSWORD) {
+    return {
+      token: createDemoToken(user, 'EDITOR', DEMO_EDITOR_USER_ID),
+      role: 'EDITOR',
+      userId: DEMO_EDITOR_USER_ID,
+      username: user,
+    }
+  }
+
+throw new ApiError(401, 'Credenciais inválidas')
 }
 
 function formatDemoDateTime(date: Date): string {
@@ -890,4 +902,155 @@ export async function demoDeleteJobReference(id: number): Promise<void> {
   }
   store.splice(index, 1)
   await withLatency(undefined, 280)
+}
+
+type DemoEditorIngredient = {
+  id: number
+  name: string
+  status: 'pending' | 'approved' | 'rejected'
+}
+
+let demoEditorIngredients: DemoEditorIngredient[] = [
+  { id: 1, name: 'Farinha', status: 'pending' },
+  { id: 2, name: 'Açúcar', status: 'approved' },
+]
+
+type DemoEditorBook = {
+  id: number
+  title: string
+  isbn: string | null
+  description: string | null
+  isPublished: boolean
+  recipesId: number[]
+}
+
+let demoEditorBooks: DemoEditorBook[] = [
+  {
+    id: 1,
+    title: 'Livro demo',
+    isbn: '978-3-16-148410-0',
+    description: 'Rascunho',
+    isPublished: false,
+    recipesId: [1],
+  },
+]
+
+export async function demoFetchEditorIngredients(_query?: {
+  q?: string
+  status?: string
+}): Promise<DemoEditorIngredient[]> {
+  return withLatency(structuredClone(demoEditorIngredients), 240)
+}
+
+export async function demoFetchEditorIngredientById(id: number): Promise<DemoEditorIngredient> {
+  const item = demoEditorIngredients.find((ing) => ing.id === id)
+  if (!item) throw new ApiError(404, `Demo ingredient ${id} not found`)
+  return withLatency(structuredClone(item), 200)
+}
+
+export async function demoApproveIngredient(
+  id: number,
+  _body: { name?: string | null },
+): Promise<void> {
+  const item = demoEditorIngredients.find((ing) => ing.id === id)
+  if (!item) throw new ApiError(404, `Demo ingredient ${id} not found`)
+  item.status = 'approved'
+  await withLatency(undefined, 200)
+}
+
+export async function demoRejectIngredient(id: number): Promise<void> {
+  const item = demoEditorIngredients.find((ing) => ing.id === id)
+  if (!item) throw new ApiError(404, `Demo ingredient ${id} not found`)
+  item.status = 'rejected'
+  await withLatency(undefined, 200)
+}
+
+export async function demoReopenIngredient(id: number): Promise<void> {
+  const item = demoEditorIngredients.find((ing) => ing.id === id)
+  if (!item) throw new ApiError(404, `Demo ingredient ${id} not found`)
+  item.status = 'pending'
+  await withLatency(undefined, 200)
+}
+
+export async function demoMergeIngredients(
+  targetId: number,
+  sourceIngredientId: number,
+): Promise<void> {
+  if (targetId === sourceIngredientId) {
+    throw new ApiError(400, 'Cannot merge an ingredient into itself')
+  }
+  const sourceIndex = demoEditorIngredients.findIndex((ing) => ing.id === sourceIngredientId)
+  if (sourceIndex < 0) throw new ApiError(404, `Demo ingredient ${sourceIngredientId} not found`)
+  demoEditorIngredients.splice(sourceIndex, 1)
+  await withLatency(undefined, 260)
+}
+
+export async function demoAddIngredientAlias(ingredientId: number, alias: string): Promise<void> {
+  const item = demoEditorIngredients.find((ing) => ing.id === ingredientId)
+  if (!item) throw new ApiError(404, `Demo ingredient ${ingredientId} not found`)
+  if (alias.toLowerCase() === 'colisão') {
+    throw new ApiError(409, 'Alias already exists')
+  }
+  await withLatency(undefined, 220)
+}
+
+export async function demoFetchEditorBooks(): Promise<DemoEditorBook[]> {
+  return withLatency(structuredClone(demoEditorBooks), 240)
+}
+
+export async function demoFetchBookById(id: number): Promise<DemoEditorBook> {
+  const book = demoEditorBooks.find((b) => b.id === id)
+  if (!book) throw new ApiError(404, `Demo book ${id} not found`)
+  return withLatency(structuredClone(book), 220)
+}
+
+export async function demoCreateBook(request: {
+  title: string
+  isbn: string
+  description: string
+  recipesId: number[]
+}): Promise<DemoEditorBook> {
+  const created: DemoEditorBook = {
+    id: demoEditorBooks.length + 1,
+    title: request.title,
+    isbn: request.isbn,
+    description: request.description,
+    isPublished: false,
+    recipesId: [...request.recipesId],
+  }
+  demoEditorBooks.push(created)
+  return withLatency(structuredClone(created), 320)
+}
+
+export async function demoPublishBook(id: number): Promise<void> {
+  const book = demoEditorBooks.find((b) => b.id === id)
+  if (!book) throw new ApiError(404, `Demo book ${id} not found`)
+  book.isPublished = true
+  await withLatency(undefined, 280)
+}
+
+type DemoEditorialRecipe = {
+  id: number
+  name: string
+  userId: number
+  chefName: string | null
+  categoryName: string | null
+  isRated: boolean
+  isPublished: boolean
+}
+
+const demoEditorialRecipes: DemoEditorialRecipe[] = [
+  {
+    id: 10,
+    name: 'Bolo',
+    userId: 1,
+    chefName: 'chef',
+    categoryName: 'Doces',
+    isRated: true,
+    isPublished: false,
+  },
+]
+
+export async function demoFetchEditorialRecipes(_filter?: Record<string, unknown>): Promise<DemoEditorialRecipe[]> {
+  return withLatency(structuredClone(demoEditorialRecipes), 260)
 }

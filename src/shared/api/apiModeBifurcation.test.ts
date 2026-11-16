@@ -40,6 +40,18 @@ const mocks = vi.hoisted(() => ({
   demoCreateJobReference: vi.fn(),
   demoUpdateJobReference: vi.fn(),
   demoDeleteJobReference: vi.fn(),
+  demoFetchEditorIngredients: vi.fn(),
+  demoFetchEditorIngredientById: vi.fn(),
+  demoApproveIngredient: vi.fn(),
+  demoRejectIngredient: vi.fn(),
+  demoReopenIngredient: vi.fn(),
+  demoMergeIngredients: vi.fn(),
+  demoAddIngredientAlias: vi.fn(),
+  demoFetchEditorBooks: vi.fn(),
+  demoFetchBookById: vi.fn(),
+  demoCreateBook: vi.fn(),
+  demoPublishBook: vi.fn(),
+  demoFetchEditorialRecipes: vi.fn(),
 }))
 
 vi.mock('../config/env', () => ({ env: mocks.env }))
@@ -80,6 +92,18 @@ vi.mock('../../demo/demoApi', () => ({
   demoCreateJobReference: mocks.demoCreateJobReference,
   demoUpdateJobReference: mocks.demoUpdateJobReference,
   demoDeleteJobReference: mocks.demoDeleteJobReference,
+  demoFetchEditorIngredients: mocks.demoFetchEditorIngredients,
+  demoFetchEditorIngredientById: mocks.demoFetchEditorIngredientById,
+  demoApproveIngredient: mocks.demoApproveIngredient,
+  demoRejectIngredient: mocks.demoRejectIngredient,
+  demoReopenIngredient: mocks.demoReopenIngredient,
+  demoMergeIngredients: mocks.demoMergeIngredients,
+  demoAddIngredientAlias: mocks.demoAddIngredientAlias,
+  demoFetchEditorBooks: mocks.demoFetchEditorBooks,
+  demoFetchBookById: mocks.demoFetchBookById,
+  demoCreateBook: mocks.demoCreateBook,
+  demoPublishBook: mocks.demoPublishBook,
+  demoFetchEditorialRecipes: mocks.demoFetchEditorialRecipes,
 }))
 
 import { loginRequest, logoutRequest } from '../../features/auth/api/login'
@@ -132,6 +156,21 @@ import {
   fetchReferencesByUserId,
   updateReference,
 } from '../../features/admin/references/api/references'
+import {
+  addIngredientAlias,
+  approveIngredient,
+  fetchEditorIngredients,
+  mergeIngredients,
+  rejectIngredient,
+  reopenIngredient,
+} from '../../features/editor/ingredients/api/ingredients'
+import {
+  createBook,
+  fetchBookById,
+  fetchEditorBooks,
+  publishBook,
+} from '../../features/editor/books/api/books'
+import { fetchEditorialRecipes } from '../../features/editor/editorial/api/editorial'
 
 const actor = { userId: 1, username: 'cook' }
 
@@ -273,5 +312,63 @@ describe('RF-UI-API-01: módulos wired usam apiRequest com useDemoApi=false', ()
     expect(mocks.apiRequest).toHaveBeenCalledWith('/references/7', { method: 'PUT', body: {} })
     expect(mocks.apiRequest).toHaveBeenCalledWith('/references/7', { method: 'DELETE' })
     expect(mocks.demoFetchJobReferences).not.toHaveBeenCalled()
+  })
+
+  it('editor ingredients usam apiRequest', async () => {
+    await fetchEditorIngredients({ status: 'pending' })
+    await approveIngredient(2, {})
+    await rejectIngredient(2)
+    await reopenIngredient(2)
+    await mergeIngredients(10, 4)
+    await addIngredientAlias(5, 'farinha')
+
+    expect(mocks.apiRequest).toHaveBeenCalledWith('/ingredients?status=pending')
+    expect(mocks.apiRequest).toHaveBeenCalledWith('/ingredients/2/approve', { method: 'POST', body: {} })
+    expect(mocks.apiRequest).toHaveBeenCalledWith('/ingredients/2/reject', { method: 'POST' })
+    expect(mocks.apiRequest).toHaveBeenCalledWith('/ingredients/2/reopen', { method: 'POST' })
+    expect(mocks.apiRequest).toHaveBeenCalledWith('/ingredients/10/merge', {
+      method: 'POST',
+      body: { sourceIngredientId: 4 },
+    })
+    expect(mocks.apiRequest).toHaveBeenCalledWith('/ingredients/5/aliases', {
+      method: 'POST',
+      body: { alias: 'farinha' },
+    })
+    expect(mocks.demoFetchEditorIngredients).not.toHaveBeenCalled()
+    expect(mocks.demoApproveIngredient).not.toHaveBeenCalled()
+  })
+
+  it('editor books usam apiRequest', async () => {
+    await fetchEditorBooks()
+    await fetchBookById(3)
+    await createBook({
+      title: 'L',
+      isbn: '1',
+      description: 'd',
+      recipesId: [2],
+    })
+    await publishBook(3)
+
+    expect(mocks.apiRequest).toHaveBeenCalledWith('/books')
+    expect(mocks.apiRequest).toHaveBeenCalledWith('/books/3')
+    expect(mocks.apiRequest).toHaveBeenCalledWith('/books', {
+      method: 'POST',
+      body: { title: 'L', isbn: '1', description: 'd', recipesId: [2] },
+    })
+    expect(mocks.apiRequest).toHaveBeenCalledWith('/books/3', { method: 'PATCH' })
+    expect(mocks.demoFetchEditorBooks).not.toHaveBeenCalled()
+  })
+
+  it('editor editorial usam apiRequest', async () => {
+    await fetchEditorialRecipes({ q: 'bolo', isRated: true })
+
+    const editorialCall = mocks.apiRequest.mock.calls.find(([path]) =>
+      String(path).startsWith('/recipes/editorial'),
+    )?.[0]
+    const url = new URL(String(editorialCall ?? ''), 'http://api.test')
+    expect(url.pathname).toBe('/recipes/editorial')
+    expect(url.searchParams.get('q')).toBe('bolo')
+    expect(url.searchParams.get('isRated')).toBe('true')
+    expect(mocks.demoFetchEditorialRecipes).not.toHaveBeenCalled()
   })
 })

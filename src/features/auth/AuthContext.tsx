@@ -29,6 +29,7 @@ type AuthContextValue = {
   isAuthenticated: boolean
   isAdmin: boolean
   isCook: boolean
+  isEditor: boolean
   login: (username: string, password: string) => Promise<void>
   logout: () => void
 }
@@ -172,6 +173,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const isAdmin = role === 'ADMIN'
   const isCook = role === 'COOK'
+  const isEditor = role === 'EDITOR'
   const isAuthenticated = Boolean(role && username)
 
   const value = useMemo<AuthContextValue>(
@@ -183,10 +185,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAuthenticated,
       isAdmin,
       isCook,
+      isEditor,
       login,
       logout,
     }),
-    [token, username, userId, role, isAuthenticated, isAdmin, isCook, login, logout],
+    [token, username, userId, role, isAuthenticated, isAdmin, isCook, isEditor, login, logout],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
@@ -208,5 +211,6 @@ export function useOptionalAuth(): AuthContextValue | null {
 export function homePathForRole(role: string | null): string {
   if (role === 'ADMIN') return '/admin/usuarios'
   if (role === 'COOK') return '/cook/receitas'
+  if (role === 'EDITOR') return '/editor/ingredientes'
   return '/'
 }

@@ -16,7 +16,7 @@ Regras de domínio (unicidade, ownership na API, publicação, progresso etc.): 
 | RN-UI-AUTH-05 | 401 limpa sessão; 403 é gap (AC-12) | Handler remove estado de auth em 401 ([FN-UI-API-FETCH](07-fn-ui-api-fetch.md)) |
 | RN-UI-AUTH-06 | Painel admin só para `ADMIN` | `RequireAdmin` redireciona demais usuários |
 | RN-UI-AUTH-07 | Painel cook só para `COOK` | `RequireCook` redireciona demais usuários |
-| RN-UI-AUTH-08 | Pós-login por papel | ADMIN → `/admin/usuarios`; COOK → `/cook/receitas`; resto → `/` |
+| RN-UI-AUTH-08 | Pós-login por papel | ADMIN → `/admin/usuarios`; COOK → `/cook/receitas`; EDITOR → `/editor/ingredientes`; resto → `/` |
 | RN-UI-AUTH-09 | Credenciais só para usuário ativo | Perfil desativado não exibe formulário de acesso |
 | RN-UI-AUTH-10 | Formulário de acesso | Username (trim), senha e confirmação obrigatórios; senhas iguais; senha ≥ 4 caracteres |
 | RN-UI-AUTH-11 | `userId` vem da rota | Não é editável no formulário; vinculado ao perfil aberto |

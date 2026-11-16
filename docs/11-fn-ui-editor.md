@@ -1,7 +1,7 @@
 # Funcionalidade — Painel EDITOR (livros, ingredientes, fila editorial)
 
 **ID:** `FN-UI-EDITOR`  
-**Status:** requisitos **aprovados** (implementação não iniciada)  
+**Status:** requisitos **aprovados**; implementação **feita** (validada por testes Vitest)  
 **Versão:** 1.0  
 **Domínio API relacionado:** [RN-ingredientes](../../api-recipes-collection/docs/versao-2/RN-ingredientes.md), [RN-publicacao-livro](../../api-recipes-collection/docs/versao-2/RN-publicacao-livro.md), [RN-REC-05](../../api-recipes-collection/docs/versao-2/RN-ciclo-receita.md), [RN-OWN-04](../../api-recipes-collection/docs/versao-2/RN-autoria-e-ownership.md)
 
@@ -86,17 +86,17 @@ Novo painel autenticado `/editor/*` para o papel **EDITOR**: governança de ingr
 
 ## 6. Acceptance Criteria
 
-- [ ] **AC-01** — Login como EDITOR redireciona para o destino do painel editor (não `/`).
-- [ ] **AC-02** — `RequireEditor` bloqueia anônimo e papéis ≠ EDITOR nas rotas do shell (salvo fila editorial para ADMIN conforme RF-UI-ED-03).
-- [ ] **AC-03** — Sidebar mostra itens objeto → listagens; sem Listagem/Cadastro.
-- [ ] **AC-04** — Approve/reject/reopen disparam os POSTs correspondentes e atualizam o status exibido.
-- [ ] **AC-05** — Merge com confirmação: sucesso atualiza catálogo; erro mostra toast.
-- [ ] **AC-06** — Alias com colisão: UI exibe erro da API (409/422 conforme contrato).
-- [ ] **AC-07** — Fila editorial usa `GET /recipes/editorial` e aplica filtros mínimos documentados.
-- [ ] **AC-08** — ADMIN autenticado consegue usar a fila editorial autorizada pela API; COOK/TASTER recebem bloqueio de guard ou 403 tratado.
-- [ ] **AC-09** — Create livro + publish: sucesso marca UI como publicado; falha de critérios mostra feedback da API.
-- [ ] **AC-10** — Não há unpublish na UI.
-- [ ] **AC-11** — Mapa de rotas, visão, fluxos e pendências atualizados após implementação verificada.
+- [x] **AC-01** — Login como EDITOR redireciona para o destino do painel editor (não `/`).
+- [x] **AC-02** — `RequireEditor` bloqueia anônimo e papéis ≠ EDITOR nas rotas do shell (salvo fila editorial para ADMIN conforme RF-UI-ED-03).
+- [x] **AC-03** — Sidebar mostra itens objeto → listagens; sem Listagem/Cadastro.
+- [x] **AC-04** — Approve/reject/reopen disparam os POSTs correspondentes e atualizam o status exibido.
+- [x] **AC-05** — Merge com confirmação: sucesso atualiza catálogo; erro mostra toast.
+- [x] **AC-06** — Alias com colisão: UI exibe erro da API (409/422 conforme contrato).
+- [x] **AC-07** — Fila editorial usa `GET /recipes/editorial` e aplica filtros mínimos documentados.
+- [x] **AC-08** — ADMIN autenticado consegue usar a fila editorial autorizada pela API; COOK/TASTER recebem bloqueio de guard ou 403 tratado.
+- [x] **AC-09** — Create livro + publish: sucesso marca UI como publicado; falha de critérios mostra feedback da API.
+- [x] **AC-10** — Não há unpublish na UI.
+- [x] **AC-11** — Mapa de rotas, visão, fluxos e pendências atualizados após implementação verificada.
 
 ---
 
@@ -120,11 +120,12 @@ Novo painel autenticado `/editor/*` para o papel **EDITOR**: governança de ingr
 |------|-------|------|
 | `/editor` | RequireEditor | Redirect → `/editor/ingredientes` |
 | `/editor/ingredientes` | RequireEditor | Listagem + ações de status |
-| `/editor/ingredientes/:id` (ou `/aliases`, `/merge`) | RequireEditor | Detalhe / aliases / merge |
+| `/editor/ingredientes/merge` | RequireEditor | Merge source → target |
+| `/editor/ingredientes/:id/aliases` | RequireEditor | Aliases do ingrediente |
 | `/editor/livros` | RequireEditor | Listagem |
 | `/editor/livros/novo` | RequireEditor | Cadastro |
 | `/editor/livros/:id` | RequireEditor | Detalhe + Publicar |
-| `/editor/receitas` | RequireEditor **ou** ADMIN (fila) | Fila `GET /recipes/editorial` |
+| `/editor/receitas` | `RequireEditorOrAdmin` | Fila `GET /recipes/editorial` |
 
 **Endpoints (chamadas UI):**  
 `GET/POST/PUT` ingredientes conforme API; `POST .../approve|reject|reopen`; merge/aliases; `GET /recipes/editorial`; `POST /books`; `PATCH /books/{id}`; `GET /books`, `GET /books/{id}`.

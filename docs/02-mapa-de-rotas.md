@@ -36,6 +36,14 @@
 | `/cook/receitas` | Cook | Minhas receitas |
 | `/cook/receitas/nova` | Cook | Nova receita |
 | `/cook/receitas/:id/editar` | Cook | Editar receita |
+| `/editor` | `RequireEditor` | Redirect → `ingredientes` |
+| `/editor/ingredientes` | Editor | Listagem + approve/reject/reopen |
+| `/editor/ingredientes/merge` | Editor | Merge de ingredientes |
+| `/editor/ingredientes/:id/aliases` | Editor | Aliases |
+| `/editor/livros` | Editor | Listagem de livros |
+| `/editor/livros/novo` | Editor | Cadastro de livro |
+| `/editor/livros/:id` | Editor | Detalhe + publicar |
+| `/editor/receitas` | `RequireEditorOrAdmin` | Fila editorial (`GET /recipes/editorial`) |
 | `*` | — | Redirect → `/` |
 
 ## Guards
@@ -52,12 +60,25 @@
 2. Autenticado e `role !== 'COOK'` → `/`
 3. Caso contrário → renderiza outlet do cook
 
+### `RequireEditor`
+
+1. Sem autenticação → `/login`
+2. Autenticado e `role !== 'EDITOR'` → `/`
+3. Caso contrário → renderiza outlet do editor (ingredientes / livros)
+
+### `RequireEditorOrAdmin`
+
+1. Sem autenticação → `/login`
+2. Autenticado e `role` ≠ `EDITOR` e ≠ `ADMIN` → `/`
+3. Caso contrário → renderiza outlet da fila editorial (`/editor/receitas`)
+
 ### Destino pós-login (`homePathForRole`)
 
 | Role | Destino |
 |------|---------|
 | `ADMIN` | `/admin/usuarios` |
 | `COOK` | `/cook/receitas` |
+| `EDITOR` | `/editor/ingredientes` |
 | Demais / null | `/` |
 
 ## Layouts
@@ -67,6 +88,7 @@
 | `PublicLayout` | Navbar (marca, chips de categoria, login/sair), área principal |
 | `AdminLayout` | Sidebar com um item por objeto (Usuários, Categorias, Papéis, Metas, Restaurantes) → listagem; create/edit via CTAs da lista; “Ver site”, sair — referências via perfil COOK |
 | `CookLayout` | Sidebar com item Receitas → listagem; create/edit via CTAs da lista; “Ver site”, sair |
+| `EditorLayout` | Sidebar object-only: Ingredientes, Livros, Receitas; ADMIN na fila vê só Receitas; “Ver site”, sair |
 
 ## Sessão
 

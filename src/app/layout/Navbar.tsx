@@ -11,7 +11,7 @@ type NavbarProps = {
 }
 
 export function Navbar({ categories = [], variant = 'default' }: NavbarProps) {
-  const { isAuthenticated, isAdmin, isCook, username, logout } = useAuth()
+  const { isAuthenticated, isAdmin, isCook, isEditor, username, logout } = useAuth()
   const navigate = useNavigate()
   const isLanding = variant === 'landing'
   const showCategories = !isLanding && categories.length > 0
@@ -37,6 +37,11 @@ export function Navbar({ categories = [], variant = 'default' }: NavbarProps) {
                   Minhas receitas
                 </Link>
               ) : null}
+              {isEditor ? (
+                <Link to="/editor/ingredientes" className={styles.adminLink}>
+                  Editor
+                </Link>
+              ) : null}
               {isAdmin ? (
                 <Link
                   to="/login"
@@ -51,7 +56,7 @@ export function Navbar({ categories = [], variant = 'default' }: NavbarProps) {
                   Entrar como cozinheiro
                 </Link>
               ) : null}
-              {!isAdmin && !isCook ? (
+              {!isAdmin && !isCook && !isEditor ? (
                 <Link
                   to="/login"
                   className={styles.adminLink}
@@ -67,7 +72,7 @@ export function Navbar({ categories = [], variant = 'default' }: NavbarProps) {
               ) : null}
               <span className={styles.session}>
                 {username ? `${username}` : 'Sessão'}
-                {isCook ? ' · cozinheiro' : isAdmin ? ' · admin' : ''}
+                {isCook ? ' · cozinheiro' : isAdmin ? ' · admin' : isEditor ? ' · editor' : ''}
               </span>
               <button
                 type="button"

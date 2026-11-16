@@ -96,6 +96,7 @@ describe('sessão cookie HttpOnly na API real (AC-01 / AC-02 / AC-03 / F-05)', (
   it('RN-UI-AUTH-08: home por papel', () => {
     expect(homePathForRole('ADMIN')).toBe('/admin/usuarios')
     expect(homePathForRole('COOK')).toBe('/cook/receitas')
+    expect(homePathForRole('EDITOR')).toBe('/editor/ingredientes')
     expect(homePathForRole('TASTER')).toBe('/')
     expect(homePathForRole(null)).toBe('/')
   })

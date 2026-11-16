@@ -14,6 +14,7 @@ Jornadas do usuário na interface. Regras de domínio por trás das chamadas: ve
 4. CTA secundário conforme sessão:
    - COOK → **Minhas receitas** → `/cook/receitas`
    - ADMIN → **Ir ao admin** → `/admin/usuarios`
+   - EDITOR → **Ir ao editor** → `/editor/ingredientes`
    - Autenticado sem painel → **Entrar como cozinheiro** → `/login`
    - Anônimo → **Entrar** → `/login`
 
@@ -176,3 +177,27 @@ Rotas `/admin/referencias*` permanecem como atalho global (fora da sidebar).
 | Erro de carga | Mensagem + notify de erro quando aplicável |
 | Submit | Botão desabilitado; erros de validação no form + toast warning |
 | Confirmação destrutiva | Modal bloqueante; Escape/Cancel = aborta |
+
+## 5.1 Editor — painel (`FN-UI-EDITOR`)
+
+### Ingredientes
+
+1. Login EDITOR → `/editor/ingredientes`.
+2. Listagem carrega `GET /ingredients` (status pending/approved/rejected).
+3. Ações: **Aprovar** / **Rejeitar** / **Reabrir** conforme status; **Aliases** → página dedicada; **Merge** → `/editor/ingredientes/merge`.
+4. Alias com colisão → toast de erro com `detail` da API.
+5. Merge: origem ≠ destino; **Confirmar merge** → `POST /ingredients/{target}/merge`; sucesso remove a origem da listagem.
+
+### Livros
+
+1. `/editor/livros` lista livros; CTA **Novo livro**.
+2. Cadastro: ISBN, título, descrição, IDs de receitas → `POST /books`.
+3. Detalhe: **Publicar** → `PATCH /books/{id}`; sucesso marca **Publicado**; falha exibe motivos da API. Sem unpublish.
+
+### Fila editorial
+
+1. `/editor/receitas` (EDITOR ou ADMIN) carrega `GET /recipes/editorial`.
+2. Filtros: categoria, somente avaliadas/publicadas, chef, busca → query params combináveis.
+3. Sidebar ADMIN na fila mostra só **Receitas**.
+
+---

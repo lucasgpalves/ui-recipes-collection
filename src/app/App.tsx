@@ -31,12 +31,24 @@ import {
   CookRecipesListPage,
   RequireCook,
 } from '../features/cook'
+import {
+  EditorBookCreatePage,
+  EditorBookDetailPage,
+  EditorBooksListPage,
+  EditorEditorialPage,
+  EditorIngredientAliasesPage,
+  EditorIngredientsListPage,
+  EditorIngredientsMergePage,
+  RequireEditor,
+  RequireEditorOrAdmin,
+} from '../features/editor'
 import { RecipeDetailPage, SearchResultsPage } from '../features/recipes'
 import { ThemeProvider } from '../shared/theme'
 import { ConfirmProvider } from '../shared/ui/confirm'
 import { NotifyProvider } from '../shared/ui/notify'
 import { AdminLayout } from './layout/AdminLayout'
 import { CookLayout } from './layout/CookLayout'
+import { EditorLayout } from './layout/EditorLayout'
 import { PublicLayout } from './layout/PublicLayout'
 import { HomePage } from './pages/Home'
 
@@ -88,6 +100,25 @@ export default function App() {
                     <Route path="receitas" element={<CookRecipesListPage />} />
                     <Route path="receitas/nova" element={<CookRecipeCreatePage />} />
                     <Route path="receitas/:id/editar" element={<CookRecipeEditPage />} />
+                  </Route>
+                </Route>
+                <Route element={<RequireEditor />}>
+                  <Route path="/editor" element={<EditorLayout />}>
+                    <Route index element={<Navigate to="ingredientes" replace />} />
+                    <Route path="ingredientes" element={<EditorIngredientsListPage />} />
+                    <Route path="ingredientes/merge" element={<EditorIngredientsMergePage />} />
+                    <Route
+                      path="ingredientes/:id/aliases"
+                      element={<EditorIngredientAliasesPage />}
+                    />
+                    <Route path="livros" element={<EditorBooksListPage />} />
+                    <Route path="livros/novo" element={<EditorBookCreatePage />} />
+                    <Route path="livros/:id" element={<EditorBookDetailPage />} />
+                  </Route>
+                </Route>
+                <Route element={<RequireEditorOrAdmin />}>
+                  <Route path="/editor" element={<EditorLayout />}>
+                    <Route path="receitas" element={<EditorEditorialPage />} />
                   </Route>
                 </Route>
                 <Route element={<PublicLayout />}>

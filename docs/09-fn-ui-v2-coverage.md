@@ -17,16 +17,16 @@ Manter uma matriz única e verificável:
 |----------------|--------------|-------------|------------------|
 | Autoria / ownership (`RN-OWN`) | Implícito nos painéis que mutam recursos (COOK, TASTER, EDITOR) | [FN-UI-COOK-RECIPE-LIFECYCLE](10-fn-ui-cook-recipe-lifecycle.md), [FN-UI-EDITOR](11-fn-ui-editor.md), [FN-UI-TASTER](12-fn-ui-taster.md), [FN-UI-API-FETCH](07-fn-ui-api-fetch.md) | Parcial / planejado nos filhos |
 | Ciclo de receita (`RN-REC`) | Painel COOK: delete rascunho, form locked se publicada, toasts 422/409 | [FN-UI-COOK-RECIPE-LIFECYCLE](10-fn-ui-cook-recipe-lifecycle.md) | Planejado |
-| Filtro editorial `GET /recipes/editorial` (`RN-REC-05`) | Painel EDITOR (fila editorial) | [FN-UI-EDITOR](11-fn-ui-editor.md) | Planejado |
+| Filtro editorial `GET /recipes/editorial` (`RN-REC-05`) | Painel EDITOR (fila editorial) | [FN-UI-EDITOR](11-fn-ui-editor.md) | Feito |
 | Avaliação / reviews (`RN-REV`) | Detalhe público: média + CRUD próprio (TASTER) | [FN-UI-TASTER](12-fn-ui-taster.md) | Feito |
-| Livro e publicação (`RN-LIV`) | Painel EDITOR: criar livro + publish | [FN-UI-EDITOR](11-fn-ui-editor.md) | Planejado |
-| Ingredientes governança (`RN-ING`) | Painel EDITOR: approve/reject/reopen/aliases/merge | [FN-UI-EDITOR](11-fn-ui-editor.md) | Planejado |
+| Livro e publicação (`RN-LIV`) | Painel EDITOR: criar livro + publish | [FN-UI-EDITOR](11-fn-ui-editor.md) | Feito |
+| Ingredientes governança (`RN-ING`) | Painel EDITOR: approve/reject/reopen/aliases/merge | [FN-UI-EDITOR](11-fn-ui-editor.md) | Feito |
 | Metas / progresso (`RN-MET`) | Admin metas + GoalProgress | [FN-UI-API-FETCH](07-fn-ui-api-fetch.md) | Aprovado; implementação parcial |
 | Usuário / acesso / visibilidade (`RN-USR`, `RN-VIS`) | Admin: terminate existente; reativar; register | [FN-UI-ADMIN-USER-ACCESS](13-fn-ui-admin-user-access.md); register em [FN-UI-API-FETCH](07-fn-ui-api-fetch.md) | Planejado (reativar); register aprovado |
 | Referência de emprego (`RN-JOB`) | Hub perfil COOK | [FN-UI-COOK-PROFILE](06-perfil-cook-contexto.md) | Feito na UI |
 | Logs (`RN-LOG`) | **Sem UI** | — | Fora de escopo UI (API também exclui painel de logs) |
 | Sessão / fetch API real | Cookie, register, GoalProgress, clear 401/403 | [FN-UI-API-FETCH](07-fn-ui-api-fetch.md) | Aprovado; implementação parcial |
-| Navegação sidebar object-only | Admin / Cook (/ Editor no filho) | [FN-UI-NAV-SIDEBAR-OBJECT](08-fn-ui-nav-sidebar-object.md); Editor em [FN-UI-EDITOR](11-fn-ui-editor.md) | Feito (Admin/Cook); Editor planejado |
+| Navegação sidebar object-only | Admin / Cook / Editor | [FN-UI-NAV-SIDEBAR-OBJECT](08-fn-ui-nav-sidebar-object.md); Editor em [FN-UI-EDITOR](11-fn-ui-editor.md) | Feito |
 
 ### Legenda de status de cobertura
 

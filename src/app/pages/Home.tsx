@@ -4,7 +4,7 @@ import { brand } from '../../shared/brand'
 import styles from './Home.module.css'
 
 export function HomePage() {
-  const { isAuthenticated, isCook, isAdmin } = useAuth()
+  const { isAuthenticated, isCook, isAdmin, isEditor } = useAuth()
 
   return (
     <div className={styles.page}>
@@ -33,6 +33,10 @@ export function HomePage() {
             ) : isAdmin ? (
               <Link to="/admin/usuarios" className={styles.ctaSecondary}>
                 Ir ao admin
+              </Link>
+            ) : isEditor ? (
+              <Link to="/editor/ingredientes" className={styles.ctaSecondary}>
+                Ir ao editor
               </Link>
             ) : isAuthenticated ? (
               <Link to="/login" className={styles.ctaSecondary}>

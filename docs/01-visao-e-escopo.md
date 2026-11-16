@@ -7,7 +7,7 @@ O frontend **Taberu FOOD** (Receitou) é o cliente web do Acervo de Receitas. Of
 1. **Vitrine pública** — explorar, filtrar e abrir receitas sem autenticação.
 2. **Painel do cozinheiro (COOK)** — manter o próprio acervo de receitas.
 3. **Painel administrativo (ADMIN)** — governança de usuários, papéis, categorias e metas.
-4. **Painel editorial (EDITOR)** — governança de ingredientes, livros e fila editorial ([FN-UI-EDITOR](11-fn-ui-editor.md); requisitos aprovados, implementação não iniciada).
+4. **Painel editorial (EDITOR)** — governança de ingredientes, livros e fila editorial ([FN-UI-EDITOR](11-fn-ui-editor.md); implementação feita).
 5. **Avaliação (TASTER)** — criar/editar/excluir a própria review no detalhe público ([FN-UI-TASTER](12-fn-ui-taster.md); implementação feita).
 
 Marca exibida: **Taberu** / tagline **FOOD**.
@@ -18,7 +18,7 @@ Marca exibida: **Taberu** / tagline **FOOD**.
 |-------|------------|-------------------|
 | `ADMIN` | `/admin/*` | `/admin/usuarios` |
 | `COOK` | `/cook/*` | `/cook/receitas` |
-| `EDITOR` | `/editor/*` | `/editor/ingredientes` (especificado; não iniciado) |
+| `EDITOR` | `/editor/*` | `/editor/ingredientes` |
 | `TASTER` | Área pública + form de review no detalhe | `/` (sem painel dedicado) |
 | Sem papel | Área pública | `/` |
 
