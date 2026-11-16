@@ -5,6 +5,7 @@ import type { Recipe, Review } from '../../../shared/api/types'
 import { env } from '../../../shared/config/env'
 import { StarRating } from '../../../shared/ui/StarRating'
 import statusStyles from '../../../shared/ui/status.module.css'
+import { TasterReviewSection } from '../components/TasterReviewSection'
 import { fetchRecipe, fetchReviews } from '../api/recipes'
 import styles from './RecipeDetail.module.css'
 
@@ -160,6 +161,14 @@ export function RecipeDetailPage() {
             <h1>{recipe.name ?? 'Nome da receita'}</h1>
             {averageRating != null && <StarRating value={averageRating} />}
           </header>
+
+          <TasterReviewSection
+            recipeId={recipeId}
+            recipeUserId={recipe.userId}
+            isPublished={recipe.isPublished}
+            reviews={reviews}
+            onReviewsChange={setReviews}
+          />
 
           <section className={styles.section}>
             <h2>Descrição</h2>

@@ -1,0 +1,120 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding-top: 0.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.heading {
+  font-size: 1.35rem;
+  margin: 0;
+}
+
+.ownBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ownMeta {
+  margin: 0;
+  color: var(--ink-muted);
+  line-height: 1.5;
+}
+
+.ownActions,
+.formActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.35rem;
+}
+
+.form {
+  display: grid;
+  gap: 0.65rem;
+  max-width: 28rem;
+}
+
+.label {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.6rem 0.75rem;
+  background: color-mix(in srgb, var(--surface, #fff) 92%, var(--brand-soft));
+  color: var(--ink);
+  font: inherit;
+}
+
+.textarea {
+  min-height: 5.5rem;
+  resize: vertical;
+}
+
+.input:focus,
+.textarea:focus {
+  outline: 2px solid color-mix(in srgb, var(--brand) 45%, transparent);
+  outline-offset: 1px;
+}
+
+.primaryButton,
+.ghostButton,
+.dangerButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  padding: 0.55rem 1rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.primaryButton {
+  background: var(--brand);
+  color: var(--on-brand);
+}
+
+.primaryButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: var(--brand-strong);
+  color: #fff;
+}
+
+.primaryButton:disabled,
+.ghostButton:disabled,
+.dangerButton:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.ghostButton {
+  background: transparent;
+  color: var(--ink-muted);
+  border: 1px solid var(--border);
+}
+
+.ghostButton:hover:not(:disabled) {
+  color: var(--ink);
+  border-color: color-mix(in srgb, var(--brand) 40%, var(--border));
+  background: color-mix(in srgb, var(--brand) 8%, transparent);
+}
+
+.dangerButton {
+  background: color-mix(in srgb, #b42318 12%, transparent);
+  color: #8f1d14;
+  border: 1px solid color-mix(in srgb, #b42318 28%, var(--border));
+}
+
+.dangerButton:hover:not(:disabled) {
+  background: color-mix(in srgb, #b42318 18%, transparent);
+}

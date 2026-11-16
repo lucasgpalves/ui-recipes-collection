@@ -18,7 +18,7 @@ Manter uma matriz única e verificável:
 | Autoria / ownership (`RN-OWN`) | Implícito nos painéis que mutam recursos (COOK, TASTER, EDITOR) | [FN-UI-COOK-RECIPE-LIFECYCLE](10-fn-ui-cook-recipe-lifecycle.md), [FN-UI-EDITOR](11-fn-ui-editor.md), [FN-UI-TASTER](12-fn-ui-taster.md), [FN-UI-API-FETCH](07-fn-ui-api-fetch.md) | Parcial / planejado nos filhos |
 | Ciclo de receita (`RN-REC`) | Painel COOK: delete rascunho, form locked se publicada, toasts 422/409 | [FN-UI-COOK-RECIPE-LIFECYCLE](10-fn-ui-cook-recipe-lifecycle.md) | Planejado |
 | Filtro editorial `GET /recipes/editorial` (`RN-REC-05`) | Painel EDITOR (fila editorial) | [FN-UI-EDITOR](11-fn-ui-editor.md) | Planejado |
-| Avaliação / reviews (`RN-REV`) | Detalhe público: média + CRUD próprio (TASTER) | [FN-UI-TASTER](12-fn-ui-taster.md); média já na vitrine | Planejado (form); média = feito |
+| Avaliação / reviews (`RN-REV`) | Detalhe público: média + CRUD próprio (TASTER) | [FN-UI-TASTER](12-fn-ui-taster.md) | Feito |
 | Livro e publicação (`RN-LIV`) | Painel EDITOR: criar livro + publish | [FN-UI-EDITOR](11-fn-ui-editor.md) | Planejado |
 | Ingredientes governança (`RN-ING`) | Painel EDITOR: approve/reject/reopen/aliases/merge | [FN-UI-EDITOR](11-fn-ui-editor.md) | Planejado |
 | Metas / progresso (`RN-MET`) | Admin metas + GoalProgress | [FN-UI-API-FETCH](07-fn-ui-api-fetch.md) | Aprovado; implementação parcial |

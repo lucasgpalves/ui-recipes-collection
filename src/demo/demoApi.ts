@@ -12,6 +12,8 @@ import type {
   Restaurant,
   RestaurantRequest,
   Review,
+  ReviewRequest,
+  ReviewUpdateRequest,
   Role,
   RoleRequest,
   TokenResponse,
@@ -46,6 +48,9 @@ const usersStore: UserResponse[] = [
 
 let categoriesStore: Category[] | null = null
 let nextCategoryId = 1
+
+let reviewsStore: Review[] | null = null
+let nextReviewId = 1
 
 let rolesStore: Role[] | null = null
 let nextRoleId = 1
@@ -306,8 +311,77 @@ export async function demoDeleteCategory(id: number): Promise<void> {
   await withLatency(undefined, 300)
 }
 
-export function demoFetchReviews(): Promise<Review[]> {
-  return demoRequest(new URL('./fixtures/reviews.json', import.meta.url).href, 320)
+async function ensureReviewsStore(): Promise<Review[]> {
+  if (reviewsStore) return reviewsStore
+  const seed = await demoRequest<Review[]>(
+    new URL('./fixtures/reviews.json', import.meta.url).href,
+    0,
+  )
+  reviewsStore = seed.map((item) => structuredClone(item))
+  nextReviewId =
+    Math.max(0, ...reviewsStore.map((item) => (typeof item.id === 'number' ? item.id : 0))) + 1
+  return reviewsStore
+}
+
+export async function demoFetchReviews(): Promise<Review[]> {
+  const store = await ensureReviewsStore()
+  return withLatency(store.map((item) => structuredClone(item)), 320)
+}
+
+export async function demoCreateReview(request: ReviewRequest): Promise<void> {
+  const store = await ensureReviewsStore()
+  const description = request.description.trim()
+  if (!Number.isInteger(request.rating) || request.rating < 1 || request.rating > 5) {
+    throw new ApiError(422, 'rating must be between 1 and 5')
+  }
+  if (!description) {
+    throw new ApiError(422, 'description must not be blank')
+  }
+  const duplicate = store.some(
+    (item) => item.userId === DEMO_COOK_USER_ID && item.recipeId === request.recipeId,
+  )
+  if (duplicate) {
+    throw new ApiError(409, `User already reviewed recipe ${request.recipeId}; use update instead`)
+  }
+  store.push({
+    id: nextReviewId++,
+    rating: request.rating,
+    description,
+    userId: DEMO_COOK_USER_ID,
+    recipeId: request.recipeId,
+  })
+  await withLatency(undefined, 360)
+}
+
+export async function demoUpdateReview(id: number, request: ReviewUpdateRequest): Promise<void> {
+  const store = await ensureReviewsStore()
+  const index = store.findIndex((item) => item.id === id)
+  if (index < 0) {
+    throw new ApiError(404, `Demo review ${id} not found`)
+  }
+  const description = request.description.trim()
+  if (!Number.isInteger(request.rating) || request.rating < 1 || request.rating > 5) {
+    throw new ApiError(422, 'rating must be between 1 and 5')
+  }
+  if (!description) {
+    throw new ApiError(422, 'description must not be blank')
+  }
+  store[index] = {
+    ...store[index],
+    rating: request.rating,
+    description,
+  }
+  await withLatency(undefined, 340)
+}
+
+export async function demoDeleteReview(id: number): Promise<void> {
+  const store = await ensureReviewsStore()
+  const index = store.findIndex((item) => item.id === id)
+  if (index < 0) {
+    throw new ApiError(404, `Demo review ${id} not found`)
+  }
+  store.splice(index, 1)
+  await withLatency(undefined, 300)
 }
 
 export async function demoFetchRoles(): Promise<Role[]> {

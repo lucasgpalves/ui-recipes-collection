@@ -39,9 +39,10 @@ Jornadas do usuário na interface. Regras de domínio por trás das chamadas: ve
 1. Valida `:id` numérico.
 2. Carrega receita; carrega reviews (falha de reviews → trata como lista vazia).
 3. Exibe mídia (se houver), autor, data, ingredientes, porções, descrição, modo de preparo, duração.
-4. Mostra média das reviews filtradas por `recipeId` (estrelas); **não** lista comentários individuais.
-5. **Baixar PDF** aparece apenas fora do modo demo e com `id` válido → `{apiBase}/recipes/{id}/download`.
-6. Voltar → `/receitas`.
+4. Mostra média das reviews filtradas por `recipeId` (estrelas); **não** lista comentários de outros usuários.
+5. Se autenticado como **TASTER**, receita publicada e não for autoavaliação: formulário/ações da própria review ([FN-UI-TASTER](12-fn-ui-taster.md)) — create (`POST /reviews`), edit (`PUT /reviews/{id}`), delete com confirmação (`DELETE /reviews/{id}`).
+6. **Baixar PDF** aparece apenas fora do modo demo e com `id` válido → `{apiBase}/recipes/{id}/download`.
+7. Voltar → `/receitas`.
 
 ---
 

@@ -1,7 +1,7 @@
 # Funcionalidade — TASTER: avaliação no detalhe público
 
 **ID:** `FN-UI-TASTER`  
-**Status:** requisitos **aprovados** (implementação não iniciada)  
+**Status:** **implementado** (validado por `recipeDetail.taster.apiFetch.test.tsx`)  
 **Versão:** 1.0  
 **Domínio API relacionado:** [RN — Avaliação](../../api-recipes-collection/docs/versao-2/RN-avaliacao.md); ownership [RN-OWN-03](../../api-recipes-collection/docs/versao-2/RN-autoria-e-ownership.md)
 
@@ -32,7 +32,7 @@ Permite ao usuário autenticado como **TASTER** criar, editar e excluir a **pró
 ## 2. Business Context
 
 - Reviews só fazem sentido em receita publicada; uma por usuário; autor da receita não avalia a própria.
-- A UI já mostra média; falta o formulário TASTER no detalhe `/receitas/:id`.
+- A UI mostra média publicamente e o formulário TASTER no detalhe `/receitas/:id` (create/edit/delete da própria review).
 
 ---
 
@@ -80,16 +80,16 @@ Permite ao usuário autenticado como **TASTER** criar, editar e excluir a **pró
 
 ## 6. Acceptance Criteria
 
-- [ ] **AC-01** — Anônimo vê média (ou ausência) e **não** vê formulário de review.
-- [ ] **AC-02** — TASTER em receita publicada sem review própria: create via `POST /reviews` funciona e atualiza a UI.
-- [ ] **AC-03** — TASTER edita a própria review via `PUT` (só rating/description).
-- [ ] **AC-04** — TASTER exclui a própria review via `DELETE` após confirmação.
-- [ ] **AC-05** — Segundo create (409 duplicata) mostra toast de erro e não duplica card.
-- [ ] **AC-06** — Tentativa/contexto de receita própria ou não publicada: form ausente e/ou 409 tratado com toast.
-- [ ] **AC-07** — Rating fora de 1–5 bloqueado localmente e/ou 422 com toast.
-- [ ] **AC-08** — COOK/EDITOR/ADMIN autenticados não obtêm o formulário TASTER neste FN.
-- [ ] **AC-09** — Nenhuma rota `/taster/*` introduzida.
-- [ ] **AC-10** — Docs públicos/fluxos atualizados após implementação verificada.
+- [x] **AC-01** — Anônimo vê média (ou ausência) e **não** vê formulário de review.
+- [x] **AC-02** — TASTER em receita publicada sem review própria: create via `POST /reviews` funciona e atualiza a UI.
+- [x] **AC-03** — TASTER edita a própria review via `PUT` (só rating/description).
+- [x] **AC-04** — TASTER exclui a própria review via `DELETE` após confirmação.
+- [x] **AC-05** — Segundo create (409 duplicata) mostra toast de erro e não duplica card.
+- [x] **AC-06** — Tentativa/contexto de receita própria ou não publicada: form ausente e/ou 409 tratado com toast.
+- [x] **AC-07** — Rating fora de 1–5 bloqueado localmente e/ou 422 com toast.
+- [x] **AC-08** — COOK/EDITOR/ADMIN autenticados não obtêm o formulário TASTER neste FN.
+- [x] **AC-09** — Nenhuma rota `/taster/*` introduzida.
+- [x] **AC-10** — Docs públicos/fluxos atualizados após implementação verificada.
 
 ---
 

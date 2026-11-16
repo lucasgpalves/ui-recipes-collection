@@ -10,7 +10,7 @@ Estado da UI em relação aos requisitos de tela. Capacidade da API corresponden
 
 | Módulo UI | Status | Observação |
 |-----------|--------|------------|
-| Área pública (home, busca, categorias, detalhe) | Feito | Reviews só como média; PDF fora do demo |
+| Área pública (home, busca, categorias, detalhe) | Feito | Média pública; TASTER CRUD no detalhe ([FN-UI-TASTER](12-fn-ui-taster.md)); PDF fora do demo |
 | Login / sessão / guards ADMIN e COOK | Feito (parcial) | Cookie HttpOnly + `/auth/me` (RF-UI-API-05/06/07 / F-05); clear 403 ainda gap ([FN-UI-API-FETCH](07-fn-ui-api-fetch.md)) |
 | Admin — usuários | Feito (parcial) | Credenciais: fetch `POST /auth/register` **aprovado**, implementação pendente; reativar: [FN-UI-ADMIN-USER-ACCESS](13-fn-ui-admin-user-access.md) |
 | Admin — categorias | Feito | CRUD |
@@ -22,7 +22,7 @@ Estado da UI em relação aos requisitos de tela. Capacidade da API corresponden
 | Cook — ciclo V2 (delete / lock / toasts) | Não iniciado | [FN-UI-COOK-RECIPE-LIFECYCLE](10-fn-ui-cook-recipe-lifecycle.md) |
 | Cook — CRUD de medidas/ingredientes avulso | Não iniciado | Medidas embutidas no form de receita |
 | Editor — livros / ingredientes / fila | Não iniciado | [FN-UI-EDITOR](11-fn-ui-editor.md) |
-| Taster — reviews | Não iniciado | [FN-UI-TASTER](12-fn-ui-taster.md); média já na vitrine |
+| Taster — reviews | Feito | [FN-UI-TASTER](12-fn-ui-taster.md); form no detalhe público (sem `/taster/*`) |
 | Logs / auditoria UI | Fora de escopo | Alinhado a API V2 ([RN-LOG](../../api-recipes-collection/docs/versao-2/RN-logs.md)) |
 
 ---
@@ -43,7 +43,7 @@ Requisitos aprovados em [07-fn-ui-api-fetch.md](07-fn-ui-api-fetch.md). **Implem
 | `FN-UI-V2-COVERAGE` | [09](09-fn-ui-v2-coverage.md) | Matriz domínio API V2 → FN-UI filho |
 | `FN-UI-COOK-RECIPE-LIFECYCLE` | [10](10-fn-ui-cook-recipe-lifecycle.md) | Delete rascunho, lock pós-publicação, toasts 422/409 |
 | `FN-UI-EDITOR` | [11](11-fn-ui-editor.md) | `/editor/*` — ingredientes, livros, fila editorial |
-| `FN-UI-TASTER` | [12](12-fn-ui-taster.md) | Review no detalhe público |
+| `FN-UI-TASTER` | [12](12-fn-ui-taster.md) | Review no detalhe público (**feito**) |
 | `FN-UI-ADMIN-USER-ACCESS` | [13](13-fn-ui-admin-user-access.md) | Reativar usuário (`PUT /users/reactivate/{id}`) |
 
 ---
@@ -85,7 +85,7 @@ Ver [08-fn-ui-nav-sidebar-object.md](08-fn-ui-nav-sidebar-object.md).
 ### P3 — Novos painéis / atores V2
 
 1. **EDITOR** — [FN-UI-EDITOR](11-fn-ui-editor.md): shell `/editor/*` + livros + fluxo de ingredientes (approve / aliases / merge) + fila `GET /recipes/editorial`.
-2. **TASTER** — [FN-UI-TASTER](12-fn-ui-taster.md): criar/editar/excluir review na receita publicada.
+2. ~~**TASTER** — [FN-UI-TASTER](12-fn-ui-taster.md): criar/editar/excluir review na receita publicada.~~
 
 ### P4 — Metas
 

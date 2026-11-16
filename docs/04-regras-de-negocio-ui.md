@@ -131,7 +131,7 @@ Regras de domínio (unicidade, ownership na API, publicação, progresso etc.): 
 | RN-UI-PUB-01 | Leitura sem login | Home, busca, categorias e detalhe acessíveis anonimamente |
 | RN-UI-PUB-02 | Filtro de busca no cliente | `q` casa com nome, categoria ou autor (case-insensitive onde aplicável) |
 | RN-UI-PUB-03 | Categorias com fallback | API vazia → lista comum local para chips |
-| RN-UI-PUB-04 | Reviews só como média | Detalhe não lista reviews; só `StarRating` da média |
+| RN-UI-PUB-04 | Reviews: média pública + própria (TASTER) | Detalhe não lista reviews de terceiros; só `StarRating` da média. TASTER autenticado pode CRUD da própria review no detalhe ([FN-UI-TASTER](12-fn-ui-taster.md)) |
 | RN-UI-PUB-05 | PDF só fora do demo | Link de download oculto quando `VITE_USE_DEMO_API` ativo |
 | RN-UI-PUB-06 | Card sem id não navega | `id == null` não renderiza link útil |
 

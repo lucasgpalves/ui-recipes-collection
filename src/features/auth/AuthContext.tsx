@@ -200,6 +200,11 @@ export function useAuth(): AuthContextValue {
   return ctx
 }
 
+/** Sessão opcional para superfícies públicas que degradam a anônimo fora do AuthProvider. */
+export function useOptionalAuth(): AuthContextValue | null {
+  return useContext(AuthContext)
+}
+
 export function homePathForRole(role: string | null): string {
   if (role === 'ADMIN') return '/admin/usuarios'
   if (role === 'COOK') return '/cook/receitas'

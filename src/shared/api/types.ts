@@ -69,10 +69,24 @@ export type CategoryRequest = {
 }
 
 export type Review = {
+  id?: number | null
   rating: number | null
   description: string | null
   userId: number | null
   recipeId: number | null
+}
+
+/** Espelha ReviewRequestDTO (JSON camelCase) — create. */
+export type ReviewRequest = {
+  rating: number
+  description: string
+  recipeId: number
+}
+
+/** Update de review: apenas rating + description (RN-REV-06). */
+export type ReviewUpdateRequest = {
+  rating: number
+  description: string
 }
 
 export type LoginRequest = {
