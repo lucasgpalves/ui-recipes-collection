@@ -1,6 +1,7 @@
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../features/auth'
 import { brand } from '../../shared/brand'
+import { ThemeToggle } from '../../shared/theme'
 import styles from './AdminLayout.module.css'
 
 export function CookLayout() {
@@ -30,9 +31,12 @@ export function CookLayout() {
         </nav>
 
         <div className={styles.sidebarFooter}>
-          <Link to="/" className={styles.siteLink}>
-            Ver site
-          </Link>
+          <div className={styles.footerMeta}>
+            <Link to="/" className={styles.siteLink}>
+              Ver site
+            </Link>
+            <ThemeToggle />
+          </div>
           <button
             type="button"
             className={styles.logout}

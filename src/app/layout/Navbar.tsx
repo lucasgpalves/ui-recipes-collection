@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../features/auth'
 import { CategoryChips } from '../../features/catalog'
 import { brand } from '../../shared/brand'
+import { ThemeToggle } from '../../shared/theme'
 import styles from './Navbar.module.css'
 
 type NavbarProps = {
@@ -23,6 +24,7 @@ export function Navbar({ categories = [], variant = 'default' }: NavbarProps) {
           {brand.tagline ? <span className={styles.brandTag}>{brand.tagline}</span> : null}
         </Link>
         <div className={styles.actions}>
+          <ThemeToggle variant={isLanding ? 'onDark' : 'default'} />
           {isAuthenticated ? (
             <>
               {isAdmin ? (

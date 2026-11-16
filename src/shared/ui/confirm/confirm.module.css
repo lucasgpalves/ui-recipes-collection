@@ -65,7 +65,7 @@
 
 .confirm {
   background: var(--brand);
-  color: #0a120e;
+  color: var(--on-brand);
 }
 
 .confirm:hover {

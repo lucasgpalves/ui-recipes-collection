@@ -2,6 +2,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, render, screen, within } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { ThemeProvider } from '../../shared/theme'
 import { AdminLayout } from './AdminLayout'
 import styles from './AdminLayout.module.css'
 
@@ -29,30 +30,32 @@ const OBJECT_ITEMS = [
 
 function renderAdminAt(path: string) {
   return render(
-    <MemoryRouter initialEntries={[path]}>
-      <Routes>
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route path="usuarios" element={<div>usuarios</div>} />
-          <Route path="usuarios/novo" element={<div>usuario-novo</div>} />
-          <Route path="usuarios/:id" element={<div>usuario-perfil</div>} />
-          <Route path="usuarios/:id/editar" element={<div>usuario-editar</div>} />
-          <Route path="usuarios/:id/credenciais" element={<div>usuario-credenciais</div>} />
-          <Route path="usuarios/:id/referencias/nova" element={<div>usuario-ref-nova</div>} />
-          <Route path="categorias" element={<div>categorias</div>} />
-          <Route path="categorias/nova" element={<div>categoria-nova</div>} />
-          <Route path="categorias/:id/editar" element={<div>categoria-editar</div>} />
-          <Route path="papeis" element={<div>papeis</div>} />
-          <Route path="papeis/novo" element={<div>papel-novo</div>} />
-          <Route path="papeis/:id/editar" element={<div>papel-editar</div>} />
-          <Route path="metas" element={<div>metas</div>} />
-          <Route path="metas/nova" element={<div>meta-nova</div>} />
-          <Route path="metas/:id/editar" element={<div>meta-editar</div>} />
-          <Route path="restaurantes" element={<div>restaurantes</div>} />
-          <Route path="restaurantes/novo" element={<div>restaurante-novo</div>} />
-          <Route path="restaurantes/:id/editar" element={<div>restaurante-editar</div>} />
-        </Route>
-      </Routes>
-    </MemoryRouter>,
+    <ThemeProvider>
+      <MemoryRouter initialEntries={[path]}>
+        <Routes>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route path="usuarios" element={<div>usuarios</div>} />
+            <Route path="usuarios/novo" element={<div>usuario-novo</div>} />
+            <Route path="usuarios/:id" element={<div>usuario-perfil</div>} />
+            <Route path="usuarios/:id/editar" element={<div>usuario-editar</div>} />
+            <Route path="usuarios/:id/credenciais" element={<div>usuario-credenciais</div>} />
+            <Route path="usuarios/:id/referencias/nova" element={<div>usuario-ref-nova</div>} />
+            <Route path="categorias" element={<div>categorias</div>} />
+            <Route path="categorias/nova" element={<div>categoria-nova</div>} />
+            <Route path="categorias/:id/editar" element={<div>categoria-editar</div>} />
+            <Route path="papeis" element={<div>papeis</div>} />
+            <Route path="papeis/novo" element={<div>papel-novo</div>} />
+            <Route path="papeis/:id/editar" element={<div>papel-editar</div>} />
+            <Route path="metas" element={<div>metas</div>} />
+            <Route path="metas/nova" element={<div>meta-nova</div>} />
+            <Route path="metas/:id/editar" element={<div>meta-editar</div>} />
+            <Route path="restaurantes" element={<div>restaurantes</div>} />
+            <Route path="restaurantes/novo" element={<div>restaurante-novo</div>} />
+            <Route path="restaurantes/:id/editar" element={<div>restaurante-editar</div>} />
+          </Route>
+        </Routes>
+      </MemoryRouter>
+    </ThemeProvider>,
   )
 }
 

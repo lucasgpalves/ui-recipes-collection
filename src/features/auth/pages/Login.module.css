@@ -31,10 +31,17 @@
 }
 
 .panel {
+  position: relative;
   display: grid;
   align-content: center;
   padding: 2.5rem 2rem;
   background: var(--bg);
+}
+
+.themeSlot {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
 }
 
 .card {

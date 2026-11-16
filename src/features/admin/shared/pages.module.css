@@ -47,7 +47,7 @@
 
 .primaryButton {
   background: var(--brand);
-  color: #0a120e;
+  color: var(--on-brand);
 }
 
 .primaryButton:hover {
@@ -141,7 +141,7 @@
   font-weight: 700;
   cursor: pointer;
   background: var(--brand);
-  color: #0a120e;
+  color: var(--on-brand);
   transition: transform 0.2s ease, background 0.2s ease;
 }
 

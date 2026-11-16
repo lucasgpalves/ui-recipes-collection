@@ -56,7 +56,7 @@
   padding: 0.9rem 0.85rem 1rem;
   min-height: 148px;
   background: transparent;
-  color: #0a120e;
+  color: var(--on-brand);
   transition: color 0.25s ease;
 }
 

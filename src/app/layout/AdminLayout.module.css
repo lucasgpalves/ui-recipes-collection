@@ -4,7 +4,7 @@
   grid-template-columns: 240px minmax(0, 1fr);
   background:
     radial-gradient(ellipse 80% 50% at 10% -10%, color-mix(in srgb, var(--brand) 18%, transparent), transparent),
-    linear-gradient(180deg, #eef3f0 0%, var(--bg) 40%);
+    linear-gradient(180deg, var(--shell-top) 0%, var(--bg) 40%);
   color: var(--ink);
   font-family: var(--font-body);
 }
@@ -92,6 +92,14 @@
   border-top: 1px solid var(--border);
 }
 
+.footerMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0 0.1rem;
+}
+
 .siteLink {
   font-weight: 600;
   font-size: 0.9rem;
@@ -110,7 +118,7 @@
   cursor: pointer;
   font-weight: 700;
   background: var(--brand);
-  color: #0a120e;
+  color: var(--on-brand);
   transition: transform 0.2s ease, background 0.2s ease;
 }
 
@@ -153,5 +161,9 @@
   .sidebarFooter {
     grid-template-columns: 1fr auto;
     align-items: center;
+  }
+
+  .footerMeta {
+    grid-column: 1 / -1;
   }
 }

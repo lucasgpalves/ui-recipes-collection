@@ -2,6 +2,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, render, screen, within } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { ThemeProvider } from '../../shared/theme'
 import { CookLayout } from './CookLayout'
 import styles from './AdminLayout.module.css'
 
@@ -21,15 +22,17 @@ vi.mock('../../features/auth', () => ({
 
 function renderCookAt(path: string) {
   return render(
-    <MemoryRouter initialEntries={[path]}>
-      <Routes>
-        <Route path="/cook" element={<CookLayout />}>
-          <Route path="receitas" element={<div>listagem</div>} />
-          <Route path="receitas/nova" element={<div>nova</div>} />
-          <Route path="receitas/:id/editar" element={<div>editar</div>} />
-        </Route>
-      </Routes>
-    </MemoryRouter>,
+    <ThemeProvider>
+      <MemoryRouter initialEntries={[path]}>
+        <Routes>
+          <Route path="/cook" element={<CookLayout />}>
+            <Route path="receitas" element={<div>listagem</div>} />
+            <Route path="receitas/nova" element={<div>nova</div>} />
+            <Route path="receitas/:id/editar" element={<div>editar</div>} />
+          </Route>
+        </Routes>
+      </MemoryRouter>
+    </ThemeProvider>,
   )
 }
 

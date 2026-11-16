@@ -85,29 +85,29 @@
 }
 
 .warning {
-  border-color: color-mix(in srgb, #c47b16 40%, var(--border));
+  border-color: color-mix(in srgb, var(--warning) 40%, var(--border));
   background: linear-gradient(
     135deg,
-    color-mix(in srgb, #f5d9a8 55%, var(--surface)),
+    color-mix(in srgb, var(--warning-soft) 55%, var(--surface)),
     var(--surface)
   );
 }
 
 .warning .title {
-  color: #9a5b0a;
+  color: var(--warning);
 }
 
 .info {
-  border-color: color-mix(in srgb, #3b82f6 35%, var(--border));
+  border-color: color-mix(in srgb, var(--info) 35%, var(--border));
   background: linear-gradient(
     135deg,
-    color-mix(in srgb, #dbeafe 70%, var(--surface)),
+    color-mix(in srgb, var(--info-soft) 70%, var(--surface)),
     var(--surface)
   );
 }
 
 .info .title {
-  color: #1d4ed8;
+  color: var(--info);
 }
 
 @keyframes notify-in {

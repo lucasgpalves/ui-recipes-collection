@@ -3,6 +3,7 @@ import { Link, Navigate } from 'react-router-dom'
 import { ApiError } from '../../../shared/api/client'
 import { env } from '../../../shared/config/env'
 import { brand } from '../../../shared/brand'
+import { ThemeToggle } from '../../../shared/theme'
 import { homePathForRole, useAuth } from '../AuthContext'
 import styles from './Login.module.css'
 
@@ -44,6 +45,9 @@ export function LoginPage() {
         </p>
       </aside>
       <section className={styles.panel}>
+        <div className={styles.themeSlot}>
+          <ThemeToggle />
+        </div>
         <div className={`${styles.card} fade-up`}>
           <h1>Login</h1>
           <p className={styles.subtitle}>

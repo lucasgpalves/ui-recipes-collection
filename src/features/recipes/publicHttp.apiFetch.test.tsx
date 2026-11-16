@@ -4,6 +4,7 @@ import { cleanup, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { PublicLayout } from '../../app/layout/PublicLayout'
 import { HomePage } from '../../app/pages/Home'
+import { ThemeProvider } from '../../shared/theme'
 import { NotifyProvider } from '../../shared/ui/notify'
 import {
   createFetchRecorder,
@@ -83,15 +84,17 @@ describe('área pública na API real (AC-05 / AC-06 / RF-UI-API-01 / RF-UI-API-1
 
   it('home e categorias carregam por HTTP sem token', async () => {
     render(
-      <MemoryRouter initialEntries={['/']}>
-        <AuthProvider>
-          <Routes>
-            <Route element={<PublicLayout />}>
-              <Route path="/" element={<HomePage />} />
-            </Route>
-          </Routes>
-        </AuthProvider>
-      </MemoryRouter>,
+      <ThemeProvider>
+        <MemoryRouter initialEntries={['/']}>
+          <AuthProvider>
+            <Routes>
+              <Route element={<PublicLayout />}>
+                <Route path="/" element={<HomePage />} />
+              </Route>
+            </Routes>
+          </AuthProvider>
+        </MemoryRouter>
+      </ThemeProvider>,
     )
 
     expect(screen.getByRole('heading', { level: 1 }).textContent).toMatch(/acervo público/i)

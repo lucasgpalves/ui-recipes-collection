@@ -10,6 +10,7 @@ import {
   resetWebStorage,
   type FetchCall,
 } from '../../test-support/http'
+import { ThemeProvider } from '../../shared/theme'
 import { AuthProvider } from './AuthContext'
 import { LoginPage } from './pages/Login'
 
@@ -63,16 +64,18 @@ describe('tela de login na API real (AC-01 / AC-04 / RN-UI-AUTH-03 / RN-UI-AUTH-
 
   function renderLogin() {
     return render(
-      <MemoryRouter initialEntries={['/login']}>
-        <AuthProvider>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/cook/receitas" element={<h1>Painel cook</h1>} />
-            <Route path="/admin/usuarios" element={<h1>Painel admin</h1>} />
-            <Route path="/" element={<h1>Início</h1>} />
-          </Routes>
-        </AuthProvider>
-      </MemoryRouter>,
+      <ThemeProvider>
+        <MemoryRouter initialEntries={['/login']}>
+          <AuthProvider>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/cook/receitas" element={<h1>Painel cook</h1>} />
+              <Route path="/admin/usuarios" element={<h1>Painel admin</h1>} />
+              <Route path="/" element={<h1>Início</h1>} />
+            </Routes>
+          </AuthProvider>
+        </MemoryRouter>
+      </ThemeProvider>,
     )
   }
 

@@ -87,7 +87,7 @@
 .login {
   display: inline-flex;
   background: var(--brand);
-  color: #0a120e;
+  color: var(--on-brand);
 }
 
 .headerLanding .login {
@@ -111,7 +111,7 @@
 
 .logout {
   background: var(--brand);
-  color: #0a120e;
+  color: var(--on-brand);
 }
 
 /* --bp-sm */
