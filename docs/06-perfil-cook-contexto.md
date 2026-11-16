@@ -51,7 +51,7 @@ flowchart TD
 
 ### Passos
 
-1. **Listagem de usuários** → abrir **Perfil** (filtro por `COOK` desejável).
+1. **Listagem de usuários** → abrir **Perfil**.
 2. **Perfil (hub)** — seções:
    - Identidade (nome, CPF, papel, situação, ingresso)
    - Acesso (credenciais / criar login)
