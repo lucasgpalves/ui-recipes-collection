@@ -9,16 +9,21 @@ vi.mock('../../../shared/config/env', () => ({
   },
 }))
 
-describe('loginRequest na API real (RF-UI-API-05)', () => {
+describe('loginRequest na API real (RF-UI-API-05 / F-05 cookie)', () => {
   afterEach(() => {
     vi.unstubAllGlobals()
   })
 
-  it('envia POST /auth/login com username e password', async () => {
+  it('envia POST /auth/login e aceita corpo de identidade sem JWT', async () => {
     installMemoryStorage('sessionStorage')
     installMemoryStorage('localStorage')
     const { calls, fetch } = createFetchRecorder(() =>
-      jsonResponse(200, { token: 'jwt', username: 'chef', role: 'COOK', userId: 42 }),
+      jsonResponse(200, {
+        token: null,
+        username: 'chef',
+        role: 'COOK',
+        userId: 42,
+      }),
     )
     vi.stubGlobal('fetch', fetch)
 
@@ -27,7 +32,11 @@ describe('loginRequest na API real (RF-UI-API-05)', () => {
     expect(calls).toHaveLength(1)
     expect(calls[0]?.url).toBe('/api/auth/login')
     expect(calls[0]?.method).toBe('POST')
+    expect(calls[0]?.credentials).toBe('include')
     expect(calls[0]?.body).toEqual({ username: 'chef', password: 'secret' })
-    expect(response.token).toBe('jwt')
+    expect(response.token).toBeNull()
+    expect(response.username).toBe('chef')
+    expect(response.role).toBe('COOK')
+    expect(response.userId).toBe(42)
   })
 })

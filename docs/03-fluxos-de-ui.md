@@ -53,17 +53,17 @@ Jornadas do usuário na interface. Regras de domínio por trás das chamadas: ve
 2. Se já autenticado → redirect por papel ([mapa de rotas](02-mapa-de-rotas.md)).
 3. Informa usuário e senha (ambos obrigatórios no HTML).
 4. Submit: `username` com trim; chama login (`POST /auth/login` na API real).
-5. Sucesso: grava JWT em `sessionStorage`; requests autenticadas usam `Authorization: Bearer`; navega para home do papel.
+5. Sucesso (API real): cookie HttpOnly + identidade no JSON; requests com `credentials: 'include'`; navega para home do papel. Demo: JWT em `sessionStorage` + Bearer.
 6. Falha 401/403 → “Usuário ou senha inválidos.”
 7. Outra falha → “Não foi possível entrar. Tente novamente.”
 8. Durante submit: botão desabilitado (“Entrando…”).
 9. Link **Voltar ao início** → `/`.
-10. Reload: restaura sessão a partir de `sessionStorage` (token válido); ausente/expirado → não autenticado.
+10. Reload: API real via `GET /auth/me`; demo via `sessionStorage`; cookie/token ausente ou inválido → não autenticado.
 
 ### 2.2 Logout
 
-1. Ação **Sair** (navbar ou sidebar): remove token de `sessionStorage` e redireciona (`/` ou `/login`, conforme o ponto de saída).
-2. Qualquer `apiRequest` com 401/403: limpa token e estado de auth automaticamente ([FN-UI-API-FETCH](07-fn-ui-api-fetch.md)).
+1. Ação **Sair** (navbar ou sidebar): `POST /auth/logout` (API real) + limpa estado local e redireciona (`/` ou `/login`).
+2. Qualquer `apiRequest` com **401**: limpa estado de auth automaticamente ([FN-UI-API-FETCH](07-fn-ui-api-fetch.md)); 403 ainda é gap.
 
 ### 2.3 Troca de contexto (admin → cook)
 

@@ -73,7 +73,7 @@
 | Item | Valor |
 |------|--------|
 | Chave | `receitou.auth.token` |
-| Storage | `sessionStorage` |
+| Storage | API real: cookie HttpOnly; demo: `sessionStorage` |
 | Expiração de sessão na UI | Remoção no logout ou em resposta 401/403 do cliente HTTP |
 
 Papel e subject são lidos do token (implementação atual: parser do token demo). Comportamento esperado com JWT real da API: a UI deve expor `role` e `username` de forma compatível com os guards acima.

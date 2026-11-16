@@ -2,11 +2,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import type { AuthMeResponse } from '../../shared/api/types'
 import {
   TOKEN_KEY,
   createFetchRecorder,
   jsonResponse,
-  jwtWithClaims,
   resetWebStorage,
   type FetchCall,
 } from '../../test-support/http'
@@ -26,23 +26,29 @@ describe('tela de login na API real (AC-01 / AC-04 / RN-UI-AUTH-03 / RN-UI-AUTH-
   let calls: FetchCall[] = []
   let loginStatus = 200
   let role: 'COOK' | 'ADMIN' = 'COOK'
+  let cookieSession: AuthMeResponse | null = null
 
   beforeEach(() => {
     loginStatus = 200
     role = 'COOK'
+    cookieSession = null
     resetWebStorage()
     const recorder = createFetchRecorder((call) => {
       if (call.url.includes('/auth/login')) {
         if (loginStatus !== 200) return jsonResponse(loginStatus, {})
         const userId = role === 'ADMIN' ? 7 : 42
+        cookieSession = { username: 'chef', role, userId }
         return jsonResponse(200, {
-          token: jwtWithClaims({ sub: 'chef', role, userId }),
+          token: null,
           username: 'chef',
           role,
           userId,
         })
       }
-      if (call.url.includes('/auth/me')) return jsonResponse(404, {})
+      if (call.url.includes('/auth/me')) {
+        if (!cookieSession) return jsonResponse(401, {})
+        return jsonResponse(200, cookieSession)
+      }
       return jsonResponse(404, {})
     })
     calls = recorder.calls
@@ -101,7 +107,7 @@ describe('tela de login na API real (AC-01 / AC-04 / RN-UI-AUTH-03 / RN-UI-AUTH-
   it.each([
     ['COOK', 'Painel cook'],
     ['ADMIN', 'Painel admin'],
-  ] as const)('AC-01: login %s redireciona para %s', async (nextRole, heading) => {
+  ] as const)('AC-01: login %s redireciona para %s sem JWT em sessionStorage', async (nextRole, heading) => {
     role = nextRole
     renderLogin()
     fireEvent.change(screen.getByLabelText('Usuário'), { target: { value: 'chef' } })
@@ -109,9 +115,7 @@ describe('tela de login na API real (AC-01 / AC-04 / RN-UI-AUTH-03 / RN-UI-AUTH-
     fireEvent.click(screen.getByRole('button', { name: 'Login' }))
 
     expect(await screen.findByRole('heading', { name: heading })).toBeTruthy()
-    const stored = sessionStorage.getItem(TOKEN_KEY)
-    expect(stored).toBeTruthy()
-    expect(stored).not.toBe('cookie-session')
+    expect(sessionStorage.getItem(TOKEN_KEY)).toBeNull()
     expect(localStorage.getItem(TOKEN_KEY)).toBeNull()
   })
 })

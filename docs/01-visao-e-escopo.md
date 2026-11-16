@@ -33,7 +33,7 @@ Autorização HTTP e matriz de endpoints: ver API — [Papéis e permissões](..
 ### Autenticação
 
 - Login JWT (`POST /auth/login`)
-- Token em `sessionStorage` (`receitou.auth.token`)
+- API real: sessão em cookie HttpOnly (`receitou_auth`); demo: token em `sessionStorage` (`receitou.auth.token`)
 - Redirect por papel; limpeza de sessão em 401/403
 
 ### Admin
@@ -61,7 +61,7 @@ Itens existentes ou planejados na API, **sem tela** neste frontend:
 - Publicação de receita / toggle `isPublished` pela UI
 - Upload de imagem de receita
 
-**Corte aprovado (implementação pendente):** [FN-UI-API-FETCH](07-fn-ui-api-fetch.md) — modo API real (JWT em `sessionStorage`), `POST /auth/register`, UI GoalProgress.
+**Corte aprovado (implementação parcial):** [FN-UI-API-FETCH](07-fn-ui-api-fetch.md) — modo API real (cookie HttpOnly / F-05), `POST /auth/register`, UI GoalProgress.
 
 Detalhamento: [Módulos e pendências](05-modulos-e-pendencias.md).
 
@@ -70,4 +70,4 @@ Detalhamento: [Módulos e pendências](05-modulos-e-pendencias.md).
 1. A API é a fonte de verdade do domínio; a UI aplica regras de apresentação, validação de formulário e controle de navegação.
 2. Default oficial de `VITE_USE_DEMO_API` em release/Docker é `false`. Em desenvolvimento local, `true` pode ser usado para fixtures; isso não altera os requisitos de produto da API ([FN-UI-API-FETCH](07-fn-ui-api-fetch.md)).
 3. Requisitos de backend evoluem no repositório da API; requisitos de tela evoluem neste `docs/`.
-4. Sessão na API real: JWT em `sessionStorage` + `Authorization: Bearer` (RN-UI-AUTH-01); 401/403 limpam sessão (RN-UI-AUTH-05).
+4. Sessão na API real: cookie HttpOnly + `GET /auth/me` (RN-UI-AUTH-01 / F-05); 401 limpa sessão (RN-UI-AUTH-05; 403 = gap).

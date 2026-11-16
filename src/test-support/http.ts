@@ -5,6 +5,7 @@ export type FetchCall = {
   method: string
   headers: Headers
   body: unknown
+  credentials?: RequestCredentials
 }
 
 export function fakeJwt(payload: Record<string, unknown>): string {
@@ -103,6 +104,7 @@ export function createFetchRecorder(handler: (call: FetchCall) => Response | Pro
       method: init?.method ?? 'GET',
       headers: new Headers(init?.headers),
       body,
+      credentials: init?.credentials,
     }
     calls.push(call)
     return handler(call)

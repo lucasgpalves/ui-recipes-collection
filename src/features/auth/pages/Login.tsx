@@ -1,6 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
-import { roleFromToken } from '../../../shared/auth/tokenClaims'
+import { Link, Navigate } from 'react-router-dom'
 import { ApiError } from '../../../shared/api/client'
 import { env } from '../../../shared/config/env'
 import { brand } from '../../../shared/brand'
@@ -9,7 +8,6 @@ import styles from './Login.module.css'
 
 export function LoginPage() {
   const { login, isAuthenticated, role } = useAuth()
-  const navigate = useNavigate()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -24,9 +22,8 @@ export function LoginPage() {
     setSubmitting(true)
     setError(null)
     try {
+      // RF-UI-AUTH-08: após login, isAuthenticated dispara <Navigate> por papel.
       await login(username.trim(), password)
-      const token = sessionStorage.getItem('receitou.auth.token')
-      navigate(homePathForRole(roleFromToken(token)), { replace: true })
     } catch (err) {
       if (err instanceof ApiError && (err.status === 403 || err.status === 401)) {
         setError('Usuário ou senha inválidos.')

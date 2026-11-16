@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react'
@@ -14,7 +15,9 @@ import {
   userIdFromToken,
 } from '../../shared/auth/tokenClaims'
 import { setMemoryToken, setUnauthorizedHandler } from '../../shared/api/client'
+import { env } from '../../shared/config/env'
 import { loginRequest, logoutRequest } from './api/login'
+import { fetchAuthMe } from './api/session'
 
 const TOKEN_KEY = 'receitou.auth.token'
 
@@ -32,8 +35,9 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
-/** RF-UI-API-06 / RF-UI-API-08: lê JWT de sessionStorage; limpa se ausente/inválido/expirado/demo.* em API real. */
-function readStoredToken(): string | null {
+/** Demo only: JWT em sessionStorage. API real não persiste JWT no JS (F-05). */
+function readStoredDemoToken(): string | null {
+  if (!env.useDemoApi) return null
   try {
     const raw = sessionStorage.getItem(TOKEN_KEY)
     if (!raw) return null
@@ -47,18 +51,27 @@ function readStoredToken(): string | null {
   }
 }
 
+function clearTokenStorage() {
+  try {
+    sessionStorage.removeItem(TOKEN_KEY)
+  } catch {
+    /* ignore */
+  }
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [token, setToken] = useState<string | null>(() => readStoredToken())
-  const [username, setUsername] = useState<string | null>(() => subjectFromToken(readStoredToken()))
-  const [userId, setUserId] = useState<number | null>(() => userIdFromToken(readStoredToken()))
-  const [role, setRole] = useState<string | null>(() => roleFromToken(readStoredToken()))
+  const initialDemoToken = readStoredDemoToken()
+  const [token, setToken] = useState<string | null>(() => initialDemoToken)
+  const [username, setUsername] = useState<string | null>(() =>
+    subjectFromToken(initialDemoToken),
+  )
+  const [userId, setUserId] = useState<number | null>(() => userIdFromToken(initialDemoToken))
+  const [role, setRole] = useState<string | null>(() => roleFromToken(initialDemoToken))
+  /** Invalida GET /auth/me em voo após login/logout (evita 401 apagar sessão nova). */
+  const sessionEpochRef = useRef(0)
 
   const clearSession = useCallback(() => {
-    try {
-      sessionStorage.removeItem(TOKEN_KEY)
-    } catch {
-      /* ignore */
-    }
+    clearTokenStorage()
     setMemoryToken(null)
     setToken(null)
     setUsername(null)
@@ -66,36 +79,100 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setRole(null)
   }, [])
 
+  const applyIdentity = useCallback(
+    (identity: { username: string | null; role: string | null; userId: number | null }) => {
+      if (!identity.username || !identity.role) {
+        clearSession()
+        return
+      }
+      setToken(null)
+      setMemoryToken(null)
+      setUsername(identity.username)
+      setUserId(identity.userId)
+      setRole(identity.role)
+    },
+    [clearSession],
+  )
+
   const logout = useCallback(() => {
+    sessionEpochRef.current += 1
     void logoutRequest().catch(() => undefined)
     clearSession()
   }, [clearSession])
 
-  const login = useCallback(async (usernameValue: string, password: string) => {
-    const response = await loginRequest(usernameValue, password)
+  const login = useCallback(
+    async (usernameValue: string, password: string) => {
+      const response = await loginRequest(usernameValue, password)
 
-    // RF-UI-API-05 / RF-UI-API-08: JWT (real ou demo) em sessionStorage + estado de auth.
-    if (!response.token) {
-      throw new Error('Login não retornou token')
-    }
-    sessionStorage.setItem(TOKEN_KEY, response.token)
-    setMemoryToken(null)
-    setToken(response.token)
-    setUsername(response.username ?? subjectFromToken(response.token))
-    setUserId(response.userId ?? userIdFromToken(response.token))
-    setRole(response.role ?? roleFromToken(response.token))
-  }, [])
+      if (env.useDemoApi) {
+        // RF-UI-API-08: demo mantém JWT em sessionStorage.
+        if (!response.token) {
+          throw new Error('Login não retornou token')
+        }
+        sessionStorage.setItem(TOKEN_KEY, response.token)
+        setMemoryToken(null)
+        setToken(response.token)
+        setUsername(response.username ?? subjectFromToken(response.token))
+        setUserId(response.userId ?? userIdFromToken(response.token))
+        setRole(response.role ?? roleFromToken(response.token))
+        return
+      }
+
+      // RF-UI-API-05 / F-05: API real — identidade no JSON; JWT só no cookie HttpOnly.
+      if (!response.username || !response.role) {
+        throw new Error('Login não retornou identidade')
+      }
+      sessionEpochRef.current += 1
+      clearTokenStorage()
+      applyIdentity({
+        username: response.username,
+        role: response.role,
+        userId: response.userId ?? null,
+      })
+    },
+    [applyIdentity],
+  )
 
   useEffect(() => {
     setUnauthorizedHandler(() => {
+      sessionEpochRef.current += 1
       clearSession()
     })
     return () => setUnauthorizedHandler(null)
   }, [clearSession])
 
+  useEffect(() => {
+    if (env.useDemoApi) return
+
+    let cancelled = false
+    const bootEpoch = sessionEpochRef.current
+
+    // Limpa JWT residual (incl. demo.*) — API real não usa sessionStorage para sessão.
+    clearTokenStorage()
+    setMemoryToken(null)
+
+    void (async () => {
+      try {
+        const me = await fetchAuthMe()
+        if (cancelled || bootEpoch !== sessionEpochRef.current) return
+        applyIdentity({
+          username: me.username,
+          role: me.role,
+          userId: me.userId,
+        })
+      } catch {
+        if (!cancelled && bootEpoch === sessionEpochRef.current) clearSession()
+      }
+    })()
+
+    return () => {
+      cancelled = true
+    }
+  }, [applyIdentity, clearSession])
+
   const isAdmin = role === 'ADMIN'
   const isCook = role === 'COOK'
-  const isAuthenticated = Boolean(token)
+  const isAuthenticated = Boolean(role && username)
 
   const value = useMemo<AuthContextValue>(
     () => ({

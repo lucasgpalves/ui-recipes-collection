@@ -9,11 +9,11 @@ Regras de domínio (unicidade, ownership na API, publicação, progresso etc.): 
 
 | ID | Regra | Critério de aceite |
 |----|--------|-------------------|
-| RN-UI-AUTH-01 | Token fica só em `sessionStorage` | Não há persistência em `localStorage` nem secret JWT no cliente; API real usa Bearer a partir desse token ([FN-UI-API-FETCH](07-fn-ui-api-fetch.md)) |
+| RN-UI-AUTH-01 | API real: JWT só no cookie HttpOnly; demo: token só em `sessionStorage` | Sem JWT legível em JS no modo API real; sem `localStorage` ([FN-UI-API-FETCH](07-fn-ui-api-fetch.md), F-05) |
 | RN-UI-AUTH-02 | Login exige usuário e senha | Campos `required`; submit bloqueado pelo HTML se vazios |
 | RN-UI-AUTH-03 | Username enviado com trim | Espaços nas pontas não fazem parte do username |
 | RN-UI-AUTH-04 | Erros de credencial são genéricos | 401/403 → “Usuário ou senha inválidos.” |
-| RN-UI-AUTH-05 | 401/403 em qualquer request limpa sessão | Handler remove token e estado de auth |
+| RN-UI-AUTH-05 | 401 limpa sessão; 403 é gap (AC-12) | Handler remove estado de auth em 401 ([FN-UI-API-FETCH](07-fn-ui-api-fetch.md)) |
 | RN-UI-AUTH-06 | Painel admin só para `ADMIN` | `RequireAdmin` redireciona demais usuários |
 | RN-UI-AUTH-07 | Painel cook só para `COOK` | `RequireCook` redireciona demais usuários |
 | RN-UI-AUTH-08 | Pós-login por papel | ADMIN → `/admin/usuarios`; COOK → `/cook/receitas`; resto → `/` |
