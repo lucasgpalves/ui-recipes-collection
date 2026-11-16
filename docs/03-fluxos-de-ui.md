@@ -168,16 +168,6 @@ Rotas `/admin/referencias*` permanecem como atalho global (fora da sidebar).
 
 ---
 
-## 6. Padrões transversais de fluxo
-
-| Padrão | Comportamento |
-|--------|----------------|
-| Loading de lista | Mensagem de carregamento até a promise resolver |
-| Lista vazia | Mensagem específica (“Nenhuma…” / equivalente) |
-| Erro de carga | Mensagem + notify de erro quando aplicável |
-| Submit | Botão desabilitado; erros de validação no form + toast warning |
-| Confirmação destrutiva | Modal bloqueante; Escape/Cancel = aborta |
-
 ## 5.1 Editor — painel (`FN-UI-EDITOR`)
 
 ### Ingredientes
@@ -201,3 +191,13 @@ Rotas `/admin/referencias*` permanecem como atalho global (fora da sidebar).
 3. Sidebar ADMIN na fila mostra só **Receitas**.
 
 ---
+
+## 6. Padrões transversais de fluxo
+
+| Padrão | Comportamento |
+|--------|----------------|
+| Loading de lista | Mensagem de carregamento até a promise resolver |
+| Lista vazia | Mensagem específica (“Nenhuma…” / equivalente) |
+| Erro de carga | Mensagem + notify de erro quando aplicável |
+| Submit | Botão desabilitado; erros de validação no form + toast warning |
+| Confirmação destrutiva | Modal bloqueante; Escape/Cancel = aborta |

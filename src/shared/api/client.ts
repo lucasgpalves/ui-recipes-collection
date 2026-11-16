@@ -43,17 +43,19 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
   const { body, token, headers, ...rest } = options
   const url = `${env.apiBaseUrl}${path.startsWith('/') ? path : `/${path}`}`
   const authToken = token === undefined ? readSessionToken() : token
+  const isFormData = typeof FormData !== 'undefined' && body instanceof FormData
 
   const response = await fetch(url, {
     ...rest,
     credentials: env.useDemoApi ? 'same-origin' : 'include',
     headers: {
       Accept: 'application/json',
-      ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}),
+      // FormData: browser sets multipart boundary; do not force JSON Content-Type.
+      ...(body !== undefined && !isFormData ? { 'Content-Type': 'application/json' } : {}),
       ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
       ...headers,
     },
-    body: body !== undefined ? JSON.stringify(body) : undefined,
+    body: body === undefined ? undefined : isFormData ? (body as FormData) : JSON.stringify(body),
   })
 
   // F-13: só 401 encerra sessão; 403 é autorização (ownership/papel).
@@ -62,7 +64,30 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
   }
 
   if (!response.ok) {
-    throw new ApiError(response.status, `Request failed with status ${response.status}`)
+    let message = `Request failed with status ${response.status}`
+    try {
+      const errorText = await response.text()
+      if (errorText) {
+        const parsed = JSON.parse(errorText) as { detail?: unknown }
+        if (typeof parsed.detail === 'string' && parsed.detail.trim()) {
+          message = parsed.detail
+        } else if (Array.isArray(parsed.detail)) {
+          const parts = parsed.detail
+            .map((item) => {
+              if (typeof item === 'string') return item
+              if (item && typeof item === 'object' && 'msg' in item) {
+                return String((item as { msg: unknown }).msg)
+              }
+              return null
+            })
+            .filter((part): part is string => Boolean(part))
+          if (parts.length > 0) message = parts.join('; ')
+        }
+      }
+    } catch {
+      /* keep status message */
+    }
+    throw new ApiError(response.status, message)
   }
 
   if (response.status === 204) {

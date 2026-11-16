@@ -22,7 +22,7 @@ Estende o painel COOK existente (listagem / detalhe de edição / create) para a
 **Fora do escopo:**
 
 - Toggle `isPublished` / botão “Publicar receita” (permanece fora de produto UI; publicação de receita ocorre no fluxo de livro na API — ver RN-REC-04 / RN-LIV).
-- Painel EDITOR/TASTER; upload de imagem.
+- Painel EDITOR/TASTER; upload de imagem ([FN-UI-RECIPE-IMAGE](14-fn-ui-recipe-image.md)).
 - Alterar ownership HTTP (domínio API).
 - Redefinir listagem `GET /recipes/mine` / `userId` da sessão ([FN-UI-API-FETCH](07-fn-ui-api-fetch.md)).
 

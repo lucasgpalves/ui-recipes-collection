@@ -31,6 +31,7 @@ Caminho relativo a partir de `api-recipes-collection/docs/`:
 | **`FN-UI-EDITOR`** | [`11-fn-ui-editor.md`](11-fn-ui-editor.md) |
 | **`FN-UI-TASTER`** | [`12-fn-ui-taster.md`](12-fn-ui-taster.md) |
 | **`FN-UI-ADMIN-USER-ACCESS`** | [`13-fn-ui-admin-user-access.md`](13-fn-ui-admin-user-access.md) |
+| **`FN-UI-RECIPE-IMAGE`** | [`14-fn-ui-recipe-image.md`](14-fn-ui-recipe-image.md) |
 
 ## Índice
 
@@ -49,6 +50,7 @@ Caminho relativo a partir de `api-recipes-collection/docs/`:
 | [Painel EDITOR](11-fn-ui-editor.md) | `FN-UI-EDITOR` — ingredientes, livros, fila editorial |
 | [TASTER: reviews](12-fn-ui-taster.md) | `FN-UI-TASTER` — avaliação no detalhe público |
 | [Admin: reativar usuário](13-fn-ui-admin-user-access.md) | `FN-UI-ADMIN-USER-ACCESS` — terminate ↔ reactivate |
+| [Imagem de receita](14-fn-ui-recipe-image.md) | `FN-UI-RECIPE-IMAGE` — upload/remoção COOK; `imageUrl` na vitrine |
 
 ## Convenções
 

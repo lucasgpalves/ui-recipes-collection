@@ -1,4 +1,13 @@
-import { useCallback, useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type FormEvent,
+  type KeyboardEvent,
+  type MutableRefObject,
+} from 'react'
 import { fetchCategories } from '../../../catalog'
 import { useAuth } from '../../../auth'
 import type {
@@ -20,10 +29,17 @@ import { recipePreparationMinutes } from '../lib/ownership'
 import { RecipePreviewModal } from './RecipePreviewModal'
 import styles from './RecipeForm.module.css'
 
+export type RecipeFormMedia = {
+  file: File | null
+  removeImage: boolean
+}
+
 type RecipeFormProps = {
   initial?: Recipe | null
   submitLabel: string
   onSubmit: (payload: RecipeRequest) => Promise<void>
+  /** Preenchido imediatamente antes de `onSubmit` (upload/remoção de imagem). */
+  mediaRef?: MutableRefObject<RecipeFormMedia>
 }
 
 type DraftIngredient = {
@@ -47,7 +63,7 @@ function ingredientsFromRecipe(recipe?: Recipe | null): RecipeIngredientRequest[
   }))
 }
 
-export function RecipeForm({ initial, submitLabel, onSubmit }: RecipeFormProps) {
+export function RecipeForm({ initial, submitLabel, onSubmit, mediaRef }: RecipeFormProps) {
   const notify = useNotify()
   const { username, userId } = useAuth()
   const listHeadingId = useId()
@@ -71,8 +87,45 @@ export function RecipeForm({ initial, submitLabel, onSubmit }: RecipeFormProps) 
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [previewOpen, setPreviewOpen] = useState(false)
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null)
+  const [removeImage, setRemoveImage] = useState(false)
+  const imageInputRef = useRef<HTMLInputElement>(null)
+
+  const published = Boolean(initial?.isPublished)
+  const persistedImageUrl = !removeImage ? (initial?.imageUrl ?? null) : null
+  const displayImageUrl = imagePreviewUrl ?? persistedImageUrl
 
   const closePreview = useCallback(() => setPreviewOpen(false), [])
+
+  useEffect(() => {
+    return () => {
+      if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl)
+    }
+  }, [imagePreviewUrl])
+
+  function clearSelectedFile() {
+    if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl)
+    setImageFile(null)
+    setImagePreviewUrl(null)
+    if (imageInputRef.current) imageInputRef.current.value = ''
+  }
+
+  function handleImagePick(file: File | null) {
+    if (!file) {
+      clearSelectedFile()
+      return
+    }
+    const allowed = ['image/jpeg', 'image/png', 'image/webp']
+    if (!allowed.includes(file.type)) {
+      notify.warning('Use JPEG, PNG ou WebP.', 'Imagem')
+      return
+    }
+    if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl)
+    setImageFile(file)
+    setImagePreviewUrl(URL.createObjectURL(file))
+    setRemoveImage(false)
+  }
 
   const draftPreview =
     draft.ingredientName.trim() && Number.isFinite(draft.amount) && draft.amount > 0
@@ -207,6 +260,9 @@ export function RecipeForm({ initial, submitLabel, onSubmit }: RecipeFormProps) 
 
     setSubmitting(true)
     try {
+      if (mediaRef) {
+        mediaRef.current = { file: imageFile, removeImage }
+      }
       await onSubmit({
         userId,
         name: trimmedName,
@@ -310,6 +366,51 @@ export function RecipeForm({ initial, submitLabel, onSubmit }: RecipeFormProps) 
           onChange={(event) => setDescription(event.target.value)}
         />
       </label>
+
+      <section className={styles.imageBlock} aria-label="Imagem da receita">
+        <header className={styles.imageHeader}>
+          <h2>Imagem</h2>
+          <p>
+            {published
+              ? 'Receita publicada: a imagem não pode ser alterada.'
+              : 'Opcional. JPEG, PNG ou WebP (máx. 5 MiB no servidor).'}
+          </p>
+        </header>
+        <div
+          className={`${styles.imagePreview} ${displayImageUrl ? '' : styles.imagePreviewEmpty}`}
+          style={displayImageUrl ? { backgroundImage: `url(${displayImageUrl})` } : undefined}
+          role="img"
+          aria-label={displayImageUrl ? 'Prévia da imagem da receita' : 'Sem imagem'}
+        >
+          {!displayImageUrl ? <span>Sem imagem</span> : null}
+        </div>
+        {!published ? (
+          <div className={styles.imageActions}>
+            <label className={styles.imageFileLabel}>
+              Escolher imagem
+              <input
+                ref={imageInputRef}
+                className={styles.imageFileInput}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={(event) => handleImagePick(event.target.files?.[0] ?? null)}
+              />
+            </label>
+            {imageFile || (!removeImage && initial?.imageUrl) ? (
+              <button
+                type="button"
+                className={styles.imageRemoveButton}
+                onClick={() => {
+                  clearSelectedFile()
+                  if (initial?.imageUrl) setRemoveImage(true)
+                }}
+              >
+                Remover imagem
+              </button>
+            ) : null}
+          </div>
+        ) : null}
+      </section>
 
       <section className={styles.ingredientsBlock} aria-labelledby={listHeadingId}>
         <header className={styles.ingredientsHeader}>
@@ -449,7 +550,7 @@ export function RecipeForm({ initial, submitLabel, onSubmit }: RecipeFormProps) 
           portions,
           preparationTime,
           authorName: username ?? initial?.userName ?? null,
-          imageUrl: initial?.imageUrl ?? null,
+          imageUrl: displayImageUrl,
           ingredients,
         }}
       />

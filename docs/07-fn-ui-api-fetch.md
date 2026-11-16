@@ -28,7 +28,7 @@ Este documento define o corte de requisitos para a UI operar contra a **API HTTP
 | **(B)** | Ligar fetch `POST /auth/register` na tela de credenciais admin |
 | **(C)** | Tela/UI de progresso de metas via `GET /goals/{id}/progress` |
 
-**Fora do escopo:** painéis EDITOR/TASTER, upload de imagem, toggle `isPublished`, embed obrigatório de `references` no DTO de usuário.
+**Fora do escopo:** painéis EDITOR/TASTER, toggle `isPublished`, embed obrigatório de `references` no DTO de usuário. Upload de imagem: [FN-UI-RECIPE-IMAGE](14-fn-ui-recipe-image.md).
 
 **Gap código ↔ requisito (rastreado):** clear de sessão em **403** ainda não ocorre no `apiRequest` (RF-UI-API-11 / AC-12); 401 limpa.
 

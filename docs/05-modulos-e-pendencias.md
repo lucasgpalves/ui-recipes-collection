@@ -19,6 +19,7 @@ Estado da UI em relação aos requisitos de tela. Capacidade da API corresponden
 | Admin — restaurantes | Feito (demo) | CRUD; `id` no demo (API pode omitir) |
 | Admin — referências de emprego | Feito (demo) | Hub no perfil COOK ([FN-UI-COOK-PROFILE](06-perfil-cook-contexto.md)); rotas globais como atalho |
 | Cook — receitas (list / create / edit) | Feito | Prévia + ingredientes + medidas; sidebar só “Receitas” ([FN-UI-NAV-SIDEBAR-OBJECT](08-fn-ui-nav-sidebar-object.md)) |
+| Cook — imagem de receita | Feito | [FN-UI-RECIPE-IMAGE](14-fn-ui-recipe-image.md); sem suite automatizada de upload |
 | Cook — ciclo V2 (delete / lock / toasts) | Não iniciado | [FN-UI-COOK-RECIPE-LIFECYCLE](10-fn-ui-cook-recipe-lifecycle.md) |
 | Cook — CRUD de medidas/ingredientes avulso | Não iniciado | Medidas embutidas no form de receita |
 | Editor — livros / ingredientes / fila | Feito | [FN-UI-EDITOR](11-fn-ui-editor.md); demo `editor/editor` |
@@ -45,6 +46,7 @@ Requisitos aprovados em [07-fn-ui-api-fetch.md](07-fn-ui-api-fetch.md). **Implem
 | `FN-UI-EDITOR` | [11](11-fn-ui-editor.md) | `/editor/*` — ingredientes, livros, fila editorial (**feito**) |
 | `FN-UI-TASTER` | [12](12-fn-ui-taster.md) | Review no detalhe público (**feito**) |
 | `FN-UI-ADMIN-USER-ACCESS` | [13](13-fn-ui-admin-user-access.md) | Reativar usuário (`PUT /users/reactivate/{id}`) (não iniciado) |
+| `FN-UI-RECIPE-IMAGE` | [14](14-fn-ui-recipe-image.md) | Upload/remoção de imagem em rascunho; `imageUrl` na vitrine (**feito**) |
 
 ---
 
@@ -63,9 +65,10 @@ Requisitos aprovados em [07-fn-ui-api-fetch.md](07-fn-ui-api-fetch.md). **Implem
 ### P2 — Cook
 
 1. Amarrar `userId` do payload ao ator autenticado — requisito em [FN-UI-API-FETCH](07-fn-ui-api-fetch.md) (RF-UI-API-16).
-2. Ciclo V2: exclusão de rascunho + form locked se publicada + toasts — [FN-UI-COOK-RECIPE-LIFECYCLE](10-fn-ui-cook-recipe-lifecycle.md).
-3. CRUD explícito de ingredientes/medidas fora do formulário de receita (se produto exigir).
-4. Toggle `isPublished` / publish avulso de receita — **fora de escopo** (publicação via livro na API).
+2. ~~Imagem de receita — [FN-UI-RECIPE-IMAGE](14-fn-ui-recipe-image.md).~~
+3. Ciclo V2: exclusão de rascunho + form locked se publicada + toasts — [FN-UI-COOK-RECIPE-LIFECYCLE](10-fn-ui-cook-recipe-lifecycle.md).
+4. CRUD explícito de ingredientes/medidas fora do formulário de receita (se produto exigir).
+5. Toggle `isPublished` / publish avulso de receita — **fora de escopo** (publicação via livro na API).
 
 ### P2.4 — Sidebar object-only (`FN-UI-NAV-SIDEBAR-OBJECT`) — feito na UI
 

@@ -4,7 +4,7 @@ export type RecipeSummary = {
   userName: string | null
   name: string | null
   categoryName: string | null
-  /** Presente na demo; a API real pode omitir até expor mídia. */
+  /** Path público da API (ex.: `/api/recipes/{id}/image`) ou URL demo. */
   imageUrl?: string | null
   description?: string | null
   isPublished?: boolean | null
@@ -31,7 +31,7 @@ export type Recipe = {
   isRated: boolean | null
   /** Tempo de preparo (API: preparationTime). */
   preparationTime?: number | null
-  /** Presente na demo; a API real pode omitir até expor mídia/tempo. */
+  /** Path público da API (ex.: `/api/recipes/{id}/image`) ou URL demo. */
   imageUrl?: string | null
   /** Alias demo legado; preferir preparationTime. */
   durationMinutes?: number | null
@@ -144,6 +144,7 @@ export type GoalProgress = {
   userId: number | null
   target: number
   progress: number
+  completed: boolean
 }
 
 /** Espelha UserRequestDTO (JSON camelCase). */

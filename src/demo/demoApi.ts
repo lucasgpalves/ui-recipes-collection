@@ -227,6 +227,33 @@ export async function demoCreateRecipe(
   return withLatency(structuredClone(created), 420)
 }
 
+/** Demo: associa object URL local à receita (sem persistência real de arquivo). */
+export async function demoUploadRecipeImage(id: number, file: File): Promise<void> {
+  const store = await ensureRecipesDetailStore()
+  const recipe = store.find((item) => item.id === id)
+  if (!recipe) {
+    throw new ApiError(404, `Demo recipe ${id} not found`)
+  }
+  if (recipe.isPublished) {
+    throw new ApiError(409, 'Demo published recipes cannot change image')
+  }
+  recipe.imageUrl = URL.createObjectURL(file)
+  await withLatency(undefined, 180)
+}
+
+export async function demoDeleteRecipeImage(id: number): Promise<void> {
+  const store = await ensureRecipesDetailStore()
+  const recipe = store.find((item) => item.id === id)
+  if (!recipe) {
+    throw new ApiError(404, `Demo recipe ${id} not found`)
+  }
+  if (recipe.isPublished) {
+    throw new ApiError(409, 'Demo published recipes cannot change image')
+  }
+  recipe.imageUrl = null
+  await withLatency(undefined, 120)
+}
+
 export async function demoUpdateRecipe(
   id: number,
   request: RecipeRequest,
@@ -525,8 +552,7 @@ export async function demoLogin(username: string, password: string): Promise<Tok
       username: user,
     }
   }
-
-    if (user === DEMO_EDITOR_USERNAME && pass === DEMO_EDITOR_PASSWORD) {
+  if (user === DEMO_EDITOR_USERNAME && pass === DEMO_EDITOR_PASSWORD) {
     return {
       token: createDemoToken(user, 'EDITOR', DEMO_EDITOR_USER_ID),
       role: 'EDITOR',
@@ -535,7 +561,7 @@ export async function demoLogin(username: string, password: string): Promise<Tok
     }
   }
 
-throw new ApiError(401, 'Credenciais inválidas')
+  throw new ApiError(401, 'Credenciais inválidas')
 }
 
 function formatDemoDateTime(date: Date): string {

@@ -1,13 +1,30 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ApiError } from '../../../../shared/api/client'
 import type { Recipe, RecipeRequest } from '../../../../shared/api/types'
 import { useNotify } from '../../../../shared/ui/notify'
 import { useAuth } from '../../../auth'
-import { RecipeForm } from '../components/RecipeForm'
-import { fetchCookRecipe, updateRecipe } from '../api/recipes'
+import { RecipeForm, type RecipeFormMedia } from '../components/RecipeForm'
+import {
+  deleteRecipeImage,
+  fetchCookRecipe,
+  updateRecipe,
+  uploadRecipeImage,
+} from '../api/recipes'
 import { isOwnRecipe } from '../lib/ownership'
 import styles from '../../../admin/shared/pages.module.css'
+
+function mediaErrorMessage(err: unknown): string {
+  if (err instanceof ApiError) {
+    if (err.status === 413) return 'A imagem excede o tamanho máximo permitido (5 MiB).'
+    if (err.status === 415) return 'Tipo de imagem não suportado. Use JPEG, PNG ou WebP.'
+    if (err.status === 422) return 'Arquivo de imagem inválido.'
+    if (err.status === 409) return 'Não é possível alterar a imagem desta receita.'
+    if (err.status === 403) return 'Sem permissão para alterar a imagem.'
+    return `Falha na imagem (status ${err.status}).`
+  }
+  return 'Não foi possível atualizar a imagem da receita.'
+}
 
 export function CookRecipeEditPage() {
   const { id } = useParams()
@@ -18,6 +35,7 @@ export function CookRecipeEditPage() {
   const [recipe, setRecipe] = useState<Recipe | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const mediaRef = useRef<RecipeFormMedia>({ file: null, removeImage: false })
 
   useEffect(() => {
     if (!Number.isFinite(recipeId) || recipeId <= 0) {
@@ -59,9 +77,30 @@ export function CookRecipeEditPage() {
     }
     try {
       await updateRecipe(recipeId, payload, username)
+      const media = mediaRef.current
+      if (!recipe?.isPublished) {
+        if (media.removeImage && !media.file) {
+          try {
+            await deleteRecipeImage(recipeId)
+          } catch (err) {
+            notify.error(mediaErrorMessage(err), 'Imagem')
+            throw new Error(mediaErrorMessage(err))
+          }
+        } else if (media.file) {
+          try {
+            await uploadRecipeImage(recipeId, media.file)
+          } catch (err) {
+            notify.error(mediaErrorMessage(err), 'Imagem')
+            throw new Error(mediaErrorMessage(err))
+          }
+        }
+      }
       notify.success(`Receita "${payload.name}" atualizada.`, 'Edição')
       navigate('/cook/receitas', { replace: true })
     } catch (err) {
+      if (err instanceof Error && err.message.includes('imagem')) {
+        throw err
+      }
       if (err instanceof ApiError) {
         throw new Error(`Falha ao atualizar (status ${err.status}).`)
       }
@@ -91,6 +130,7 @@ export function CookRecipeEditPage() {
           initial={recipe}
           submitLabel="Salvar alterações"
           onSubmit={handleUpdate}
+          mediaRef={mediaRef}
         />
       ) : null}
     </div>

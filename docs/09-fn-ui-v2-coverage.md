@@ -25,6 +25,7 @@ Manter uma matriz única e verificável:
 | Usuário / acesso / visibilidade (`RN-USR`, `RN-VIS`) | Admin: terminate existente; reativar; register | [FN-UI-ADMIN-USER-ACCESS](13-fn-ui-admin-user-access.md); register em [FN-UI-API-FETCH](07-fn-ui-api-fetch.md) | Planejado (reativar); register aprovado |
 | Referência de emprego (`RN-JOB`) | Hub perfil COOK | [FN-UI-COOK-PROFILE](06-perfil-cook-contexto.md) | Feito na UI |
 | Logs (`RN-LOG`) | **Sem UI** | — | Fora de escopo UI (API também exclui painel de logs) |
+| Imagem de receita (`RN-IMG`) | COOK: upload/remoção em rascunho; vitrine exibe `imageUrl` | [FN-UI-RECIPE-IMAGE](14-fn-ui-recipe-image.md) | Feito |
 | Sessão / fetch API real | Cookie, register, GoalProgress, clear 401/403 | [FN-UI-API-FETCH](07-fn-ui-api-fetch.md) | Aprovado; implementação parcial |
 | Navegação sidebar object-only | Admin / Cook / Editor | [FN-UI-NAV-SIDEBAR-OBJECT](08-fn-ui-nav-sidebar-object.md); Editor em [FN-UI-EDITOR](11-fn-ui-editor.md) | Feito |
 

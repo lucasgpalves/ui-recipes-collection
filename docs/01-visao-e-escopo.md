@@ -50,6 +50,7 @@ Autorização HTTP e matriz de endpoints: ver API — [Papéis e permissões](..
 ### Cook
 
 - Receitas: listar (próprias), criar, editar (formulário com ingredientes, medidas e prévia)
+- Imagem opcional de receita (upload/remoção em rascunho; exibição na vitrine): [FN-UI-RECIPE-IMAGE](14-fn-ui-recipe-image.md)
 - Ciclo V2 (delete rascunho, lock pós-publicação, toasts 422/409): [FN-UI-COOK-RECIPE-LIFECYCLE](10-fn-ui-cook-recipe-lifecycle.md) (requisitos aprovados; implementação não iniciada)
 
 ## Escopo especificado, implementação parcial
@@ -74,7 +75,6 @@ Autorização HTTP e matriz de endpoints: ver API — [Papéis e permissões](..
 Itens existentes ou planejados na API, **sem tela** neste frontend (salvo FN futura):
 
 - Publicação de receita / toggle `isPublished` pela UI (publicação via livro — domínio API)
-- Upload de imagem de receita
 - UI de logs / auditoria consultável ([RN-LOG](../../api-recipes-collection/docs/versao-2/RN-logs.md); também fora do escopo da API V2)
 - Bootstrap do primeiro ADMIN via HTTP/UI (CLI — RN-USR-05)
 

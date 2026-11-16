@@ -1,8 +1,10 @@
 import {
   demoCreateRecipe,
+  demoDeleteRecipeImage,
   demoFetchCookRecipes,
   demoFetchRecipe,
   demoUpdateRecipe,
+  demoUploadRecipeImage,
 } from '../../../../demo/demoApi'
 import { apiRequest } from '../../../../shared/api/client'
 import { env } from '../../../../shared/config/env'
@@ -43,7 +45,7 @@ export function fetchCookRecipe(id: number): Promise<Recipe> {
 
 export function createRecipe(body: RecipeRequest, authorUsername: string): Promise<Recipe | void> {
   if (env.useDemoApi) return demoCreateRecipe(body, authorUsername)
-  return apiRequest<void>('/recipes', { method: 'POST', body })
+  return apiRequest<Recipe>('/recipes', { method: 'POST', body })
 }
 
 export function updateRecipe(
@@ -53,4 +55,22 @@ export function updateRecipe(
 ): Promise<Recipe | void> {
   if (env.useDemoApi) return demoUpdateRecipe(id, body, authorUsername)
   return apiRequest<void>(`/recipes/${id}`, { method: 'PUT', body })
+}
+
+export async function uploadRecipeImage(id: number, file: File): Promise<void> {
+  if (env.useDemoApi) {
+    await demoUploadRecipeImage(id, file)
+    return
+  }
+  const form = new FormData()
+  form.append('file', file)
+  await apiRequest<void>(`/recipes/${id}/image`, { method: 'PUT', body: form })
+}
+
+export async function deleteRecipeImage(id: number): Promise<void> {
+  if (env.useDemoApi) {
+    await demoDeleteRecipeImage(id)
+    return
+  }
+  await apiRequest<void>(`/recipes/${id}/image`, { method: 'DELETE' })
 }
