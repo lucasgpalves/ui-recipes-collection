@@ -7,20 +7,24 @@ O frontend **Taberu FOOD** (Receitou) é o cliente web do Acervo de Receitas. Of
 1. **Vitrine pública** — explorar, filtrar e abrir receitas sem autenticação.
 2. **Painel do cozinheiro (COOK)** — manter o próprio acervo de receitas.
 3. **Painel administrativo (ADMIN)** — governança de usuários, papéis, categorias e metas.
+4. **Painel editorial (EDITOR)** — governança de ingredientes, livros e fila editorial ([FN-UI-EDITOR](11-fn-ui-editor.md); requisitos aprovados, implementação não iniciada).
+5. **Avaliação (TASTER)** — criar/editar/excluir a própria review no detalhe público ([FN-UI-TASTER](12-fn-ui-taster.md); requisitos aprovados, implementação não iniciada).
 
 Marca exibida: **Taberu** / tagline **FOOD**.
 
 ## Papéis na interface
 
-A UI reconhece painéis apenas para:
-
 | Papel | Área na UI | Destino pós-login |
 |-------|------------|-------------------|
 | `ADMIN` | `/admin/*` | `/admin/usuarios` |
 | `COOK` | `/cook/*` | `/cook/receitas` |
-| Outros (`EDITOR`, `TASTER`, sem papel) | Sem painel dedicado | `/` (área pública) |
+| `EDITOR` | `/editor/*` | `/editor/ingredientes` (especificado; não iniciado) |
+| `TASTER` | Área pública + form de review no detalhe | `/` (sem painel dedicado) |
+| Sem papel | Área pública | `/` |
 
 Autorização HTTP e matriz de endpoints: ver API — [Papéis e permissões](../../api-recipes-collection/docs/03-papeis-e-permissoes.md).
+
+Índice de cobertura UI × API V2: [FN-UI-V2-COVERAGE](09-fn-ui-v2-coverage.md).
 
 ## Escopo atual da interface
 
@@ -39,27 +43,40 @@ Autorização HTTP e matriz de endpoints: ver API — [Papéis e permissões](..
 ### Admin
 
 - Usuários: listar, criar, perfil, editar, desativar; tela de credenciais
+- Reativação de usuário desativado: [FN-UI-ADMIN-USER-ACCESS](13-fn-ui-admin-user-access.md) (requisitos aprovados; implementação não iniciada)
 - Categorias, papéis, metas e restaurantes: CRUD com confirmação de exclusão
 - Referências de emprego no **perfil COOK** ([FN-UI-COOK-PROFILE](06-perfil-cook-contexto.md)); restaurantes como catálogo auxiliar
 
 ### Cook
 
 - Receitas: listar (próprias), criar, editar (formulário com ingredientes, medidas e prévia)
+- Ciclo V2 (delete rascunho, lock pós-publicação, toasts 422/409): [FN-UI-COOK-RECIPE-LIFECYCLE](10-fn-ui-cook-recipe-lifecycle.md) (requisitos aprovados; implementação não iniciada)
 
 ## Escopo especificado, implementação parcial
 
 | Funcionalidade | Doc | Estado UI |
 |----------------|-----|-----------|
 | Perfil COOK + referências no contexto do usuário | [06-perfil-cook-contexto.md](06-perfil-cook-contexto.md) | Implementado na UI; embed de `references` no DTO de usuário ainda evolutivo na API |
+| Fetch API real + register + GoalProgress | [07-fn-ui-api-fetch.md](07-fn-ui-api-fetch.md) | Requisitos aprovados; implementação parcial |
+
+## Escopo especificado, implementação não iniciada
+
+| Funcionalidade | Doc |
+|----------------|-----|
+| Cobertura UI × API V2 (rastreio) | [09-fn-ui-v2-coverage.md](09-fn-ui-v2-coverage.md) |
+| COOK — ciclo de receita (delete / lock / toasts) | [10-fn-ui-cook-recipe-lifecycle.md](10-fn-ui-cook-recipe-lifecycle.md) |
+| Painel EDITOR | [11-fn-ui-editor.md](11-fn-ui-editor.md) |
+| TASTER — reviews no detalhe | [12-fn-ui-taster.md](12-fn-ui-taster.md) |
+| Admin — reativar usuário | [13-fn-ui-admin-user-access.md](13-fn-ui-admin-user-access.md) |
 
 ## Fora do escopo atual da UI
 
-Itens existentes ou planejados na API, **sem tela** neste frontend:
+Itens existentes ou planejados na API, **sem tela** neste frontend (salvo FN futura):
 
-- Painel **EDITOR** (livros, aprovação/merge de ingredientes)
-- Painel **TASTER** (criação de reviews)
-- Publicação de receita / toggle `isPublished` pela UI
+- Publicação de receita / toggle `isPublished` pela UI (publicação via livro — domínio API)
 - Upload de imagem de receita
+- UI de logs / auditoria consultável ([RN-LOG](../../api-recipes-collection/docs/versao-2/RN-logs.md); também fora do escopo da API V2)
+- Bootstrap do primeiro ADMIN via HTTP/UI (CLI — RN-USR-05)
 
 **Corte aprovado (implementação parcial):** [FN-UI-API-FETCH](07-fn-ui-api-fetch.md) — modo API real (cookie HttpOnly / F-05), `POST /auth/register`, UI GoalProgress.
 
