@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import type { UserResponse } from '../../../../shared/api/types'
-import { fetchUserById } from '../api/users'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { ApiError } from '../../../../shared/api/client'
+import type { RegisterRequest, UserResponse } from '../../../../shared/api/types'
+import { useNotify } from '../../../../shared/ui/notify'
+import { fetchUserById, registerCredentials } from '../api/users'
 import { CredentialsForm } from '../components/CredentialsForm'
 import styles from '../../shared/pages.module.css'
 
-/**
- * Tela de desenho: formulário de credenciais no perfil.
- * Integração com POST /auth/register fica para o próximo passo.
- */
 export function AdminUserCredentialsPage() {
   const { id } = useParams()
   const userId = Number(id)
+  const navigate = useNavigate()
+  const notify = useNotify()
   const [user, setUser] = useState<UserResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -44,15 +44,28 @@ export function AdminUserCredentialsPage() {
   const terminated = Boolean(user?.terminatedAt)
   const profilePath = Number.isFinite(userId) ? `/admin/usuarios/${userId}` : '/admin/usuarios'
 
+  async function handleRegister(payload: RegisterRequest) {
+    try {
+      await registerCredentials(payload)
+      notify.success(
+        `Acesso criado para "${payload.username}" (userId ${payload.userId}).`,
+        'Credenciais',
+      )
+      navigate(profilePath, { replace: true })
+    } catch (err) {
+      if (err instanceof ApiError) {
+        throw new Error(`Falha ao criar acesso (status ${err.status}).`)
+      }
+      throw new Error('Não foi possível criar o acesso.')
+    }
+  }
+
   return (
     <div className={`${styles.page} fade-up`}>
       <header className={styles.intro}>
         <div>
           <h1>Criar acesso</h1>
-          <p>
-            Define username e senha para o usuário já cadastrado (RegisterRequestDTO). A chamada à
-            API será ligada em seguida.
-          </p>
+          <p>Define username e senha para o usuário já cadastrado (POST /auth/register).</p>
         </div>
         <div className={styles.actions}>
           <Link to="/admin/usuarios" className={styles.ghostButton}>
@@ -96,7 +109,11 @@ export function AdminUserCredentialsPage() {
             </div>
           </section>
 
-          <CredentialsForm userId={user.id ?? userId} userLabel={user.name} />
+          <CredentialsForm
+            userId={user.id ?? userId}
+            userLabel={user.name}
+            onSubmit={handleRegister}
+          />
         </>
       ) : null}
     </div>

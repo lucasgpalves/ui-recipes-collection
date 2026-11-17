@@ -5,7 +5,7 @@ import { formatCpf } from '../../../../shared/lib/cpf'
 import type { UserResponse } from '../../../../shared/api/types'
 import { useConfirm } from '../../../../shared/ui/confirm'
 import { useNotify } from '../../../../shared/ui/notify'
-import { fetchUsers, terminateUser } from '../api/users'
+import { fetchUsers, reactivateUser, terminateUser } from '../api/users'
 import styles from '../../shared/pages.module.css'
 
 export function AdminUsersListPage() {
@@ -14,6 +14,7 @@ export function AdminUsersListPage() {
   const [users, setUsers] = useState<UserResponse[]>([])
   const [loading, setLoading] = useState(true)
   const [terminatingId, setTerminatingId] = useState<number | null>(null)
+  const [reactivatingId, setReactivatingId] = useState<number | null>(null)
 
   const loadUsers = useCallback(async () => {
     setLoading(true)
@@ -34,7 +35,7 @@ export function AdminUsersListPage() {
     if (user.id == null || user.terminatedAt) return
     const confirmed = await confirm({
       title: 'Desativar usuário',
-      message: `Desativar o usuário "${user.name ?? user.id}"? Essa ação não pode ser desfeita por aqui.`,
+      message: `Desativar o usuário "${user.name ?? user.id}"? O acesso fica encerrado até uma reativação.`,
       confirmLabel: 'Desativar',
       tone: 'danger',
     })
@@ -53,6 +54,32 @@ export function AdminUsersListPage() {
       }
     } finally {
       setTerminatingId(null)
+    }
+  }
+
+  async function handleReactivate(user: UserResponse) {
+    if (user.id == null || !user.terminatedAt) return
+    const confirmed = await confirm({
+      title: 'Reativar usuário',
+      message: `Reativar o usuário "${user.name ?? user.id}"? O acesso volta a ficar disponível.`,
+      confirmLabel: 'Reativar',
+      tone: 'default',
+    })
+    if (!confirmed) return
+
+    setReactivatingId(user.id)
+    try {
+      await reactivateUser(user.id)
+      setUsers(await fetchUsers())
+      notify.success(`Usuário "${user.name ?? user.id}" reativado.`, 'Reativação')
+    } catch (err) {
+      if (err instanceof ApiError) {
+        notify.error(`Falha ao reativar (status ${err.status}).`, 'Reativação')
+      } else {
+        notify.error('Não foi possível reativar o usuário.', 'Reativação')
+      }
+    } finally {
+      setReactivatingId(null)
     }
   }
 
@@ -129,7 +156,16 @@ export function AdminUsersListPage() {
                                 {terminatingId === id ? 'Desativando…' : 'Desativar'}
                               </button>
                             </>
-                          ) : null}
+                          ) : (
+                            <button
+                              type="button"
+                              className={styles.linkButton}
+                              onClick={() => void handleReactivate(user)}
+                              disabled={reactivatingId === id}
+                            >
+                              {reactivatingId === id ? 'Reativando…' : 'Reativar'}
+                            </button>
+                          )}
                         </div>
                       ) : (
                         <span className={styles.muted}>Sem id</span>

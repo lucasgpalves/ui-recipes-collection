@@ -172,7 +172,7 @@ export type UserResponse = {
   fantasyName: string | null
 }
 
-/** Espelha RegisterRequestDTO — tipado para o próximo corte. */
+/** Espelha RegisterRequestDTO (JSON camelCase). */
 export type RegisterRequest = {
   username: string
   password: string

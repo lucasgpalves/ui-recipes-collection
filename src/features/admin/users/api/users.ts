@@ -2,12 +2,14 @@ import {
   demoCreateUser,
   demoFetchUserById,
   demoFetchUsers,
+  demoReactivateUser,
+  demoRegisterCredentials,
   demoTerminateUser,
   demoUpdateUser,
 } from '../../../../demo/demoApi'
 import { apiRequest } from '../../../../shared/api/client'
 import { env } from '../../../../shared/config/env'
-import type { UserRequest, UserResponse } from '../../../../shared/api/types'
+import type { RegisterRequest, UserRequest, UserResponse } from '../../../../shared/api/types'
 
 export function fetchUsers(): Promise<UserResponse[]> {
   if (env.useDemoApi) return demoFetchUsers()
@@ -32,4 +34,14 @@ export function updateUser(id: number, body: UserRequest): Promise<UserResponse 
 export function terminateUser(id: number): Promise<void> {
   if (env.useDemoApi) return demoTerminateUser(id)
   return apiRequest<void>(`/users/terminate/${id}`, { method: 'PUT' })
+}
+
+export function reactivateUser(id: number): Promise<void> {
+  if (env.useDemoApi) return demoReactivateUser(id)
+  return apiRequest<void>(`/users/reactivate/${id}`, { method: 'PUT' })
+}
+
+export function registerCredentials(body: RegisterRequest): Promise<void> {
+  if (env.useDemoApi) return demoRegisterCredentials(body)
+  return apiRequest<void>('/auth/register', { method: 'POST', body })
 }

@@ -8,7 +8,7 @@ import { useConfirm } from '../../../../shared/ui/confirm'
 import { useNotify } from '../../../../shared/ui/notify'
 import { deleteReference, fetchReferencesByUserId } from '../../references/api/references'
 import { fetchAdminRestaurants } from '../../restaurants/api/restaurants'
-import { fetchUserById, terminateUser } from '../api/users'
+import { fetchUserById, reactivateUser, terminateUser } from '../api/users'
 import styles from '../../shared/pages.module.css'
 
 function formatPeriod(startsAt: string | null, endsAt: string | null): string {
@@ -27,6 +27,7 @@ export function AdminUserProfilePage() {
   const [loading, setLoading] = useState(true)
   const [loadingRefs, setLoadingRefs] = useState(false)
   const [terminating, setTerminating] = useState(false)
+  const [reactivating, setReactivating] = useState(false)
   const [deletingId, setDeletingId] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -92,7 +93,7 @@ export function AdminUserProfilePage() {
     if (!user?.id || user.terminatedAt) return
     const confirmed = await confirm({
       title: 'Desativar usuário',
-      message: `Desativar o usuário "${user.name ?? user.id}"? Essa ação marca terminatedAt e não pode ser desfeita por aqui.`,
+      message: `Desativar o usuário "${user.name ?? user.id}"? O acesso fica encerrado até uma reativação.`,
       confirmLabel: 'Desativar',
       tone: 'danger',
     })
@@ -116,6 +117,37 @@ export function AdminUserProfilePage() {
       }
     } finally {
       setTerminating(false)
+    }
+  }
+
+  async function handleReactivate() {
+    if (!user?.id || !user.terminatedAt) return
+    const confirmed = await confirm({
+      title: 'Reativar usuário',
+      message: `Reativar o usuário "${user.name ?? user.id}"? O acesso volta a ficar disponível.`,
+      confirmLabel: 'Reativar',
+      tone: 'default',
+    })
+    if (!confirmed) return
+
+    setReactivating(true)
+    setError(null)
+    try {
+      await reactivateUser(user.id)
+      const refreshed = await fetchUserById(user.id)
+      setUser(refreshed)
+      notify.success(`Usuário "${user.name ?? user.id}" reativado.`, 'Reativação')
+    } catch (err) {
+      if (err instanceof ApiError) {
+        const message = `Falha ao reativar (status ${err.status}).`
+        setError(message)
+        notify.error(message, 'Reativação')
+      } else {
+        setError('Não foi possível reativar o usuário.')
+        notify.error('Não foi possível reativar o usuário.', 'Reativação')
+      }
+    } finally {
+      setReactivating(false)
     }
   }
 
@@ -177,6 +209,16 @@ export function AdminUserProfilePage() {
               disabled={terminating}
             >
               {terminating ? 'Desativando…' : 'Desativar'}
+            </button>
+          ) : null}
+          {user?.id != null && terminated ? (
+            <button
+              type="button"
+              className={styles.primaryButton}
+              onClick={() => void handleReactivate()}
+              disabled={reactivating}
+            >
+              {reactivating ? 'Reativando…' : 'Reativar'}
             </button>
           ) : null}
         </div>

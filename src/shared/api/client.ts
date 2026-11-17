@@ -58,8 +58,8 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
     body: body === undefined ? undefined : isFormData ? (body as FormData) : JSON.stringify(body),
   })
 
-  // F-13: só 401 encerra sessão; 403 é autorização (ownership/papel).
-  if (response.status === 401) {
+  // RF-UI-API-11 / AC-12: 401 ou 403 disparam limpeza de sessão.
+  if (response.status === 401 || response.status === 403) {
     onUnauthorized?.()
   }
 

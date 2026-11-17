@@ -58,7 +58,6 @@ Autorização HTTP e matriz de endpoints: ver API — [Papéis e permissões](..
 | Funcionalidade | Doc | Estado UI |
 |----------------|-----|-----------|
 | Perfil COOK + referências no contexto do usuário | [06-perfil-cook-contexto.md](06-perfil-cook-contexto.md) | Implementado na UI; embed de `references` no DTO de usuário ainda evolutivo na API |
-| Fetch API real + register + GoalProgress | [07-fn-ui-api-fetch.md](07-fn-ui-api-fetch.md) | Requisitos aprovados; implementação parcial |
 
 ## Escopo especificado, implementação não iniciada
 
@@ -68,7 +67,6 @@ Autorização HTTP e matriz de endpoints: ver API — [Papéis e permissões](..
 | COOK — ciclo de receita (delete / lock / toasts) | [10-fn-ui-cook-recipe-lifecycle.md](10-fn-ui-cook-recipe-lifecycle.md) |
 | Painel EDITOR | [11-fn-ui-editor.md](11-fn-ui-editor.md) |
 | TASTER — reviews no detalhe | [12-fn-ui-taster.md](12-fn-ui-taster.md) |
-| Admin — reativar usuário | [13-fn-ui-admin-user-access.md](13-fn-ui-admin-user-access.md) |
 
 ## Fora do escopo atual da UI
 
@@ -78,7 +76,7 @@ Itens existentes ou planejados na API, **sem tela** neste frontend (salvo FN fut
 - UI de logs / auditoria consultável ([RN-LOG](../../api-recipes-collection/docs/versao-2/RN-logs.md); também fora do escopo da API V2)
 - Bootstrap do primeiro ADMIN via HTTP/UI (CLI — RN-USR-05)
 
-**Corte aprovado (implementação parcial):** [FN-UI-API-FETCH](07-fn-ui-api-fetch.md) — modo API real (cookie HttpOnly / F-05), `POST /auth/register`, UI GoalProgress.
+**Cortes implementados:** [FN-UI-API-FETCH](07-fn-ui-api-fetch.md) (API real + register + GoalProgress); [FN-UI-ADMIN-USER-ACCESS](13-fn-ui-admin-user-access.md) (reativar).
 
 Detalhamento: [Módulos e pendências](05-modulos-e-pendencias.md).
 
@@ -87,4 +85,4 @@ Detalhamento: [Módulos e pendências](05-modulos-e-pendencias.md).
 1. A API é a fonte de verdade do domínio; a UI aplica regras de apresentação, validação de formulário e controle de navegação.
 2. Default oficial de `VITE_USE_DEMO_API` em release/Docker é `false`. Em desenvolvimento local, `true` pode ser usado para fixtures; isso não altera os requisitos de produto da API ([FN-UI-API-FETCH](07-fn-ui-api-fetch.md)).
 3. Requisitos de backend evoluem no repositório da API; requisitos de tela evoluem neste `docs/`.
-4. Sessão na API real: cookie HttpOnly + `GET /auth/me` (RN-UI-AUTH-01 / F-05); 401 limpa sessão (RN-UI-AUTH-05; 403 = gap).
+4. Sessão na API real: cookie HttpOnly + `GET /auth/me` (RN-UI-AUTH-01 / F-05); 401/403 limpam sessão (RN-UI-AUTH-05).

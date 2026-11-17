@@ -7,7 +7,7 @@ services:
       dockerfile: docker/Dockerfile.frontend
       args:
         VITE_API_BASE_URL: /api
-        VITE_USE_DEMO_API: ${VITE_USE_DEMO_API:-true}
+        VITE_USE_DEMO_API: ${VITE_USE_DEMO_API:-false}
     volumes:
       - frontend_assets:/out
     restart: "no"

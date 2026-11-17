@@ -190,7 +190,7 @@ describe('sessão cookie HttpOnly na API real (AC-01 / AC-02 / AC-03 / F-05)', (
     expect(localStorage.getItem(TOKEN_KEY)).toBeNull()
   })
 
-  it('AC-12 gap: HTTP 403 não limpa a sessão (client só chama onUnauthorized em 401)', async () => {
+  it('AC-12: HTTP 403 limpa a sessão (RF-UI-API-11)', async () => {
     cookieSession = { username: 'chef', role: 'COOK', userId: 42 }
     render(
       <AuthProvider>
@@ -204,7 +204,10 @@ describe('sessão cookie HttpOnly na API real (AC-01 / AC-02 / AC-03 / F-05)', (
     recipeStatus = 403
     await expect(apiRequest('/recipes')).rejects.toMatchObject({ status: 403 })
 
-    expect(screen.getByTestId('authenticated').textContent).toBe('yes')
-    expect(screen.getByTestId('role').textContent).toBe('COOK')
+    await waitFor(() => {
+      expect(screen.getByTestId('authenticated').textContent).toBe('no')
+    })
+    expect(sessionStorage.getItem(TOKEN_KEY)).toBeNull()
+    expect(localStorage.getItem(TOKEN_KEY)).toBeNull()
   })
 })

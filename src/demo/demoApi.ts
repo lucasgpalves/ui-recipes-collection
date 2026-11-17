@@ -3,12 +3,14 @@ import type {
   Category,
   CategoryRequest,
   Goal,
+  GoalProgress,
   GoalRequest,
   JobReference,
   JobReferenceRequest,
   Recipe,
   RecipeRequest,
   RecipeSummary,
+  RegisterRequest,
   Restaurant,
   RestaurantRequest,
   Review,
@@ -486,6 +488,23 @@ export async function demoFetchGoalById(id: number): Promise<Goal> {
   return withLatency(structuredClone(goal), 220)
 }
 
+export async function demoFetchGoalProgress(
+  id: number,
+  query: { userId: number; month?: number; year?: number },
+): Promise<GoalProgress> {
+  const goal = await demoFetchGoalById(id)
+  const progress = Math.min(2, goal.amount)
+  return withLatency(
+    {
+      userId: query.userId,
+      target: goal.amount,
+      progress,
+      completed: progress >= goal.amount,
+    },
+    220,
+  )
+}
+
 export async function demoCreateGoal(request: GoalRequest): Promise<Goal> {
   const store = await ensureGoalsStore()
   const role = await resolveRoleByName(request.roleName)
@@ -631,6 +650,27 @@ export async function demoTerminateUser(id: number): Promise<void> {
     terminatedAt: formatDemoDateTime(new Date()),
   }
   await withLatency(undefined, 320)
+}
+
+export async function demoReactivateUser(id: number): Promise<void> {
+  const index = usersStore.findIndex((item) => item.id === id)
+  if (index < 0) {
+    throw new ApiError(404, `Demo user ${id} not found`)
+  }
+  const current = usersStore[index]
+  if (!current.terminatedAt) {
+    await withLatency(undefined, 200)
+    return
+  }
+  usersStore[index] = {
+    ...current,
+    terminatedAt: null,
+  }
+  await withLatency(undefined, 320)
+}
+
+export async function demoRegisterCredentials(_body: RegisterRequest): Promise<void> {
+  await withLatency(undefined, 280)
 }
 
 async function ensureRestaurantsStore(): Promise<Restaurant[]> {

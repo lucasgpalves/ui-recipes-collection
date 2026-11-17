@@ -7,7 +7,7 @@ type CredentialsFormProps = {
   userId: number
   userLabel?: string | null
   submitLabel?: string
-  /** Quando omitido, o formulário só valida e sinaliza que a API ainda não está ligada. */
+  /** Handler HTTP (POST /auth/register). Sem handler, só valida e sinaliza payload pronto. */
   onSubmit?: (payload: RegisterRequest) => Promise<void>
 }
 
@@ -58,10 +58,7 @@ export function CredentialsForm({
 
     if (!onSubmit) {
       setDraftOk(payload)
-      notify.info(
-        'Desenho validado — o POST /auth/register será ligado no próximo passo.',
-        'Credenciais',
-      )
+      notify.info('Payload pronto — informe onSubmit para enviar ao POST /auth/register.', 'Credenciais')
       return
     }
 

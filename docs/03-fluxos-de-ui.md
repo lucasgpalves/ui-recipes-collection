@@ -65,7 +65,7 @@ Jornadas do usuário na interface. Regras de domínio por trás das chamadas: ve
 ### 2.2 Logout
 
 1. Ação **Sair** (navbar ou sidebar): `POST /auth/logout` (API real) + limpa estado local e redireciona (`/` ou `/login`).
-2. Qualquer `apiRequest` com **401**: limpa estado de auth automaticamente ([FN-UI-API-FETCH](07-fn-ui-api-fetch.md)); 403 ainda é gap.
+2. Qualquer `apiRequest` com **401 ou 403**: limpa estado de auth automaticamente ([FN-UI-API-FETCH](07-fn-ui-api-fetch.md)).
 
 ### 2.3 Troca de contexto (admin → cook)
 
@@ -79,14 +79,14 @@ Na navbar pública, admin autenticado pode usar atalho que faz logout e envia a 
 
 1. `/admin/usuarios` lista usuários.
 2. Filtro opcional por papel **COOK** (atalho para a jornada de experiência).
-3. Ações: **Novo usuário**, **Perfil**, **Editar**, **Desativar** (somente ativos com `id`).
-4. Usuário desativado: badge “Desativado”; sem editar/desativar.
+3. Ações: **Novo usuário**, **Perfil**, **Editar**, **Desativar** (ativos com `id`); **Reativar** (desativados com `id`).
+4. Usuário desativado: badge “Desativado”; sem editar/desativar; atalho **Reativar**.
 
-### 3.2 Desativar
+### 3.2 Desativar / reativar
 
-1. Usuário confirma no diálogo (“Desativar usuário” / tom danger).
-2. Cancelar → nenhuma chamada.
-3. Confirmar → `PUT` terminate → atualiza lista → notificação de sucesso/erro.
+1. **Desativar** (ativo): confirma no diálogo (tom danger) → `PUT` terminate → atualiza UI → toast.
+2. **Reativar** (desativado): confirma no diálogo → `PUT /users/reactivate/{id}` → atualiza UI → toast ([FN-UI-ADMIN-USER-ACCESS](13-fn-ui-admin-user-access.md)).
+3. Cancelar qualquer diálogo → nenhuma chamada.
 
 ### 3.3 Cadastro
 
@@ -97,18 +97,18 @@ Na navbar pública, admin autenticado pode usar atalho que faz logout e envia a 
 
 ### 3.4 Perfil e edição
 
-1. Perfil (`/admin/usuarios/:id`): leitura; atalhos **Criar acesso** / Editar / Desativar se ativo.
+1. Perfil (`/admin/usuarios/:id`): leitura; atalhos **Criar acesso** / Editar / Desativar se ativo; **Reativar** se desativado.
 2. Se `roleName === 'COOK'`: seção **Experiência profissional** com listagem, adicionar, editar e remover referências ([FN-UI-COOK-PROFILE](06-perfil-cook-contexto.md)).
 3. Edição: bloqueada se `terminatedAt` preenchido.
 4. Form pré-preenchido; submit atualiza e notifica.
 
-### 3.5 Credenciais de acesso (desenho)
+### 3.5 Credenciais de acesso
 
 1. Do perfil, **Criar acesso** → `/admin/usuarios/:id/credenciais`.
 2. Tela mostra resumo do perfil (nome, papel, userId) + formulário: usuário, senha, confirmar senha.
 3. Usuário desativado: formulário oculto; mensagem de bloqueio.
 4. Validação local: campos obrigatórios, senhas iguais, senha ≥ 4 caracteres.
-5. **Fetch `POST /auth/register` ainda não ligado** — submit válido só confirma o desenho (toast informativo + payload pronto na UI).
+5. Submit válido → `POST /auth/register` com `{ username, password, userId }`; 201 → toast success + retorno ao perfil; erro → toast error (formulário permanece).
 
 ---
 
@@ -119,6 +119,8 @@ Padrão comum:
 1. **Listagem** com Editar e Excluir.
 2. **Excluir** → confirmação danger → chamada DELETE → refresh + notify.
 3. **Novo / Editar** → formulário → sucesso → volta à listagem + notify.
+
+**Metas — progresso:** na edição (`/admin/metas/:id/editar`), bloco **Progresso** consulta `GET /goals/{id}/progress` com `userId` (padrão: sessão) e `month`/`year` opcionais; exibe `userId`, `target` e `progress` ([FN-UI-API-FETCH](07-fn-ui-api-fetch.md)).
 
 Rotas: ver [mapa](02-mapa-de-rotas.md). Validações: [regras UI](04-regras-de-negocio-ui.md).
 

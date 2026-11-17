@@ -2,12 +2,19 @@ import {
   demoCreateGoal,
   demoDeleteGoal,
   demoFetchGoalById,
+  demoFetchGoalProgress,
   demoFetchGoals,
   demoUpdateGoal,
 } from '../../../../demo/demoApi'
 import { apiRequest } from '../../../../shared/api/client'
 import { env } from '../../../../shared/config/env'
-import type { Goal, GoalRequest } from '../../../../shared/api/types'
+import type { Goal, GoalProgress, GoalRequest } from '../../../../shared/api/types'
+
+export type GoalProgressQuery = {
+  userId: number
+  month?: number
+  year?: number
+}
 
 export function fetchGoals(): Promise<Goal[]> {
   if (env.useDemoApi) return demoFetchGoals()
@@ -32,4 +39,13 @@ export function updateGoal(id: number, body: GoalRequest): Promise<Goal | void> 
 export function deleteGoal(id: number): Promise<void> {
   if (env.useDemoApi) return demoDeleteGoal(id)
   return apiRequest<void>(`/goals/${id}`, { method: 'DELETE' })
+}
+
+export function fetchGoalProgress(id: number, query: GoalProgressQuery): Promise<GoalProgress> {
+  if (env.useDemoApi) return demoFetchGoalProgress(id, query)
+  const params = new URLSearchParams()
+  params.set('userId', String(query.userId))
+  if (query.month != null) params.set('month', String(query.month))
+  if (query.year != null) params.set('year', String(query.year))
+  return apiRequest<GoalProgress>(`/goals/${id}/progress?${params.toString()}`)
 }

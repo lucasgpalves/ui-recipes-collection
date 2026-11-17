@@ -1,8 +1,8 @@
 # Funcionalidade — UI: fetch API (modo API real)
 
 **ID:** `FN-UI-API-FETCH`  
-**Status:** requisitos **aprovados** (implementação parcial — RF-UI-API-01/02/03/04/05/06/07 alinhados a cookie F-05)  
-**Versão:** 1.3  
+**Status:** requisitos **aprovados** (implementação coberta — RF-UI-API-01…22 / AC-01…13)  
+**Versão:** 1.4  
 **Domínio API relacionado:** autenticação, register, recursos wired e `GET /goals/{id}/progress` — ver `../api-recipes-collection/docs/`
 
 Este documento define o corte de requisitos para a UI operar contra a **API HTTP real** (`VITE_USE_DEMO_API=false`), com sessão **cookie HttpOnly** (F-05), e completar register + GoalProgress.
@@ -14,7 +14,7 @@ Este documento define o corte de requisitos para a UI operar contra a **API HTTP
 | Decisão | Escolha oficial |
 |---------|-----------------|
 | Sessão API real | Cookie HttpOnly `receitou_auth` + `credentials: 'include'`; identidade via JSON de login / `GET /auth/me` (sem JWT em `sessionStorage`) |
-| Limpeza de sessão | **401** limpa estado de auth (F-13); **403** permanece gap documentado (RF-UI-API-11) |
+| Limpeza de sessão | **401 e 403** limpam estado de auth (RF-UI-API-11 / AC-12) |
 | Escopo | **D** = (A) API real wired + (B) `POST /auth/register` + (C) UI GoalProgress |
 | Docker / release | Default `VITE_USE_DEMO_API=false` |
 
@@ -30,9 +30,8 @@ Este documento define o corte de requisitos para a UI operar contra a **API HTTP
 
 **Fora do escopo:** painéis EDITOR/TASTER, toggle `isPublished`, embed obrigatório de `references` no DTO de usuário. Upload de imagem: [FN-UI-RECIPE-IMAGE](14-fn-ui-recipe-image.md).
 
-**Gap código ↔ requisito (rastreado):** clear de sessão em **403** ainda não ocorre no `apiRequest` (RF-UI-API-11 / AC-12); 401 limpa.
-
 ---
+
 
 ## 2. Business Context
 
@@ -125,7 +124,7 @@ Este documento define o corte de requisitos para a UI operar contra a **API HTTP
 |---------|------------------------|
 | Cookie ausente/expirado no boot (`/auth/me` 401) | Sessão não autenticada; guards redirecionam |
 | 401 em `apiRequest` | Limpa sessão |
-| 403 em `apiRequest` | Não limpa sessão (gap AC-12 / RF-UI-API-11) |
+| 403 em `apiRequest` | Limpa sessão (AC-12 / RF-UI-API-11) |
 | Login 401/403 | Mensagem genérica; sem sessão |
 | `userId` null ao salvar receita | UI bloqueia com warning |
 | Entidade sem `id` | Ações dependentes limitadas (“Sem id”); progresso de meta não busca sem `id` |
@@ -149,7 +148,7 @@ Este documento define o corte de requisitos para a UI operar contra a **API HTTP
 ## 9. Testing Recommendations
 
 1. Auth API real: login sem JWT no storage; reload via `/auth/me`; logout limpa cookie + estado.
-2. 401 em `apiRequest` → sessão limpa (AC-03); 403 = gap AC-12.
+2. 401 ou 403 em `apiRequest` → sessão limpa (AC-03, AC-12).
 3. Login negativo: texto RN-UI-AUTH-04.
 4. Público + PDF (AC-05, AC-06).
 5. Cook: `/recipes/mine` + `userId` da sessão.
@@ -168,11 +167,11 @@ Este documento define o corte de requisitos para a UI operar contra a **API HTTP
 - [x] Login API real: identidade no JSON; sem persistir JWT no cliente (RF-UI-API-05 / AC-01)
 - [x] Restauração de sessão via `GET /auth/me` no boot (RF-UI-API-06 / AC-02)
 - [x] Logout: `POST /auth/logout` + limpa estado local (RF-UI-API-07)
-- [ ] Clear de sessão em 401 **e** 403 (RF-UI-API-11) — 401 feito; 403 pendente (AC-12)
-- [ ] Docker/compose/release com `VITE_USE_DEMO_API=false` (RF-UI-API-10)
-- [ ] Register ligado em credenciais admin (RF-UI-API-17…19 / AC-10)
-- [ ] UI GoalProgress (RF-UI-API-20…22 / AC-11)
-- [ ] ACs 01–13 validados por testes relevantes
-- [ ] Docs de fluxos/README sincronizados com o comportamento implementado
+- [x] Clear de sessão em 401 **e** 403 (RF-UI-API-11 / AC-12)
+- [x] Docker/compose/release com `VITE_USE_DEMO_API=false` (RF-UI-API-10)
+- [x] Register ligado em credenciais admin (RF-UI-API-17…19 / AC-10)
+- [x] UI GoalProgress (RF-UI-API-20…22 / AC-11)
+- [x] ACs 01–13 validados por testes relevantes
+- [x] Docs de fluxos/README sincronizados com o comportamento implementado
 
 Identificador estável para citar em PRs/issues: **`FN-UI-API-FETCH`**.

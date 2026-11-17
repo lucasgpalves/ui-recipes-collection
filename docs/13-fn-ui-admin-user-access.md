@@ -1,8 +1,8 @@
 # Funcionalidade — ADMIN: ciclo complementar de acesso (reativar)
 
 **ID:** `FN-UI-ADMIN-USER-ACCESS`  
-**Status:** requisitos **aprovados** (implementação não iniciada)  
-**Versão:** 1.0  
+**Status:** requisitos **aprovados** (implementação coberta)  
+**Versão:** 1.1  
 **Domínio API relacionado:** [RN — Usuário e acesso](../../api-recipes-collection/docs/versao-2/RN-usuario-e-acesso.md) (`RN-USR-01`, `RN-USR-02`)
 
 Complementa a UI admin de usuários com ação explícita de **reativação** e clareza UX entre **terminate** e **reactivate**. **Não** redefine register ([FN-UI-API-FETCH](07-fn-ui-api-fetch.md)). Bootstrap do primeiro ADMIN permanece CLI (fora de escopo UI).
@@ -78,15 +78,15 @@ Complementa a UI admin de usuários com ação explícita de **reativação** e 
 
 ## 6. Acceptance Criteria
 
-- [ ] **AC-01** — Perfil de usuário desativado mostra **Reativar** e não oferece Desativar ativo.
-- [ ] **AC-02** — Perfil de usuário ativo mostra **Desativar** e não oferece Reativar ativo.
-- [ ] **AC-03** — Confirmar Reativar chama `PUT /users/reactivate/{id}` e, em 204, UI fica ativa.
-- [ ] **AC-04** — Cancelar confirmação não chama a API.
-- [ ] **AC-05** — Rótulos Desativar vs Reativar são distintos e compreensíveis.
-- [ ] **AC-06** — Este documento não adiciona requisitos novos de register; referências apontam a FN-UI-API-FETCH.
-- [ ] **AC-07** — Nenhuma rota/tela de bootstrap ADMIN.
-- [ ] **AC-08** — Após reativar, edição/credenciais voltam a seguir regras de usuário ativo (RN-UI-USR-08 / AUTH-09).
-- [ ] **AC-09** — Fluxos admin e pendências atualizados após implementação verificada.
+- [x] **AC-01** — Perfil de usuário desativado mostra **Reativar** e não oferece Desativar ativo.
+- [x] **AC-02** — Perfil de usuário ativo mostra **Desativar** e não oferece Reativar ativo.
+- [x] **AC-03** — Confirmar Reativar chama `PUT /users/reactivate/{id}` e, em 204, UI fica ativa.
+- [x] **AC-04** — Cancelar confirmação não chama a API.
+- [x] **AC-05** — Rótulos Desativar vs Reativar são distintos e compreensíveis.
+- [x] **AC-06** — Este documento não adiciona requisitos novos de register; referências apontam a FN-UI-API-FETCH.
+- [x] **AC-07** — Nenhuma rota/tela de bootstrap ADMIN.
+- [x] **AC-08** — Após reativar, edição/credenciais voltam a seguir regras de usuário ativo (RN-UI-USR-08 / AUTH-09).
+- [x] **AC-09** — Fluxos admin e pendências atualizados após implementação verificada.
 
 ---
 
